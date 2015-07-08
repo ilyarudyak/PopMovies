@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -36,7 +39,9 @@ import java.util.List;
  */
 public class PosterActivityFragment extends Fragment {
 
-    private GridView gridView;
+    private static final String MOST_POPULAR = "popularity.desc";
+    private static final String HIGHEST_RATED = "vote_average.desc";
+
     private ImageAdapter mImageAdapter;
 
     public PosterActivityFragment() {
@@ -47,7 +52,7 @@ public class PosterActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_main, container, false);
-        gridView = (GridView) v.findViewById(R.id.gridView);
+        GridView gridView = (GridView) v.findViewById(R.id.gridView);
         mImageAdapter = new ImageAdapter(getActivity(),
                 new ArrayList<String>());
         gridView.setAdapter(mImageAdapter);
@@ -56,11 +61,39 @@ public class PosterActivityFragment extends Fragment {
         return v;
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
-        new FetchMoviesTask().execute("popularity.desc");
+        new FetchMoviesTask().execute(MOST_POPULAR);
+    }
+
+    // ------------------- menu methods -------------------
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // now this fragment can handle menu events
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_most_popular) {
+            new FetchMoviesTask().execute(MOST_POPULAR);
+            return true;
+        } else if (id == R.id.action_highest_rated) {
+            new FetchMoviesTask().execute(HIGHEST_RATED);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     // ------------------- helper classes -------------------

@@ -2,4 +2,7 @@
     <string name="app_name">PopMovies</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="action_popularity_sort">Most popular</string>
+    <string name="highest_rated_sort">Highest rated</string>
+    <string name="title_activity_detail">DetailActivity</string>
 </resources>
