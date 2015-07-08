@@ -87,6 +87,8 @@ public class Movie {
 
         posterPathAbsolute = Uri.parse(POSTER_BASE_URL).buildUpon()
                 .appendPath(POSTER_SIZE)
+                // we delete slash - we use addPath method
+                // that adds slash after size
                 .appendPath(posterPathRelative.replace("/", ""))
                 .build()
                 .toString();

@@ -1,6 +1,5 @@
 package com.ilyarudyak.android.popmovies;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,13 +11,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 
+import com.ilyarudyak.android.popmovies.data.ImageAdapter;
 import com.ilyarudyak.android.popmovies.data.JsonMovieParser;
 import com.ilyarudyak.android.popmovies.data.Movie;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 
@@ -62,10 +59,8 @@ public class PosterActivityFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_main, container, false);
         GridView gridView = (GridView) v.findViewById(R.id.gridView);
-        mImageAdapter = new ImageAdapter(getActivity(),
-                new ArrayList<Movie>());
+        mImageAdapter = new ImageAdapter(getActivity(), new ArrayList<Movie>());
         gridView.setAdapter(mImageAdapter);
-
 
         return v;
     }
@@ -107,68 +102,7 @@ public class PosterActivityFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    // ------------------- helper classes -------------------
-
-    /**
-     * TODO description of adapter class
-     */
-    private class ImageAdapter extends BaseAdapter {
-        private Context mContext;
-        private List<Movie> mMoviesList;
-
-        public ImageAdapter(Context context, List<Movie> moviesList) {
-            mContext = context;
-            mMoviesList = moviesList;
-        }
-
-        public void clear() {
-            mMoviesList = new ArrayList<>();
-        }
-
-        public void addAll(List<Movie> list) {
-            mMoviesList.addAll(list);
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public int getCount() {
-            return mMoviesList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView,
-                            ViewGroup parent) {
-            ImageView imageView;
-            // check to see if we have a view
-            if (convertView == null) {
-                // no view - so create a new one
-                imageView = new ImageView(mContext);
-            } else {
-                // use the recycled view object
-                imageView = (ImageView) convertView;
-            }
-
-            Picasso.with(mContext)
-                    .load(mMoviesList.get(position).getPosterPathAbsolute())
-                    .placeholder(R.raw.place_holder)
-//                    .error(R.raw.big_problem)
-//                    .noFade()
-                    .resize(550, 775)
-//                    .centerCrop()
-                    .into(imageView);
-            return imageView;
-        }
-    }
+    // ------------------- async task -------------------
 
     /**
      * We subclass AsyncTask to get data from API call
@@ -183,9 +117,7 @@ public class PosterActivityFragment extends Fragment {
 
         @Override
         protected List<Movie> doInBackground(String... params) {
-
-            List<Movie> result = getDataFromAPICall(params);
-            return result;
+            return getDataFromAPICall(params);
         }
 
         @Override
@@ -197,7 +129,6 @@ public class PosterActivityFragment extends Fragment {
         }
 
         // ------------------- helper methods -------------------
-        
 
         private URL buildAPIUrl(String parameter) {
 
