@@ -1,36 +1,49 @@
 package com.ilyarudyak.android.popmovies.data;
 
+import android.net.Uri;
+
 /**
  * Model class to encapsulate a movie.
  */
 public class Movie {
 
-    public static final String ID =             "id";
-    public static final String ORIGINAl_TITLE = "original_title";
-    public static final String POSTER_PATH =    "poster_path";
-    public static final String RELEASE_DATE =   "release_date";
-    public static final String PLOT_SYNOPSIS =  "overview";
+    public static final String TMDB_ID =                         "id";
+    public static final String TMDB_ORIGINAl_TITLE =             "original_title";
+    public static final String TMDB_POSTER_PATH_RELATIVE =       "poster_path";
+    public static final String TMDB_RELEASE_DATE =               "release_date";
+    public static final String TMDB_USER_RATING =                "vote_average";
+    public static final String TMDB_PLOT_SYNOPSIS =              "overview";
 
-    private int id;                     // id
-    private String originalTitle;       // original_title
-    private String posterPath;          // poster_path
-    private String releaseDate;         // release_date
-    private String userRating;          // vote_average
-    private String plotSynopsis;        // overview
+
+    public static final String POSTER_BASE_URL =
+            "http://image.tmdb.org/t/p/";
+    public static final String POSTER_SIZE = "w185";
+
+
+
+    private Integer id;                         // id
+    private String originalTitle;               // original_title
+    private String posterPathRelative;          // poster_path
+    private String posterPathAbsolute;          // n/a
+    private String releaseDate;                 // release_date
+    private Double userRating;                  // vote_average
+    private String plotSynopsis;                // overview
 
     //TODO add trailer, review on stage 2
     //TODO we have length on mockups but don't have it in JSON
     //TODO and we don't have a link to review in mockups
 
-    public Movie(int id, String originalTitle,
-                 String plotSynopsis, String posterPath,
-                 String releadeDate, String userRating) {
+    public Movie(Integer id, String originalTitle,
+                 String plotSynopsis, String posterPathRelative,
+                 String releaseDate, Double userRating) {
         this.id = id;
         this.originalTitle = originalTitle;
         this.plotSynopsis = plotSynopsis;
-        this.posterPath = posterPath;
-        this.releaseDate = releadeDate;
+        this.posterPathRelative = posterPathRelative;
+        this.releaseDate = releaseDate;
         this.userRating = userRating;
+
+        buildPosterPathAbsolute();
     }
 
     public int getId() {
@@ -45,15 +58,16 @@ public class Movie {
         return plotSynopsis;
     }
 
-    public String getPosterPath() {
-        return posterPath;
+    // we need get method only for absolute path
+    public String getPosterPathAbsolute() {
+        return posterPathAbsolute;
     }
 
     public String getReleaseDate() {
         return releaseDate;
     }
 
-    public String getUserRating() {
+    public Double getUserRating() {
         return userRating;
     }
 
@@ -62,10 +76,20 @@ public class Movie {
         return "Movie{" +
                 "id=" + id +
                 ", originalTitle='" + originalTitle + '\'' +
-                ", posterPath='" + posterPath + '\'' +
+                ", posterPath='" + posterPathAbsolute + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
                 ", userRating='" + userRating + '\'' +
                 ", plotSynopsis='" + plotSynopsis + '\'' +
                 '}';
+    }
+
+    private void buildPosterPathAbsolute() {
+
+        posterPathAbsolute = Uri.parse(POSTER_BASE_URL).buildUpon()
+                .appendPath(POSTER_SIZE)
+                .appendPath(posterPathRelative.replace("/", ""))
+                .build()
+                .toString();
+
     }
 }
