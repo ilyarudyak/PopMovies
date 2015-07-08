@@ -16,11 +16,11 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.ilyarudyak.android.popmovies.data.JsonMovieParser;
+import com.ilyarudyak.android.popmovies.data.Movie;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,18 +30,27 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
 /**
- * A placeholder fragment containing a simple view.
+ * Upon launch, present the user with an grid arrangement
+ * of movie posters. Allow your user to change sort order
+ * via a setting. Allow the user to tap on a movie poster
+ * and transition to a details screen with additional
+ * information.
  */
 public class PosterActivityFragment extends Fragment {
 
+    // sort order can be by most popular or by highest-rated
     private static final String MOST_POPULAR = "popularity.desc";
     private static final String HIGHEST_RATED = "vote_average.desc";
 
+    private final String LOG_TAG = PosterActivityFragment.class.getSimpleName();
+
+
+    // we have to make adapter global to update it
+    // in onPostExecute() method of our fetch task
     private ImageAdapter mImageAdapter;
 
     public PosterActivityFragment() {
@@ -54,7 +63,7 @@ public class PosterActivityFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_main, container, false);
         GridView gridView = (GridView) v.findViewById(R.id.gridView);
         mImageAdapter = new ImageAdapter(getActivity(),
-                new ArrayList<String>());
+                new ArrayList<Movie>());
         gridView.setAdapter(mImageAdapter);
 
 
@@ -64,7 +73,9 @@ public class PosterActivityFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        // fetch most popular movies upon start
         new FetchMoviesTask().execute(MOST_POPULAR);
+
     }
 
     // ------------------- menu methods -------------------
@@ -98,12 +109,14 @@ public class PosterActivityFragment extends Fragment {
 
     // ------------------- helper classes -------------------
 
-    // our custom adapter
+    /**
+     * TODO description of adapter class
+     */
     private class ImageAdapter extends BaseAdapter {
         private Context mContext;
-        private List<String> mMoviesList;
+        private List<Movie> mMoviesList;
 
-        public ImageAdapter(Context context, List<String> moviesList) {
+        public ImageAdapter(Context context, List<Movie> moviesList) {
             mContext = context;
             mMoviesList = moviesList;
         }
@@ -112,7 +125,7 @@ public class PosterActivityFragment extends Fragment {
             mMoviesList = new ArrayList<>();
         }
 
-        public void addAll(List<String> list) {
+        public void addAll(List<Movie> list) {
             mMoviesList.addAll(list);
             notifyDataSetChanged();
         }
@@ -146,7 +159,7 @@ public class PosterActivityFragment extends Fragment {
             }
 
             Picasso.with(mContext)
-                    .load(mMoviesList.get(position))
+                    .load(mMoviesList.get(position).getPosterPathAbsolute())
                     .placeholder(R.raw.place_holder)
 //                    .error(R.raw.big_problem)
 //                    .noFade()
@@ -157,71 +170,34 @@ public class PosterActivityFragment extends Fragment {
         }
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
+    /**
+     * We subclass AsyncTask to get data from API call
+     * in a separate thread. We make a network call
+     * using HttpURLConnection and parse JSON with
+     * JSONObject. We then update main thread using
+     * adapter instance variable in onPostExecute().
+     */
+    public class FetchMoviesTask extends AsyncTask<String, Void, List<Movie>> {
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected List<Movie> doInBackground(String... params) {
 
-            String[] result = getDataFromAPICall(params);
-//            Log.i(LOG_TAG, Arrays.toString(result));
+            List<Movie> result = getDataFromAPICall(params);
             return result;
         }
 
         @Override
-        protected void onPostExecute(String[] result) {
+        protected void onPostExecute(List<Movie> result) {
             if (result != null) {
                 mImageAdapter.clear();
-                mImageAdapter.addAll(Arrays.asList(result));
+                mImageAdapter.addAll(result);
             }
         }
 
         // ------------------- helper methods -------------------
-
-        /**
-         * Take the String representing the list of movies in JSON Format and
-         * pull out the data we need to construct the wireframes.
-         */
-        private String[] getMoviesDataFromJson(String moviesJsonStr)
-                throws JSONException {
-
-            // names of the JSON objects that need to be extracted.
-            final String TMDB_RESULTS = "results";
-            final String TMDB_POSTER_PATH = "poster_path";
-
-            JSONObject forecastJson = new JSONObject(moviesJsonStr);
-            JSONArray moviesArray = forecastJson.getJSONArray(TMDB_RESULTS);
-
-            String[] moviesPostersUrls = new String[moviesArray.length()];
-            for(int i = 0; i < moviesArray.length(); i++) {
-
-                // get the JSON object representing the movie
-                JSONObject movie = moviesArray.getJSONObject(i);
-
-                moviesPostersUrls[i] = buildPosterUrlString(
-                        movie.getString(TMDB_POSTER_PATH)
-                );
-
-            }
-
-            return moviesPostersUrls;
-        }
-
-
-        private String buildPosterUrlString(String relativePath) {
-
-            final String POSTER_BASE_URL =
-                    "http://image.tmdb.org/t/p/";
-            final String POSTER_SIZE = "w185";
-
-            Uri builtUri = Uri.parse(POSTER_BASE_URL).buildUpon()
-                    .appendPath(POSTER_SIZE)
-                    .appendPath(relativePath.replace("/", ""))
-                    .build();
-
-            return builtUri.toString();
-        }
+        
 
         private URL buildAPIUrl(String parameter) {
 
@@ -245,7 +221,7 @@ public class PosterActivityFragment extends Fragment {
             }
         }
 
-        private String[] getDataFromAPICall(String...params) {
+        private List<Movie> getDataFromAPICall(String...params) {
 
             HttpURLConnection urlConnection = null;
 
@@ -263,7 +239,7 @@ public class PosterActivityFragment extends Fragment {
                     String moviesJsonStr = new BufferedReader(
                             new InputStreamReader(inputStream)).readLine();
 
-                    return getMoviesDataFromJson(moviesJsonStr);
+                    return new JsonMovieParser(moviesJsonStr).getMoviesList();
                 }
 
             } catch (IOException e) {
