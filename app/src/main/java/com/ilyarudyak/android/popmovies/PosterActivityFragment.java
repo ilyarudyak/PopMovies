@@ -34,14 +34,12 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment {
-
-    private static String[] mThumbIds = {"http://image.tmdb.org/t/p/w185/uXZYawqUsChGSj54wcuBtEdUJbh.jpg", "http://image.tmdb.org/t/p/w185/5JU9ytZJyR3zmClGmVm9q4Geqbd.jpg", "http://image.tmdb.org/t/p/w185/kqjL17yufvn9OVLyXYpvtyrFfak.jpg", "http://image.tmdb.org/t/p/w185/qey0tdcOp9kCDdEZuJ87yE3crSe.jpg", "http://image.tmdb.org/t/p/w185/aMEsvTUklw0uZ3gk3Q6lAj6302a.jpg", "http://image.tmdb.org/t/p/w185/saF3HtAduvrP9ytXDxSnQJP3oqx.jpg", "http://image.tmdb.org/t/p/w185/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg", "http://image.tmdb.org/t/p/w185/A7HtCxFe7Ms8H7e7o2zawppbuDT.jpg", "http://image.tmdb.org/t/p/w185/3zQvuSAUdC3mrx9vnSEpkFX0968.jpg", "http://image.tmdb.org/t/p/w185/rDycdoAXtBb7hoWlBpZqbwk2F44.jpg", "http://image.tmdb.org/t/p/w185/t90Y3G8UGQp0f0DrP60wRu9gfrH.jpg", "http://image.tmdb.org/t/p/w185/2i0JH5WqYFqki7WDhUW56Sg0obh.jpg", "http://image.tmdb.org/t/p/w185/xxX0v4vyfVc3Z8DEsbLJODnMOfQ.jpg", "http://image.tmdb.org/t/p/w185/s5uMY8ooGRZOL0oe4sIvnlTsYQO.jpg", "http://image.tmdb.org/t/p/w185/oAISjx6DvR2yUn9dxj00vP8OcJJ.jpg", "http://image.tmdb.org/t/p/w185/qrFwjJ5nvFnpBCmXLI4YoeHJNBH.jpg", "http://image.tmdb.org/t/p/w185/69Cz9VNQZy39fUE2g0Ggth6SBTM.jpg", "http://image.tmdb.org/t/p/w185/9gm3lL8JMTTmc3W4BmNMCuRLdL8.jpg", "http://image.tmdb.org/t/p/w185/5vHssUeVe25bMrof1HyaPyWgaP.jpg", "http://image.tmdb.org/t/p/w185/gCBw0AQDhlo0bNetkjsSRWzrxpW.jpg"};
+public class PosterActivityFragment extends Fragment {
 
     private GridView gridView;
     private ImageAdapter mImageAdapter;
 
-    public MainActivityFragment() {
+    public PosterActivityFragment() {
     }
 
     @Override
@@ -117,9 +115,10 @@ public class MainActivityFragment extends Fragment {
             Picasso.with(mContext)
                     .load(mMoviesList.get(position))
                     .placeholder(R.raw.place_holder)
-                    .error(R.raw.big_problem)
-                    .noFade().resize(150, 150)
-                    .centerCrop()
+//                    .error(R.raw.big_problem)
+//                    .noFade()
+                    .resize(550, 775)
+//                    .centerCrop()
                     .into(imageView);
             return imageView;
         }
@@ -133,7 +132,7 @@ public class MainActivityFragment extends Fragment {
         protected String[] doInBackground(String... params) {
 
             String[] result = getDataFromAPICall(params);
-            Log.i(LOG_TAG, Arrays.toString(result));
+//            Log.i(LOG_TAG, Arrays.toString(result));
             return result;
         }
 
