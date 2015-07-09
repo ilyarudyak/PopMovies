@@ -15,9 +15,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.ilyarudyak.android.popmovies.data.ImageAdapter;
 import com.ilyarudyak.android.popmovies.data.JsonMovieParser;
 import com.ilyarudyak.android.popmovies.data.Movie;
+import com.ilyarudyak.android.popmovies.data.PicassoAdapter;
 
 import org.json.JSONException;
 
@@ -50,7 +50,7 @@ public class PosterActivityFragment extends Fragment {
 
     // we have to make adapter global to update it
     // in onPostExecute() method of our fetch task
-    private ImageAdapter mImageAdapter;
+    private PicassoAdapter mImageAdapter;
 
     public PosterActivityFragment() {
     }
@@ -61,7 +61,7 @@ public class PosterActivityFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_main, container, false);
         GridView gridView = (GridView) v.findViewById(R.id.gridView);
-        mImageAdapter = new ImageAdapter(getActivity(), new ArrayList<Movie>());
+        mImageAdapter = new PicassoAdapter(getActivity(), new ArrayList<Movie>());
 
         gridView.setAdapter(mImageAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
