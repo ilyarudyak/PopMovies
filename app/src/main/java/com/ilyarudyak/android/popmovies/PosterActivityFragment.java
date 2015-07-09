@@ -1,5 +1,6 @@
 package com.ilyarudyak.android.popmovies;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.ilyarudyak.android.popmovies.data.ImageAdapter;
@@ -60,7 +62,22 @@ public class PosterActivityFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_main, container, false);
         GridView gridView = (GridView) v.findViewById(R.id.gridView);
         mImageAdapter = new ImageAdapter(getActivity(), new ArrayList<Movie>());
+
         gridView.setAdapter(mImageAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Movie movie = (Movie) mImageAdapter.getItem(position);
+                Intent intent = new Intent(getActivity(), DetailActivity.class)
+                        .putExtra(Movie.TMDB_ORIGINAl_TITLE, movie.getOriginalTitle())
+                        .putExtra(Movie.TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute())
+                        .putExtra(Movie.TMDB_RELEASE_DATE, movie.getReleaseDate())
+                        .putExtra(Movie.TMDB_USER_RATING, movie.getUserRating())
+                        .putExtra(Movie.TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis());
+                startActivity(intent);
+            }
+        });
 
         return v;
     }

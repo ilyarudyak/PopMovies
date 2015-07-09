@@ -14,6 +14,8 @@ public class Movie {
     public static final String TMDB_USER_RATING =                "vote_average";
     public static final String TMDB_PLOT_SYNOPSIS =              "overview";
 
+    public static final String TMDB_POSTER_PATH_ABSOLUTE =       "poster_path_absolute";
+
 
     public static final String POSTER_BASE_URL =
             "http://image.tmdb.org/t/p/";
