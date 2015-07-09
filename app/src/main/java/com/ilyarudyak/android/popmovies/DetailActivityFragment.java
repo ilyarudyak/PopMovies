@@ -39,15 +39,16 @@ public class DetailActivityFragment extends Fragment {
         // inspect the intent for data.
         Intent intent = getActivity().getIntent();
         originalTitle.setText(intent.getStringExtra(Movie.TMDB_ORIGINAl_TITLE));
-        releaseDate.setText(intent.getStringExtra(Movie.TMDB_RELEASE_DATE));
-        userRating.setText(intent.getStringExtra(Movie.TMDB_USER_RATING));
+        releaseDate.setText(intent.getStringExtra(Movie.TMDB_RELEASE_DATE).substring(0,4));
+        final String MAX_RATING = "/10";
+        userRating.setText(intent.getStringExtra(Movie.TMDB_USER_RATING) + MAX_RATING);
         plotSynopsis.setText(intent.getStringExtra(Movie.TMDB_PLOT_SYNOPSIS));
 
         String posterPathAbsolute = intent.getStringExtra(Movie.TMDB_POSTER_PATH_ABSOLUTE);
         Picasso.with(getActivity())
                 .load(posterPathAbsolute)
                 .placeholder(R.raw.place_holder)
-                .resize(550, 775)
+                .resize(300, 450)
                 .into(posterImageView);
 
         return rootView;

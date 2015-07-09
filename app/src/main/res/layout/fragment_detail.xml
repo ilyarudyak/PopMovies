@@ -1,77 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/chappie"
-        android:id="@+id/textViewOriginalTitle"
-        android:paddingTop="48dp"
-        android:paddingBottom="48dp"
-        android:paddingLeft="32dp"
-        android:paddingRight="32dp"/>
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/imageViewPoster"
-            android:src="@raw/place_holder"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"/>
+            android:textSize="32sp"
+            android:text="@string/chappie"
+            android:textColor="@color/white"
+            android:id="@+id/textViewOriginalTitle"
+            android:paddingTop="48dp"
+            android:paddingBottom="48dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:background="@color/teal500" />
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <TextView
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/year_2015"
-                android:id="@+id/textViewReleaseDate"
+                android:id="@+id/imageViewPoster"
+                android:src="@raw/place_holder"
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="32dp"
                 android:layout_marginRight="32dp"/>
 
-            <TextView
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/rating_8_10"
-                android:id="@+id/textViewUserRating"
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"/>
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:text="@string/year_2015"
+                    android:id="@+id/textViewReleaseDate"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="@string/rating_8_10"
+                    android:id="@+id/textViewUserRating"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"/>
+            </LinearLayout>
+
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="@string/lorem_ipsum"
+            android:id="@+id/textViewPlotSynopsis"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="@color/black"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"/>
+
     </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/lorem_ipsum"
-        android:id="@+id/textViewPlotSynopsis"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:background="#000000"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
-
-</LinearLayout>
+</ScrollView>

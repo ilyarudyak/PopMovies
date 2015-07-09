@@ -31,9 +31,6 @@ public class Movie {
     private Double userRating;                  // vote_average
     private String plotSynopsis;                // overview
 
-    //TODO add trailer, review on stage 2
-    //TODO we have length on mockups but don't have it in JSON
-    //TODO and we don't have a link to review in mockups
 
     public Movie(Integer id, String originalTitle,
                  String plotSynopsis, String posterPathRelative,

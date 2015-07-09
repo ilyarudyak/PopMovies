@@ -13,7 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO description of adapter class
+ * Custom adapter provides information from network API call.
+ * We provide to the adapter a list of Movie objects. For
+ * our GridView we need only list of absolute poster paths. We
+ * extract them and transfer to Picasso call. Other information
+ * we use to create Detail activity.
  */
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
@@ -64,10 +68,8 @@ public class ImageAdapter extends BaseAdapter {
         Picasso.with(mContext)
                 .load(mMoviesList.get(position).getPosterPathAbsolute())
                 .placeholder(R.raw.place_holder)
-//                    .error(R.raw.big_problem)
-//                    .noFade()
+                .error(R.raw.big_problem)
                 .resize(550, 775)
-//                    .centerCrop()
                 .into(imageView);
         return imageView;
     }
