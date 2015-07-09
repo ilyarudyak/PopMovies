@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Chappie"
-        android:id="@+id/textView"
+        android:text="@string/chappie"
+        android:id="@+id/textViewOriginalTitle"
         android:paddingTop="48dp"
         android:paddingBottom="48dp"
-        android:paddingLeft="32dp"/>
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"/>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -21,9 +23,10 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView"
+            android:id="@+id/imageViewPoster"
             android:src="@raw/place_holder"
-            android:layout_marginLeft="32dp"/>
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"/>
 
         <LinearLayout
             android:orientation="vertical"
@@ -34,19 +37,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="2015"
-                android:id="@+id/textView3"
+                android:text="@string/year_2015"
+                android:id="@+id/textViewReleaseDate"
                 android:layout_marginTop="16dp"
-                android:layout_marginLeft="32dp"/>
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="8/10"
-                android:id="@+id/textView4"
+                android:text="@string/rating_8_10"
+                android:id="@+id/textViewUserRating"
                 android:layout_marginTop="16dp"
-                android:layout_marginLeft="32dp"/>
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -55,8 +60,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna."
-        android:id="@+id/textView2"
+        android:text="@string/lorem_ipsum"
+        android:id="@+id/textViewPlotSynopsis"
         android:layout_marginTop="32dp"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"

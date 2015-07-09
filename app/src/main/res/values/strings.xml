@@ -5,4 +5,8 @@
     <string name="action_popularity_sort">Most popular</string>
     <string name="highest_rated_sort">Highest rated</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="chappie">Chappie</string>
+    <string name="year_2015">2015</string>
+    <string name="rating_8_10">8/10</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.</string>
 </resources>

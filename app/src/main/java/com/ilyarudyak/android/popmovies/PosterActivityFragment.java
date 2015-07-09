@@ -73,7 +73,7 @@ public class PosterActivityFragment extends Fragment {
                         .putExtra(Movie.TMDB_ORIGINAl_TITLE, movie.getOriginalTitle())
                         .putExtra(Movie.TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute())
                         .putExtra(Movie.TMDB_RELEASE_DATE, movie.getReleaseDate())
-                        .putExtra(Movie.TMDB_USER_RATING, movie.getUserRating())
+                        .putExtra(Movie.TMDB_USER_RATING, Double.toString(movie.getUserRating()))
                         .putExtra(Movie.TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis());
                 startActivity(intent);
             }
