@@ -68,7 +68,7 @@ public class PosterActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Movie movie = (Movie) mImageAdapter.getItem(position);
+                Movie movie = mImageAdapter.getItem(position);
                 Intent intent = new Intent(getActivity(), DetailActivity.class)
                         .putExtra(Movie.TMDB_ORIGINAl_TITLE, movie.getOriginalTitle())
                         .putExtra(Movie.TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute())

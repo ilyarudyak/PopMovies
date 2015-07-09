@@ -13,7 +13,9 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 /**
- * Created by ilyarudyak on 7/10/15.
+ * This adapter receives list of Movies and use:
+ * a) path to poster in call to Picasso library;
+ * b) other information to show details activity;
  */
 public class PicassoAdapter  extends ArrayAdapter<Movie> {
 
