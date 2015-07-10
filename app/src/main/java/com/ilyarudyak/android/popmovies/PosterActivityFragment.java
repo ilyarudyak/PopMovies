@@ -1,9 +1,11 @@
 package com.ilyarudyak.android.popmovies;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -83,17 +85,6 @@ public class PosterActivityFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        // fetch most popular movies upon start
-        new FetchMoviesTask().execute(MOST_POPULAR);
-
-    }
-
-    // ------------------- menu methods -------------------
-
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -102,8 +93,27 @@ public class PosterActivityFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        // get preferences or use default value if they are not set
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sort_order = prefs.getString(getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_most_popular));
+        Log.d(LOG_TAG, sort_order);
+        // fetch movies using preferred sort order
+        new FetchMoviesTask().execute(sort_order);
+
+    }
+
+
+    // ------------------- menu methods -------------------
+
+
+
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_poster, menu);
     }
 
     @Override
@@ -114,6 +124,9 @@ public class PosterActivityFragment extends Fragment {
             return true;
         } else if (id == R.id.action_highest_rated) {
             new FetchMoviesTask().execute(HIGHEST_RATED);
+            return true;
+        } else if (id == R.id.action_settings) {
+            startActivity(new Intent(getActivity(), SettingsActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

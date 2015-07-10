@@ -1,12 +1,27 @@
 <resources>
+
+    <!-- app and activities-->
     <string name="app_name">PopMovies</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="action_popularity_sort">Most popular</string>
-    <string name="highest_rated_sort">Highest rated</string>
     <string name="title_activity_detail">DetailActivity</string>
+
+    <!-- action bar menu -->
+    <string name="action_popularity_sort">Most popular</string>
+    <string name="action_highest_rated_sort">Highest rated</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- debugging strings for details screen -->
     <string name="chappie">Chappie</string>
     <string name="year_2015">2015</string>
     <string name="rating_8_10">8/10</string>
-    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur
+        adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+        dolore magna.</string>
+
+    <!-- sort preferences-->
+    <string name="pref_sort_label">Sort Order</string>
+    <string name="pref_sort_label_most_popular">Most Popular</string>
+    <string name="pref_sort_label_highest_rated">Highest Rated</string>
+    <string name="pref_sort_key">sort_order</string>
+    <string name="pref_sort_most_popular">popularity.desc</string>
+    <string name="pref_sort_highest_rated">vote_average.desc</string>
 </resources>

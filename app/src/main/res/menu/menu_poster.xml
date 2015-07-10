@@ -10,8 +10,14 @@
 
     <item
         android:id="@+id/action_highest_rated"
-        android:title="@string/highest_rated_sort"
+        android:title="@string/action_highest_rated_sort"
         android:orderInCategory="2"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:orderInCategory="100"
         app:showAsAction="never" />
 
 </menu>
