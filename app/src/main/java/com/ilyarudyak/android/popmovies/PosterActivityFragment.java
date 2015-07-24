@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.ilyarudyak.android.popmovies.data.JsonMovieParser;
+import com.ilyarudyak.android.popmovies.data.JsonTrailerParser;
 import com.ilyarudyak.android.popmovies.data.Movie;
 import com.ilyarudyak.android.popmovies.data.PicassoAdapter;
 
@@ -31,6 +32,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -108,9 +110,6 @@ public class PosterActivityFragment extends Fragment {
 
     // ------------------- menu methods -------------------
 
-
-
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_poster, menu);
@@ -147,7 +146,9 @@ public class PosterActivityFragment extends Fragment {
 
         @Override
         protected List<Movie> doInBackground(String... params) {
-            return getDataFromAPICall(params);
+            List<Movie> list = getDataFromAPICall(params);
+            addTrailer(list);
+            return list;
         }
 
         @Override
@@ -160,10 +161,12 @@ public class PosterActivityFragment extends Fragment {
 
         // ------------------- helper methods -------------------
 
-        private URL buildAPIUrl(String parameter) {
+        // we use as a parameter only sorting order
+        // other data to build URL are fixed
+        private URL buildMainAPIUrl(String parameter) {
 
             // construct the URL for the TMDB query
-            // we use two parameters: popularity and vote_average
+            // to get movies sorted by popularity or vote_average
             final String API_BASE_URL =
                     "http://api.themoviedb.org/3/discover/movie?";
             final String SORT_PARAM = "sort_by";
@@ -188,7 +191,7 @@ public class PosterActivityFragment extends Fragment {
 
             try {
 
-                URL url = buildAPIUrl(params[0]);
+                URL url = buildMainAPIUrl(params[0]);
                 if (url != null) {
                     urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
@@ -201,6 +204,77 @@ public class PosterActivityFragment extends Fragment {
                             new InputStreamReader(inputStream)).readLine();
 
                     return new JsonMovieParser(moviesJsonStr).getMoviesList();
+                }
+
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "Error ", e);
+                return null;
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, "Error ", e);
+                return null;
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+            }
+            return null;
+        }
+
+        // stage 2 method to get trailer URL
+        private URL buildTrailerAPIUrl(Integer movieId) {
+
+            final String API_BASE_URL =
+                    "http://api.themoviedb.org/3/movie";
+            final String VIDEOS = "videos";
+            final String API_KEY = "api_key";
+            final String KEY = "99ee31c251ccebfbe8786aa49d9c6fe8";
+
+            Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
+                    .appendPath(Integer.toString(movieId))
+                    .appendPath(VIDEOS)
+                    .appendQueryParameter(API_KEY, KEY)
+                    .build();
+            try {
+                return new URL(builtUri.toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        // stage 2 method to iterate over list,
+        // make API calls to get trailer URL
+        private void addTrailer(List<Movie> movies) {
+
+            Iterator<Movie> i = movies.iterator();
+            while (i.hasNext()){
+                Movie m = i.next();
+                String key = getTrailerKeyFromAPICall(m.getId());
+                m.setTrailerPathAbsolute(key);
+            }
+            Log.i(LOG_TAG, movies.get(0).getTrailerPathAbsolute());
+        }
+
+        // stage 2 method to make API call
+        // to get trailer key using movie id
+        private String getTrailerKeyFromAPICall(Integer movieId) {
+
+            HttpURLConnection urlConnection = null;
+            try {
+
+                URL url = buildTrailerAPIUrl(movieId);
+                if (url != null) {
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.connect();
+                }
+                if (urlConnection != null) {
+                    InputStream inputStream = urlConnection.getInputStream();
+
+                    String trailerJsonStr = new BufferedReader(
+                            new InputStreamReader(inputStream)).readLine();
+
+                    return new JsonTrailerParser(trailerJsonStr).getTrailerKey();
                 }
 
             } catch (IOException e) {

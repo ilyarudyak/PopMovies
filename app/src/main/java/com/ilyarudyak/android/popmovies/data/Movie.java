@@ -7,6 +7,7 @@ import android.net.Uri;
  */
 public class Movie {
 
+    // stage 1
     public static final String TMDB_ID =                         "id";
     public static final String TMDB_ORIGINAl_TITLE =             "original_title";
     public static final String TMDB_POSTER_PATH_RELATIVE =       "poster_path";
@@ -16,12 +17,8 @@ public class Movie {
 
     public static final String TMDB_POSTER_PATH_ABSOLUTE =       "poster_path_absolute";
 
-
-    public static final String POSTER_BASE_URL =
-            "http://image.tmdb.org/t/p/";
+    public static final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     public static final String POSTER_SIZE = "w185";
-
-
 
     private Integer id;                         // id
     private String originalTitle;               // original_title
@@ -30,6 +27,12 @@ public class Movie {
     private String releaseDate;                 // release_date
     private Double userRating;                  // vote_average
     private String plotSynopsis;                // overview
+
+    // stage 2
+    public static final String TMDB_YOUTUBE_TRAILER_KEY =          "key";
+    public static final String YOUTUBE_TRAILER_BASE_URL = "https://www.youtube.com/watch?";
+
+    private String trailerPathAbsolute;
 
 
     public Movie(Integer id, String originalTitle,
@@ -87,10 +90,29 @@ public class Movie {
         posterPathAbsolute = Uri.parse(POSTER_BASE_URL).buildUpon()
                 .appendPath(POSTER_SIZE)
                 // we delete slash - we use addPath method
-                // that adds slash after size
+                // that adds slash after size and relative path contains
+                // another slash
                 .appendPath(posterPathRelative.replace("/", ""))
                 .build()
                 .toString();
 
+    }
+
+    // stage 2
+    public String getTrailerPathAbsolute() {
+        return trailerPathAbsolute;
+    }
+
+    public void setTrailerPathAbsolute(String key) {
+        buildYoutubeTrailerPathAbsolute(key);
+    }
+
+    private void buildYoutubeTrailerPathAbsolute(String key) {
+
+        final String V = "v";
+        trailerPathAbsolute = Uri.parse(YOUTUBE_TRAILER_BASE_URL).buildUpon()
+                .appendQueryParameter(V, key)
+                .build()
+                .toString();
     }
 }
