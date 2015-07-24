@@ -23,7 +23,7 @@ public class JsonTrailerParser {
         JSONArray trailersArray = resultJson.getJSONArray(TMDB_RESULTS);
 
         JSONObject trailerJson = trailersArray.getJSONObject(0);
-        trailerKey = trailerJson.getString(Movie.TMDB_YOUTUBE_TRAILER_KEY);
+        trailerKey = trailerJson.getString(Movie.TMDB_TRAILER_KEY);
     }
 
     public String getTrailerKey() {

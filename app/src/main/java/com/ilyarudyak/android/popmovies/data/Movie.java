@@ -29,8 +29,10 @@ public class Movie {
     private String plotSynopsis;                // overview
 
     // stage 2
-    public static final String TMDB_YOUTUBE_TRAILER_KEY =          "key";
-    public static final String YOUTUBE_TRAILER_BASE_URL = "https://www.youtube.com/watch?";
+    public static final String TMDB_TRAILER_KEY =          "key";
+    public static final String TRAILER_BASE_URL = "https://www.youtube.com/watch?";
+    public static final String TRAILER_PATH_ABSOLUTE = "trailer_path_absolute";
+
 
     private String trailerPathAbsolute;
 
@@ -110,7 +112,7 @@ public class Movie {
     private void buildYoutubeTrailerPathAbsolute(String key) {
 
         final String V = "v";
-        trailerPathAbsolute = Uri.parse(YOUTUBE_TRAILER_BASE_URL).buildUpon()
+        trailerPathAbsolute = Uri.parse(TRAILER_BASE_URL).buildUpon()
                 .appendQueryParameter(V, key)
                 .build()
                 .toString();

@@ -78,7 +78,9 @@ public class PosterActivityFragment extends Fragment {
                         .putExtra(Movie.TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute())
                         .putExtra(Movie.TMDB_RELEASE_DATE, movie.getReleaseDate())
                         .putExtra(Movie.TMDB_USER_RATING, Double.toString(movie.getUserRating()))
-                        .putExtra(Movie.TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis());
+                        .putExtra(Movie.TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis())
+                        // stage 2 - put trailer path
+                        .putExtra(Movie.TRAILER_PATH_ABSOLUTE, movie.getTrailerPathAbsolute());
                 startActivity(intent);
             }
         });

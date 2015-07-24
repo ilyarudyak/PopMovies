@@ -83,5 +83,13 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"/>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trailer"
+            android:id="@+id/buttonTrailer"
+            android:drawableLeft="@drawable/ic_play_arrow_black_24dp"
+            />
+
     </LinearLayout>
 </ScrollView>
