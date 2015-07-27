@@ -24,4 +24,6 @@
     <string name="pref_sort_key">sort_order</string>
     <string name="pref_sort_most_popular">popularity.desc</string>
     <string name="pref_sort_highest_rated">vote_average.desc</string>
+    <string name="trailers">Trailers:</string>
+    <string name="trailer_title">Trailer</string>
 </resources>

@@ -8,7 +8,8 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/mainLinearLayout">
 
         <TextView
             android:layout_width="match_parent"
@@ -72,24 +73,25 @@
             android:text="@string/lorem_ipsum"
             android:id="@+id/textViewPlotSynopsis"
             android:layout_marginTop="32dp"
-            android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"/>
 
         <View
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="@color/black"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"/>
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Trailer"
-            android:id="@+id/buttonTrailer"
-            android:drawableLeft="@drawable/ic_play_arrow_black_24dp"
-            />
+            android:textSize="20sp"
+            android:text="@string/trailers"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"/>
 
     </LinearLayout>
 </ScrollView>

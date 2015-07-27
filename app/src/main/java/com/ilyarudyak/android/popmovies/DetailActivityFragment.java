@@ -1,14 +1,16 @@
 package com.ilyarudyak.android.popmovies;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ilyarudyak.android.popmovies.data.Movie;
@@ -21,6 +23,8 @@ import com.squareup.picasso.Picasso;
 public class DetailActivityFragment extends Fragment {
 
     private static final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
+    private View rootView;
+    private LinearLayout mainLinearLayout;
 
     public DetailActivityFragment() {
     }
@@ -29,7 +33,8 @@ public class DetailActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        mainLinearLayout = (LinearLayout) rootView.findViewById(R.id.mainLinearLayout);
 
         TextView originalTitle = (TextView) rootView.findViewById(R.id.textViewOriginalTitle);
         ImageView posterImageView = (ImageView) rootView.findViewById(R.id.imageViewPoster);
@@ -37,8 +42,11 @@ public class DetailActivityFragment extends Fragment {
         TextView userRating = (TextView) rootView.findViewById(R.id.textViewUserRating);
         TextView plotSynopsis = (TextView) rootView.findViewById(R.id.textViewPlotSynopsis);
 
-        // stage 2 add trailer button
-        Button trailerButton = (Button) rootView.findViewById(R.id.buttonTrailer);
+//        addTrailers();
+        View trailerView = inflater.inflate(R.layout.trailer, container, false);
+        View divider = inflater.inflate(R.layout.divider, container, false);
+        mainLinearLayout.addView(trailerView);
+        mainLinearLayout.addView(divider);
 
 
         // detail activity called via intent.
@@ -57,17 +65,44 @@ public class DetailActivityFragment extends Fragment {
                 .resize(300, 450)
                 .into(posterImageView);
 
-        // stage 2 set listener on trailer button
+        return rootView;
+    }
+
+    // stage 2 add trailers to details view
+    // we create and add them programmatically -
+    // each movie can have different number of trailers
+    private void addTrailers() {
+
+        LinearLayout trailerLinearLayout = new LinearLayout(getActivity());
+        mainLinearLayout.addView(trailerLinearLayout);
+
+        ImageButton trailerButton = new ImageButton(getActivity());
+        Drawable iconArrow = getActivity().getResources()
+                .getDrawable(R.drawable.ic_play_arrow_black_36dp);
+        trailerButton.setBackground(iconArrow);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(48, 16, 16, 16);
+        trailerButton.setLayoutParams(params);
+        trailerLinearLayout.addView(trailerButton);
+
+        TextView trailerTextView = new TextView(getActivity());
+        trailerTextView.setText("Trailer");
+        trailerTextView.setTextSize(16);
+        params.setMargins(48, 24, 16, 16);
+        trailerTextView.setLayoutParams(params);
+        trailerLinearLayout.addView(trailerTextView);
+
         trailerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String url = getActivity().getIntent()
-                        .getStringExtra(Movie.TRAILER_PATH_ABSOLUTE);
+                String url = getActivity().getIntent().getStringExtra(Movie.TRAILER_PATH_ABSOLUTE);
                 openTrailer(url);
             }
         });
 
-        return rootView;
     }
 
     private void openTrailer(String url) {
