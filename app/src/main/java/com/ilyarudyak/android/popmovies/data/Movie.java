@@ -2,6 +2,9 @@ package com.ilyarudyak.android.popmovies.data;
 
 import android.net.Uri;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Model class to encapsulate a movie.
  */
@@ -30,11 +33,12 @@ public class Movie {
 
     // stage 2
     public static final String TMDB_TRAILER_KEY =                   "key";
+    public static final String TMDB_TRAILER_NAME =                  "name";
     public static final String TRAILER_BASE_URL = "https://www.youtube.com/watch?";
     public static final String TRAILER_PATH_ABSOLUTE = "trailer_path_absolute";
     
-    private String trailerPathAbsolute;
-
+//    private String trailerPathAbsolute;
+    private List<MovieTrailer> movieTrailers;
 
     public Movie(Integer id, String originalTitle,
                  String plotSynopsis, String posterPathRelative,
@@ -47,31 +51,32 @@ public class Movie {
         this.userRating = userRating;
 
         buildPosterPathAbsolute();
+
+        movieTrailers = new ArrayList<>();
     }
 
     public int getId() {
         return id;
     }
-
     public String getOriginalTitle() {
         return originalTitle;
     }
-
     public String getPlotSynopsis() {
         return plotSynopsis;
     }
-
     // we need get method only for absolute path
     public String getPosterPathAbsolute() {
         return posterPathAbsolute;
     }
-
     public String getReleaseDate() {
         return releaseDate;
     }
-
     public Double getUserRating() {
         return userRating;
+    }
+    // get year from release date
+    public String getYear() {
+        return releaseDate.substring(0, 4);
     }
 
     @Override
@@ -100,20 +105,46 @@ public class Movie {
     }
 
     // stage 2
-    public String getTrailerPathAbsolute() {
-        return trailerPathAbsolute;
+    public void setMovieTrailers(List<MovieTrailer> trailers) {
+        movieTrailers.addAll(trailers);
     }
 
-    public void setTrailerPathAbsolute(String key) {
-        buildYoutubeTrailerPathAbsolute(key);
+    public List<MovieTrailer> getMovieTrailers() {
+        return movieTrailers;
     }
 
-    private void buildYoutubeTrailerPathAbsolute(String key) {
+    public static class MovieTrailer {
 
-        final String V = "v";
-        trailerPathAbsolute = Uri.parse(TRAILER_BASE_URL).buildUpon()
-                .appendQueryParameter(V, key)
-                .build()
-                .toString();
+        private String trailerName;
+        private String trailerPathAbsolute;
+
+        public MovieTrailer(String trailerKey, String trailerName) {
+            this.trailerPathAbsolute = buildPathAbsolute(trailerKey);
+            this.trailerName = trailerName;
+        }
+
+        private String buildPathAbsolute(String trailerKey) {
+            final String V = "v";
+            return Uri.parse(TRAILER_BASE_URL).buildUpon()
+                    .appendQueryParameter(V, trailerKey)
+                    .build()
+                    .toString();
+        }
+
+        public String getTrailerName() {
+            return trailerName;
+        }
+
+        public String getTrailerPathAbsolute() {
+            return trailerPathAbsolute;
+        }
+
+        @Override
+        public String toString() {
+            return "MovieTrailer{" +
+                    "trailerName='" + trailerName + '\'' +
+                    ", trailerPathAbsolute='" + trailerPathAbsolute + '\'' +
+                    '}';
+        }
     }
 }

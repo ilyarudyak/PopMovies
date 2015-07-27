@@ -41,7 +41,6 @@ public class JsonMovieParser {
 
         for(int i = 0; i < moviesArray.length(); i++) {
 
-            // get the JSON object representing the movie
             JSONObject movieJson = moviesArray.getJSONObject(i);
 
             moviesList.add(new Movie(

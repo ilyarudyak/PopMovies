@@ -4,6 +4,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Parse json string that we get using API call
  * http://api.themoviedb.org/3/movie/id/videos?api_key=...
@@ -12,21 +15,40 @@ import org.json.JSONObject;
  */
 public class JsonTrailerParser {
 
-    public static final String TMDB_RESULTS = "results";
+    private static final String TMDB_RESULTS = "results";
 
-    private String trailerKey;
+    private String trailerJsonStr;
+    private List<Movie.MovieTrailer> trailersList;
 
     public JsonTrailerParser(String trailerJsonStr)
             throws JSONException {
 
+        this.trailerJsonStr = trailerJsonStr;
+        trailersList = new ArrayList<>();
+        getTrailersDataFromJson();
+    }
+
+    public List<Movie.MovieTrailer> getTrailersList() {
+        return trailersList;
+    }
+
+    private void getTrailersDataFromJson() throws JSONException {
+
         JSONObject resultJson = new JSONObject(trailerJsonStr);
         JSONArray trailersArray = resultJson.getJSONArray(TMDB_RESULTS);
 
-        JSONObject trailerJson = trailersArray.getJSONObject(0);
-        trailerKey = trailerJson.getString(Movie.TMDB_TRAILER_KEY);
+        for(int i = 0; i < trailersArray.length(); i++) {
+            JSONObject trailerJson = trailersArray.getJSONObject(i);
+            trailersList.add(new Movie.MovieTrailer(
+                trailerJson.getString(Movie.TMDB_TRAILER_KEY),
+                trailerJson.getString(Movie.TMDB_TRAILER_NAME)
+            ));
+        }
     }
 
-    public String getTrailerKey() {
-        return trailerKey;
-    }
+
+
+
+
+
 }

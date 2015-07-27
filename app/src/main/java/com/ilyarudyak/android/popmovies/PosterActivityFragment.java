@@ -80,7 +80,8 @@ public class PosterActivityFragment extends Fragment {
                         .putExtra(Movie.TMDB_USER_RATING, Double.toString(movie.getUserRating()))
                         .putExtra(Movie.TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis())
                         // stage 2 - put trailer path
-                        .putExtra(Movie.TRAILER_PATH_ABSOLUTE, movie.getTrailerPathAbsolute());
+                        .putExtra(Movie.TRAILER_PATH_ABSOLUTE, movie.getMovieTrailers()
+                                .get(0).getTrailerPathAbsolute());
                 startActivity(intent);
             }
         });
@@ -149,7 +150,8 @@ public class PosterActivityFragment extends Fragment {
         @Override
         protected List<Movie> doInBackground(String... params) {
             List<Movie> list = getDataFromAPICall(params);
-            addTrailer(list);
+            Log.i(LOG_TAG, "i'm going to add trailer...");
+            addTrailers(list);
             return list;
         }
 
@@ -246,21 +248,19 @@ public class PosterActivityFragment extends Fragment {
 
         // stage 2 method to iterate over list,
         // make API calls to get trailer URL
-        private void addTrailer(List<Movie> movies) {
+        private void addTrailers(List<Movie> movies) {
 
             Iterator<Movie> i = movies.iterator();
             while (i.hasNext()){
                 Movie m = i.next();
-                String key = getTrailerKeyFromAPICall(m.getId());
-                m.setTrailerPathAbsolute(key);
+                List<Movie.MovieTrailer> trailers = getTrailersFromAPICall(m.getId());
+                m.setMovieTrailers(trailers);
             }
-            Log.i(LOG_TAG, movies.get(0).getTrailerPathAbsolute());
+            Log.i(LOG_TAG, "hello from add trailer");
+            Log.i(LOG_TAG, movies.get(0).getMovieTrailers().toString());
         }
 
-        // stage 2 method to make API call
-        // to get trailer key using movie id
-        private String getTrailerKeyFromAPICall(Integer movieId) {
-
+        private List<Movie.MovieTrailer> getTrailersFromAPICall(Integer movieId) {
             HttpURLConnection urlConnection = null;
             try {
 
@@ -276,7 +276,7 @@ public class PosterActivityFragment extends Fragment {
                     String trailerJsonStr = new BufferedReader(
                             new InputStreamReader(inputStream)).readLine();
 
-                    return new JsonTrailerParser(trailerJsonStr).getTrailerKey();
+                    return new JsonTrailerParser(trailerJsonStr).getTrailersList();
                 }
 
             } catch (IOException e) {
