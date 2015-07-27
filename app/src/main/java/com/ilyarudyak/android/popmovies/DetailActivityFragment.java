@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,7 @@ import android.widget.TextView;
 import com.ilyarudyak.android.popmovies.data.Movie;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -44,7 +45,7 @@ public class DetailActivityFragment extends Fragment {
         TextView plotSynopsis = (TextView) rootView.findViewById(R.id.textViewPlotSynopsis);
 
         // stage 2: add list of trailers
-        ArrayList<Movie.Trailer> trailersList =  getActivity().getIntent()
+        List<Movie.Trailer> trailersList =  getActivity().getIntent()
                 .getParcelableArrayListExtra(Movie.TRAILER_LIST);
         for(Movie.Trailer mt : trailersList) {
             View trailerView = inflater.inflate(R.layout.trailer, container, false);
@@ -65,6 +66,19 @@ public class DetailActivityFragment extends Fragment {
 
             mainLinearLayout.addView(trailerView);
 
+            View divider = inflater.inflate(R.layout.divider, container, false);
+            mainLinearLayout.addView(divider);
+        }
+
+        // stage 2 add list of reviews
+        List<String> reviewsList = getActivity().getIntent()
+                .getStringArrayListExtra(Movie.REVIEW_LIST);
+        if (reviewsList != null) { Log.i(LOG_TAG, reviewsList.toString()); }
+        for (String review : reviewsList) {
+            View reviewView = inflater.inflate(R.layout.review, container, false);
+            TextView reviewTextView = (TextView) reviewView.findViewById(R.id.review_text_view);
+            reviewTextView.setText(review);
+            mainLinearLayout.addView(reviewView);
             View divider = inflater.inflate(R.layout.divider, container, false);
             mainLinearLayout.addView(divider);
         }

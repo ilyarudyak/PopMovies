@@ -13,6 +13,8 @@ import java.util.List;
 public class Movie {
 
     // stage 1
+    public static final String TMDB_RESULTS =                   "results";
+
     public static final String TMDB_ID =                         "id";
     public static final String TMDB_ORIGINAl_TITLE =             "original_title";
     public static final String TMDB_POSTER_PATH_RELATIVE =       "poster_path";
@@ -38,9 +40,13 @@ public class Movie {
     public static final String TMDB_TRAILER_NAME =                  "name";
     public static final String TRAILER_BASE_URL = "https://www.youtube.com/watch?";
     public static final String TRAILER_LIST = "com.ilyarudyak.android.popmovies.data.trailer_list";
+
+    public static final String TMDB_REVIEW =                        "content";
+    public static final String REVIEW_LIST = "com.ilyarudyak.android.popmovies.data.review_list";
     
-//    private String trailerPathAbsolute;
     private List<Trailer> movieTrailers;
+    private List<String> movieReviews;
+
 
     public Movie(Integer id, String originalTitle,
                  String plotSynopsis, String posterPathRelative,
@@ -55,6 +61,7 @@ public class Movie {
         buildPosterPathAbsolute();
 
         movieTrailers = new ArrayList<>();
+        movieReviews = new ArrayList<>();
     }
 
     public int getId() {
@@ -110,11 +117,9 @@ public class Movie {
     public void setMovieTrailers(List<Trailer> trailers) {
         movieTrailers.addAll(trailers);
     }
-
     public List<Trailer> getMovieTrailers() {
         return movieTrailers;
     }
-
     public static class Trailer implements Parcelable {
 
         private String trailerName;
@@ -178,6 +183,13 @@ public class Movie {
             trailerPathAbsolute = in.readString();
         }
 
+    }
+
+    public List<String> getMovieReviews() {
+        return movieReviews;
+    }
+    public void setMovieReviews(List<String> movieReviews) {
+        this.movieReviews.addAll(movieReviews);
     }
 }
 

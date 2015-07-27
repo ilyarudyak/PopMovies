@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.ilyarudyak.android.popmovies.data.JsonMovieParser;
+import com.ilyarudyak.android.popmovies.data.JsonReviewParser;
 import com.ilyarudyak.android.popmovies.data.JsonTrailerParser;
 import com.ilyarudyak.android.popmovies.data.Movie;
 import com.ilyarudyak.android.popmovies.data.PicassoAdapter;
@@ -80,12 +81,19 @@ public class PosterActivityFragment extends Fragment {
                         .putExtra(Movie.TMDB_RELEASE_DATE, movie.getReleaseDate())
                         .putExtra(Movie.TMDB_USER_RATING, Double.toString(movie.getUserRating()))
                         .putExtra(Movie.TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis())
-                        // stage 2 - put trailer path
                         .putParcelableArrayListExtra(Movie.TRAILER_LIST,
-                                (ArrayList<? extends Parcelable>) movie.getMovieTrailers());
+                                (ArrayList<? extends Parcelable>) movie.getMovieTrailers())
+                        .putStringArrayListExtra(Movie.REVIEW_LIST,
+                                (ArrayList<String>) movie.getMovieReviews());
+                if (movie.getMovieReviews() != null) {
+                    Log.i(LOG_TAG, movie.getOriginalTitle() + " " +
+                            movie.getMovieReviews().toString());
+                }
                 startActivity(intent);
             }
         });
+
+
 
         return v;
     }
@@ -148,11 +156,13 @@ public class PosterActivityFragment extends Fragment {
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
+        private final Integer TRAILER_FLAG = 0;
+        private final Integer REVIEW_FLAG = 1;
+
         @Override
         protected List<Movie> doInBackground(String... params) {
             List<Movie> list = getDataFromAPICall(params);
-            Log.i(LOG_TAG, "i'm going to add trailer...");
-            addTrailers(list);
+            addTrailersAndReviews(list); //TODO to a separate tasks
             return list;
         }
 
@@ -226,19 +236,29 @@ public class PosterActivityFragment extends Fragment {
         }
 
         // stage 2 method to get trailer URL
-        private URL buildTrailerAPIUrl(Integer movieId) {
+        private URL buildTrailerReviewAPIUrl(Integer movieId, Integer flag) {
 
             final String API_BASE_URL =
                     "http://api.themoviedb.org/3/movie";
             final String VIDEOS = "videos";
+            final String REVIEWS = "reviews";
             final String API_KEY = "api_key";
             final String KEY = "99ee31c251ccebfbe8786aa49d9c6fe8";
 
-            Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
-                    .appendPath(Integer.toString(movieId))
-                    .appendPath(VIDEOS)
-                    .appendQueryParameter(API_KEY, KEY)
-                    .build();
+            Uri builtUri;
+            if (flag == TRAILER_FLAG) {
+                builtUri = Uri.parse(API_BASE_URL).buildUpon()
+                        .appendPath(Integer.toString(movieId))
+                        .appendPath(VIDEOS)
+                        .appendQueryParameter(API_KEY, KEY)
+                        .build();
+            } else {
+                builtUri = Uri.parse(API_BASE_URL).buildUpon()
+                        .appendPath(Integer.toString(movieId))
+                        .appendPath(REVIEWS)
+                        .appendQueryParameter(API_KEY, KEY)
+                        .build();
+            }
             try {
                 return new URL(builtUri.toString());
             } catch (MalformedURLException e) {
@@ -249,23 +269,56 @@ public class PosterActivityFragment extends Fragment {
 
         // stage 2 method to iterate over list,
         // make API calls to get trailer URL
-        private void addTrailers(List<Movie> movies) {
+        private void addTrailersAndReviews(List<Movie> movies) {
 
             Iterator<Movie> i = movies.iterator();
             while (i.hasNext()){
                 Movie m = i.next();
+
                 List<Movie.Trailer> trailers = getTrailersFromAPICall(m.getId());
                 m.setMovieTrailers(trailers);
+
+                List<String> reviews = getReviewsFromAPICall(m.getId());
+                if (reviews != null) {
+                    m.setMovieReviews(reviews);
+                    Log.i(LOG_TAG, m.getOriginalTitle() + " " + m.getMovieReviews().toString());
+                }
+
             }
-            Log.i(LOG_TAG, "hello from add trailer");
-            Log.i(LOG_TAG, movies.get(0).getMovieTrailers().toString());
         }
 
         private List<Movie.Trailer> getTrailersFromAPICall(Integer movieId) {
+            String trailerJsonStr = getJsonStringFromAPICall(movieId, TRAILER_FLAG);
+            try {
+                return new JsonTrailerParser(trailerJsonStr).getTrailersList();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        private List<String> getReviewsFromAPICall(Integer movieId) {
+            String reviewJsonStr = getJsonStringFromAPICall(movieId, REVIEW_FLAG);
+            if (reviewJsonStr != null) {
+                try {
+                    return new JsonReviewParser(reviewJsonStr).getReviewsList();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        private String getJsonStringFromAPICall(Integer movieId, Integer flag) {
             HttpURLConnection urlConnection = null;
             try {
-
-                URL url = buildTrailerAPIUrl(movieId);
+                URL url = null;
+                if (flag == TRAILER_FLAG) {
+                    url = buildTrailerReviewAPIUrl(movieId, TRAILER_FLAG);
+                } else if (flag == REVIEW_FLAG) {
+                    url = buildTrailerReviewAPIUrl(movieId, REVIEW_FLAG);
+                }
                 if (url != null) {
                     urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
@@ -274,16 +327,13 @@ public class PosterActivityFragment extends Fragment {
                 if (urlConnection != null) {
                     InputStream inputStream = urlConnection.getInputStream();
 
-                    String trailerJsonStr = new BufferedReader(
+                    String jsonStr = new BufferedReader(
                             new InputStreamReader(inputStream)).readLine();
 
-                    return new JsonTrailerParser(trailerJsonStr).getTrailersList();
+                    return jsonStr;
                 }
 
             } catch (IOException e) {
-                Log.e(LOG_TAG, "Error ", e);
-                return null;
-            } catch (JSONException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 return null;
             } finally {

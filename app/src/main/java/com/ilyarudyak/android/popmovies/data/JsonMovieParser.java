@@ -13,8 +13,6 @@ import java.util.List;
  */
 public class JsonMovieParser {
 
-    public static final String TMDB_RESULTS = "results";
-
     private String moviesJsonStr;
     private List<Movie> moviesList;
 
@@ -37,7 +35,7 @@ public class JsonMovieParser {
             throws JSONException {
 
         JSONObject resultJson = new JSONObject(moviesJsonStr);
-        JSONArray moviesArray = resultJson.getJSONArray(TMDB_RESULTS);
+        JSONArray moviesArray = resultJson.getJSONArray(Movie.TMDB_RESULTS);
 
         for(int i = 0; i < moviesArray.length(); i++) {
 
