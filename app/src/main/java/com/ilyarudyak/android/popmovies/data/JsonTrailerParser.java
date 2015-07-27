@@ -18,7 +18,7 @@ public class JsonTrailerParser {
     private static final String TMDB_RESULTS = "results";
 
     private String trailerJsonStr;
-    private List<Movie.MovieTrailer> trailersList;
+    private List<Movie.Trailer> trailersList;
 
     public JsonTrailerParser(String trailerJsonStr)
             throws JSONException {
@@ -28,7 +28,7 @@ public class JsonTrailerParser {
         getTrailersDataFromJson();
     }
 
-    public List<Movie.MovieTrailer> getTrailersList() {
+    public List<Movie.Trailer> getTrailersList() {
         return trailersList;
     }
 
@@ -39,7 +39,7 @@ public class JsonTrailerParser {
 
         for(int i = 0; i < trailersArray.length(); i++) {
             JSONObject trailerJson = trailersArray.getJSONObject(i);
-            trailersList.add(new Movie.MovieTrailer(
+            trailersList.add(new Movie.Trailer(
                 trailerJson.getString(Movie.TMDB_TRAILER_KEY),
                 trailerJson.getString(Movie.TMDB_TRAILER_NAME)
             ));

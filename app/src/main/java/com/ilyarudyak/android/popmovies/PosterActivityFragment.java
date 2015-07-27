@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -80,8 +81,8 @@ public class PosterActivityFragment extends Fragment {
                         .putExtra(Movie.TMDB_USER_RATING, Double.toString(movie.getUserRating()))
                         .putExtra(Movie.TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis())
                         // stage 2 - put trailer path
-                        .putExtra(Movie.TRAILER_PATH_ABSOLUTE, movie.getMovieTrailers()
-                                .get(0).getTrailerPathAbsolute());
+                        .putParcelableArrayListExtra(Movie.TRAILER_LIST,
+                                (ArrayList<? extends Parcelable>) movie.getMovieTrailers());
                 startActivity(intent);
             }
         });
@@ -253,14 +254,14 @@ public class PosterActivityFragment extends Fragment {
             Iterator<Movie> i = movies.iterator();
             while (i.hasNext()){
                 Movie m = i.next();
-                List<Movie.MovieTrailer> trailers = getTrailersFromAPICall(m.getId());
+                List<Movie.Trailer> trailers = getTrailersFromAPICall(m.getId());
                 m.setMovieTrailers(trailers);
             }
             Log.i(LOG_TAG, "hello from add trailer");
             Log.i(LOG_TAG, movies.get(0).getMovieTrailers().toString());
         }
 
-        private List<Movie.MovieTrailer> getTrailersFromAPICall(Integer movieId) {
+        private List<Movie.Trailer> getTrailersFromAPICall(Integer movieId) {
             HttpURLConnection urlConnection = null;
             try {
 

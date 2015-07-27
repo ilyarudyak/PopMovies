@@ -1,6 +1,8 @@
 package com.ilyarudyak.android.popmovies.data;
 
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +37,10 @@ public class Movie {
     public static final String TMDB_TRAILER_KEY =                   "key";
     public static final String TMDB_TRAILER_NAME =                  "name";
     public static final String TRAILER_BASE_URL = "https://www.youtube.com/watch?";
-    public static final String TRAILER_PATH_ABSOLUTE = "trailer_path_absolute";
+    public static final String TRAILER_LIST = "com.ilyarudyak.android.popmovies.data.trailer_list";
     
 //    private String trailerPathAbsolute;
-    private List<MovieTrailer> movieTrailers;
+    private List<Trailer> movieTrailers;
 
     public Movie(Integer id, String originalTitle,
                  String plotSynopsis, String posterPathRelative,
@@ -105,20 +107,20 @@ public class Movie {
     }
 
     // stage 2
-    public void setMovieTrailers(List<MovieTrailer> trailers) {
+    public void setMovieTrailers(List<Trailer> trailers) {
         movieTrailers.addAll(trailers);
     }
 
-    public List<MovieTrailer> getMovieTrailers() {
+    public List<Trailer> getMovieTrailers() {
         return movieTrailers;
     }
 
-    public static class MovieTrailer {
+    public static class Trailer implements Parcelable {
 
         private String trailerName;
         private String trailerPathAbsolute;
 
-        public MovieTrailer(String trailerKey, String trailerName) {
+        public Trailer(String trailerKey, String trailerName) {
             this.trailerPathAbsolute = buildPathAbsolute(trailerKey);
             this.trailerName = trailerName;
         }
@@ -146,5 +148,44 @@ public class Movie {
                     ", trailerPathAbsolute='" + trailerPathAbsolute + '\'' +
                     '}';
         }
+
+        // ---------------- Parcelable methods ----------------
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel parcel, int i) {
+            parcel.writeString(trailerName);
+            parcel.writeString(trailerPathAbsolute);
+        }
+
+        public static final Parcelable.Creator<Trailer> CREATOR
+                = new Parcelable.Creator<Trailer>() {
+            public Trailer createFromParcel(Parcel in) {
+                return new Trailer(in);
+            }
+
+            public Trailer[] newArray(int size) {
+                return new Trailer[size];
+            }
+        };
+
+        private Trailer(Parcel in) {
+            trailerName = in.readString();
+            trailerPathAbsolute = in.readString();
+        }
+
     }
 }
+
+
+
+
+
+
+
+
+

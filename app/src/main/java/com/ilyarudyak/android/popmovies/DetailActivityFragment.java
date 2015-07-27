@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 
 import com.ilyarudyak.android.popmovies.data.Movie;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 
 /**
@@ -47,6 +50,11 @@ public class DetailActivityFragment extends Fragment {
         View divider = inflater.inflate(R.layout.divider, container, false);
         mainLinearLayout.addView(trailerView);
         mainLinearLayout.addView(divider);
+
+        ArrayList<Movie.Trailer> trailersList =  getActivity().getIntent()
+                .getParcelableArrayListExtra(Movie.TRAILER_LIST);
+        String url = trailersList.get(0).getTrailerPathAbsolute();
+        Log.i(LOG_TAG, trailersList.toString());
 
 
         // detail activity called via intent.
@@ -98,7 +106,11 @@ public class DetailActivityFragment extends Fragment {
         trailerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String url = getActivity().getIntent().getStringExtra(Movie.TRAILER_PATH_ABSOLUTE);
+
+                ArrayList<Movie.Trailer> trailersList =  getActivity().getIntent()
+                        .getParcelableArrayListExtra(Movie.TRAILER_LIST);
+                String url = trailersList.get(0).getTrailerPathAbsolute();
+                Log.i(LOG_TAG, url);
                 openTrailer(url);
             }
         });
