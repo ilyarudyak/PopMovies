@@ -14,7 +14,7 @@ import com.ilyarudyak.android.popmovies.db.Contract.TrailerTable;
 public class DbHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "movies.db";
+    public static final String DATABASE_NAME = "movies.db";
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -28,22 +28,23 @@ public class DbHelper extends SQLiteOpenHelper {
                 MovieTable.DB_TMDB_ID +             " INTEGER UNIQUE NOT NULL, " +
                 MovieTable.DB_TITLE +               " TEXT NOT NULL, " +
                 MovieTable.DB_POSTER_PATH +         " TEXT NOT NULL, " +
-                MovieTable.DB_RELEASE_DATE +        " TEXT NOT NULL " +
-                MovieTable.DB_USER_RATING +         " REAL NOT NULL " +
+                MovieTable.DB_RELEASE_DATE +        " TEXT NOT NULL, " +
+                MovieTable.DB_USER_RATING +         " REAL NOT NULL, " +
                 MovieTable.DB_PLOT_SYNOPSIS +       " TEXT NOT NULL " +
                 " );";
 
         final String SQL_CREATE_TRAILER_TABLE = "CREATE TABLE " + TrailerTable.DB_TABLE_NAME + " (" +
                 TrailerTable._ID +                   " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                //TODO add reference
                 TrailerTable.DB_MOVIE_ID +           " INTEGER NOT NULL, " +
                 TrailerTable.DB_NAME +               " TEXT NOT NULL, " +
-                TrailerTable.DB_PATH +               " TEXT NOT NULL, " +
+                TrailerTable.DB_PATH +               " TEXT NOT NULL " +
                 " );";
 
         final String SQL_CREATE_REVIEW_TABLE = "CREATE TABLE " + ReviewTable.DB_TABLE_NAME + " (" +
                 ReviewTable._ID +                    " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 ReviewTable.DB_MOVIE_ID +            " INTEGER NOT NULL, " +
-                ReviewTable.DB_REVIEW +              " TEXT NOT NULL, " +
+                ReviewTable.DB_REVIEW +              " TEXT NOT NULL " +
                 " );";
 
 

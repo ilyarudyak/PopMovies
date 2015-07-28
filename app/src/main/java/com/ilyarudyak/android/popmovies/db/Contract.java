@@ -36,7 +36,7 @@ public class Contract {
         public static final String DB_TABLE_NAME = "review";
 
         public static final String DB_MOVIE_ID = "movie_id";
-        public static final String DB_REVIEW = "movie_id";
+        public static final String DB_REVIEW = "review";
     }
 
 
