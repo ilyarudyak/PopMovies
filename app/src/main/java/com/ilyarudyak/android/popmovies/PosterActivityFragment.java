@@ -18,9 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.ilyarudyak.android.popmovies.data.JsonMovieParser;
-import com.ilyarudyak.android.popmovies.data.JsonReviewParser;
-import com.ilyarudyak.android.popmovies.data.JsonTrailerParser;
+import com.ilyarudyak.android.popmovies.data.JsonParser;
 import com.ilyarudyak.android.popmovies.data.Movie;
 import com.ilyarudyak.android.popmovies.data.PicassoAdapter;
 
@@ -218,7 +216,7 @@ public class PosterActivityFragment extends Fragment {
                     String moviesJsonStr = new BufferedReader(
                             new InputStreamReader(inputStream)).readLine();
 
-                    return new JsonMovieParser(moviesJsonStr).getMoviesList();
+                    return new JsonParser(moviesJsonStr, JsonParser.MOVIE).getMoviesList();
                 }
 
             } catch (IOException e) {
@@ -290,7 +288,7 @@ public class PosterActivityFragment extends Fragment {
         private List<Movie.Trailer> getTrailersFromAPICall(Integer movieId) {
             String trailerJsonStr = getJsonStringFromAPICall(movieId, TRAILER_FLAG);
             try {
-                return new JsonTrailerParser(trailerJsonStr).getTrailersList();
+                return new JsonParser(trailerJsonStr, JsonParser.TRAILER).getTrailersList();
             } catch (JSONException e) {
                 e.printStackTrace();
                 return null;
@@ -301,7 +299,7 @@ public class PosterActivityFragment extends Fragment {
             String reviewJsonStr = getJsonStringFromAPICall(movieId, REVIEW_FLAG);
             if (reviewJsonStr != null) {
                 try {
-                    return new JsonReviewParser(reviewJsonStr).getReviewsList();
+                    return new JsonParser(reviewJsonStr, JsonParser.REVIEW).getReviewsList();
                 } catch (JSONException e) {
                     e.printStackTrace();
                     return null;
