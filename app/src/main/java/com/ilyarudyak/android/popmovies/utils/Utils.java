@@ -1,4 +1,4 @@
-package com.ilyarudyak.android.popmovies.utility;
+package com.ilyarudyak.android.popmovies.utils;
 
 import android.net.Uri;
 import android.util.Log;
@@ -9,9 +9,9 @@ import java.net.URL;
 /**
  * Created by ilyarudyak on 7/28/15.
  */
-public class Utility {
+public class Utils {
 
-    public static final String LOG_TAG = Utility.class.getSimpleName();
+    public static final String LOG_TAG = Utils.class.getSimpleName();
 
     // sort order can be by most popular or by highest-rated
     public static final String MOST_POPULAR = "popularity.desc";

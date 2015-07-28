@@ -1,6 +1,6 @@
 package com.ilyarudyak.android.popmovies.data;
 
-import com.ilyarudyak.android.popmovies.utility.Utility;
+import com.ilyarudyak.android.popmovies.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,13 +26,13 @@ public class JsonParser {
             throws JSONException {
         this.jsonString = jsonString;
 
-        if (flag.equals(Utility.MOVIE_FLAG)) {
+        if (flag.equals(Utils.MOVIE_FLAG)) {
             moviesList = new ArrayList<>();
             getMoviesDataFromJson();
-        } else if (flag.equals(Utility.TRAILER_FLAG)) {
+        } else if (flag.equals(Utils.TRAILER_FLAG)) {
             trailersList = new ArrayList<>();
             getTrailersDataFromJson();
-        } else if (flag.equals(Utility.REVIEW_FLAG)) {
+        } else if (flag.equals(Utils.REVIEW_FLAG)) {
             reviewsList = new ArrayList<>();
             getReviewsDataFromJson();
         } else {

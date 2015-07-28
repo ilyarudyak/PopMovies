@@ -20,7 +20,7 @@ import android.widget.GridView;
 import com.ilyarudyak.android.popmovies.data.JsonParser;
 import com.ilyarudyak.android.popmovies.data.Movie;
 import com.ilyarudyak.android.popmovies.data.PicassoAdapter;
-import com.ilyarudyak.android.popmovies.utility.Utility;
+import com.ilyarudyak.android.popmovies.utils.Utils;
 
 import org.json.JSONException;
 
@@ -123,10 +123,10 @@ public class PosterActivityFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_most_popular) {
-            new FetchMoviesTask().execute(Utility.MOST_POPULAR);
+            new FetchMoviesTask().execute(Utils.MOST_POPULAR);
             return true;
         } else if (id == R.id.action_highest_rated) {
-            new FetchMoviesTask().execute(Utility.HIGHEST_RATED);
+            new FetchMoviesTask().execute(Utils.HIGHEST_RATED);
             return true;
         } else if (id == R.id.action_settings) {
             startActivity(new Intent(getActivity(), SettingsActivity.class));
@@ -174,7 +174,7 @@ public class PosterActivityFragment extends Fragment {
 
             try {
 
-                URL url = Utility.buildMoviesAPIUrl(params[0]);
+                URL url = Utils.buildMoviesAPIUrl(params[0]);
                 if (url != null) {
                     urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
@@ -186,7 +186,7 @@ public class PosterActivityFragment extends Fragment {
                     String moviesJsonStr = new BufferedReader(
                             new InputStreamReader(inputStream)).readLine();
 
-                    return new JsonParser(moviesJsonStr, Utility.MOVIE_FLAG).getMoviesList();
+                    return new JsonParser(moviesJsonStr, Utils.MOVIE_FLAG).getMoviesList();
                 }
 
             } catch (IOException e) {
@@ -224,9 +224,9 @@ public class PosterActivityFragment extends Fragment {
         }
 
         private List<Movie.Trailer> getTrailersFromAPICall(Integer movieId) {
-            String trailerJsonStr = getJsonStringFromAPICall(movieId, Utility.TRAILER_FLAG);
+            String trailerJsonStr = getJsonStringFromAPICall(movieId, Utils.TRAILER_FLAG);
             try {
-                return new JsonParser(trailerJsonStr, Utility.TRAILER_FLAG).getTrailersList();
+                return new JsonParser(trailerJsonStr, Utils.TRAILER_FLAG).getTrailersList();
             } catch (JSONException e) {
                 e.printStackTrace();
                 return null;
@@ -234,10 +234,10 @@ public class PosterActivityFragment extends Fragment {
         }
 
         private List<String> getReviewsFromAPICall(Integer movieId) {
-            String reviewJsonStr = getJsonStringFromAPICall(movieId, Utility.REVIEW_FLAG);
+            String reviewJsonStr = getJsonStringFromAPICall(movieId, Utils.REVIEW_FLAG);
             if (reviewJsonStr != null) {
                 try {
-                    return new JsonParser(reviewJsonStr, Utility.REVIEW_FLAG).getReviewsList();
+                    return new JsonParser(reviewJsonStr, Utils.REVIEW_FLAG).getReviewsList();
                 } catch (JSONException e) {
                     e.printStackTrace();
                     return null;
@@ -250,10 +250,10 @@ public class PosterActivityFragment extends Fragment {
             HttpURLConnection urlConnection = null;
             try {
                 URL url = null;
-                if (flag.equals(Utility.TRAILER_FLAG)) {
-                    url = Utility.buildTrailerReviewAPIUrl(movieId, Utility.TRAILER_FLAG);
-                } else if (flag.equals(Utility.REVIEW_FLAG)) {
-                    url = Utility.buildTrailerReviewAPIUrl(movieId, Utility.REVIEW_FLAG);
+                if (flag.equals(Utils.TRAILER_FLAG)) {
+                    url = Utils.buildTrailerReviewAPIUrl(movieId, Utils.TRAILER_FLAG);
+                } else if (flag.equals(Utils.REVIEW_FLAG)) {
+                    url = Utils.buildTrailerReviewAPIUrl(movieId, Utils.REVIEW_FLAG);
                 }
                 if (url != null) {
                     urlConnection = (HttpURLConnection) url.openConnection();
