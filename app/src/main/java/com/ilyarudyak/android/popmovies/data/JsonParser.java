@@ -42,6 +42,7 @@ public class JsonParser {
         }
     }
 
+    // getters for movies, trailers and reviews
     public List<Movie> getMoviesList() {
         return moviesList;
     }

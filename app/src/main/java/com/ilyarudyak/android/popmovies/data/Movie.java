@@ -73,7 +73,9 @@ public class Movie {
     public String getPlotSynopsis() {
         return plotSynopsis;
     }
-    // we need get method only for absolute path
+    public String getPosterPathRelative() {
+        return posterPathRelative;
+    }
     public String getPosterPathAbsolute() {
         return posterPathAbsolute;
     }
