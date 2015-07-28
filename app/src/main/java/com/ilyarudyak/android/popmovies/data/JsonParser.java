@@ -1,5 +1,7 @@
 package com.ilyarudyak.android.popmovies.data;
 
+import com.ilyarudyak.android.popmovies.utility.Utility;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,10 +16,6 @@ import java.util.List;
  */
 public class JsonParser {
 
-    public static final Integer MOVIE =   0;
-    public static final Integer TRAILER = 1;
-    public static final Integer REVIEW =  2;
-
     private String jsonString;
 
     private List<Movie> moviesList;
@@ -28,17 +26,17 @@ public class JsonParser {
             throws JSONException {
         this.jsonString = jsonString;
 
-        if (flag.equals(MOVIE)) {
+        if (flag.equals(Utility.MOVIE_FLAG)) {
             moviesList = new ArrayList<>();
             getMoviesDataFromJson();
-        } else if (flag.equals(TRAILER)) {
+        } else if (flag.equals(Utility.TRAILER_FLAG)) {
             trailersList = new ArrayList<>();
             getTrailersDataFromJson();
-        } else if (flag.equals(REVIEW)) {
+        } else if (flag.equals(Utility.REVIEW_FLAG)) {
             reviewsList = new ArrayList<>();
             getReviewsDataFromJson();
         } else {
-            throw new JSONException("This is an incorrect flag: " + flag);
+            throw new JSONException("wrong flag: " + flag);
         }
     }
 

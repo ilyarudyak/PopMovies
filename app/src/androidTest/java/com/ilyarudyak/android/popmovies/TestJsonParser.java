@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.ilyarudyak.android.popmovies.data.JsonParser;
 import com.ilyarudyak.android.popmovies.data.Movie;
+import com.ilyarudyak.android.popmovies.utility.Utility;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -17,12 +18,12 @@ public class TestJsonParser extends AndroidTestCase {
 
     public void testJsonMovieParser() throws Throwable {
 
-        String file = "assets/moviesJson.json";
+        String file = "assets/movies.json";
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(file);
         String jsonStr = new BufferedReader(
                 new InputStreamReader(inputStream)).readLine();
 
-        JsonParser mp = new JsonParser(jsonStr, JsonParser.MOVIE);
+        JsonParser mp = new JsonParser(jsonStr, Utility.MOVIE_FLAG);
         List<Movie> movies = mp.getMoviesList();
 
         Log.d(LOG_TAG, "## of movies: " + movies.size());

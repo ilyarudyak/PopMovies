@@ -2,7 +2,6 @@ package com.ilyarudyak.android.popmovies;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -21,6 +20,7 @@ import android.widget.GridView;
 import com.ilyarudyak.android.popmovies.data.JsonParser;
 import com.ilyarudyak.android.popmovies.data.Movie;
 import com.ilyarudyak.android.popmovies.data.PicassoAdapter;
+import com.ilyarudyak.android.popmovies.utility.Utility;
 
 import org.json.JSONException;
 
@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,12 +44,7 @@ import java.util.List;
  */
 public class PosterActivityFragment extends Fragment {
 
-    // sort order can be by most popular or by highest-rated
-    private static final String MOST_POPULAR = "popularity.desc";
-    private static final String HIGHEST_RATED = "vote_average.desc";
-
     private final String LOG_TAG = PosterActivityFragment.class.getSimpleName();
-
 
     // we have to make adapter global to update it
     // in onPostExecute() method of our fetch task
@@ -129,10 +123,10 @@ public class PosterActivityFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_most_popular) {
-            new FetchMoviesTask().execute(MOST_POPULAR);
+            new FetchMoviesTask().execute(Utility.MOST_POPULAR);
             return true;
         } else if (id == R.id.action_highest_rated) {
-            new FetchMoviesTask().execute(HIGHEST_RATED);
+            new FetchMoviesTask().execute(Utility.HIGHEST_RATED);
             return true;
         } else if (id == R.id.action_settings) {
             startActivity(new Intent(getActivity(), SettingsActivity.class));
@@ -154,8 +148,8 @@ public class PosterActivityFragment extends Fragment {
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
-        private final Integer TRAILER_FLAG = 0;
-        private final Integer REVIEW_FLAG = 1;
+//        private final Integer TRAILER_FLAG = 0;
+//        private final Integer REVIEW_FLAG = 1;
 
         @Override
         protected List<Movie> doInBackground(String... params) {
@@ -174,37 +168,13 @@ public class PosterActivityFragment extends Fragment {
 
         // ------------------- helper methods -------------------
 
-        // we use as a parameter only sorting order
-        // other data to build URL are fixed
-        private URL buildMainAPIUrl(String parameter) {
-
-            // construct the URL for the TMDB query
-            // to get movies sorted by popularity or vote_average
-            final String API_BASE_URL =
-                    "http://api.themoviedb.org/3/discover/movie?";
-            final String SORT_PARAM = "sort_by";
-            final String API_KEY = "api_key";
-            final String KEY = "99ee31c251ccebfbe8786aa49d9c6fe8";
-
-            Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
-                    .appendQueryParameter(SORT_PARAM, parameter)
-                    .appendQueryParameter(API_KEY, KEY)
-                    .build();
-            try {
-                return new URL(builtUri.toString());
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
         private List<Movie> getDataFromAPICall(String...params) {
 
             HttpURLConnection urlConnection = null;
 
             try {
 
-                URL url = buildMainAPIUrl(params[0]);
+                URL url = Utility.buildMoviesAPIUrl(params[0]);
                 if (url != null) {
                     urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
@@ -216,7 +186,7 @@ public class PosterActivityFragment extends Fragment {
                     String moviesJsonStr = new BufferedReader(
                             new InputStreamReader(inputStream)).readLine();
 
-                    return new JsonParser(moviesJsonStr, JsonParser.MOVIE).getMoviesList();
+                    return new JsonParser(moviesJsonStr, Utility.MOVIE_FLAG).getMoviesList();
                 }
 
             } catch (IOException e) {
@@ -231,38 +201,6 @@ public class PosterActivityFragment extends Fragment {
                 }
             }
             return null;
-        }
-
-        // stage 2 method to get trailer URL
-        private URL buildTrailerReviewAPIUrl(Integer movieId, Integer flag) {
-
-            final String API_BASE_URL =
-                    "http://api.themoviedb.org/3/movie";
-            final String VIDEOS = "videos";
-            final String REVIEWS = "reviews";
-            final String API_KEY = "api_key";
-            final String KEY = "99ee31c251ccebfbe8786aa49d9c6fe8";
-
-            Uri builtUri;
-            if (flag == TRAILER_FLAG) {
-                builtUri = Uri.parse(API_BASE_URL).buildUpon()
-                        .appendPath(Integer.toString(movieId))
-                        .appendPath(VIDEOS)
-                        .appendQueryParameter(API_KEY, KEY)
-                        .build();
-            } else {
-                builtUri = Uri.parse(API_BASE_URL).buildUpon()
-                        .appendPath(Integer.toString(movieId))
-                        .appendPath(REVIEWS)
-                        .appendQueryParameter(API_KEY, KEY)
-                        .build();
-            }
-            try {
-                return new URL(builtUri.toString());
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                return null;
-            }
         }
 
         // stage 2 method to iterate over list,
@@ -286,9 +224,9 @@ public class PosterActivityFragment extends Fragment {
         }
 
         private List<Movie.Trailer> getTrailersFromAPICall(Integer movieId) {
-            String trailerJsonStr = getJsonStringFromAPICall(movieId, TRAILER_FLAG);
+            String trailerJsonStr = getJsonStringFromAPICall(movieId, Utility.TRAILER_FLAG);
             try {
-                return new JsonParser(trailerJsonStr, JsonParser.TRAILER).getTrailersList();
+                return new JsonParser(trailerJsonStr, Utility.TRAILER_FLAG).getTrailersList();
             } catch (JSONException e) {
                 e.printStackTrace();
                 return null;
@@ -296,10 +234,10 @@ public class PosterActivityFragment extends Fragment {
         }
 
         private List<String> getReviewsFromAPICall(Integer movieId) {
-            String reviewJsonStr = getJsonStringFromAPICall(movieId, REVIEW_FLAG);
+            String reviewJsonStr = getJsonStringFromAPICall(movieId, Utility.REVIEW_FLAG);
             if (reviewJsonStr != null) {
                 try {
-                    return new JsonParser(reviewJsonStr, JsonParser.REVIEW).getReviewsList();
+                    return new JsonParser(reviewJsonStr, Utility.REVIEW_FLAG).getReviewsList();
                 } catch (JSONException e) {
                     e.printStackTrace();
                     return null;
@@ -312,10 +250,10 @@ public class PosterActivityFragment extends Fragment {
             HttpURLConnection urlConnection = null;
             try {
                 URL url = null;
-                if (flag == TRAILER_FLAG) {
-                    url = buildTrailerReviewAPIUrl(movieId, TRAILER_FLAG);
-                } else if (flag == REVIEW_FLAG) {
-                    url = buildTrailerReviewAPIUrl(movieId, REVIEW_FLAG);
+                if (flag.equals(Utility.TRAILER_FLAG)) {
+                    url = Utility.buildTrailerReviewAPIUrl(movieId, Utility.TRAILER_FLAG);
+                } else if (flag.equals(Utility.REVIEW_FLAG)) {
+                    url = Utility.buildTrailerReviewAPIUrl(movieId, Utility.REVIEW_FLAG);
                 }
                 if (url != null) {
                     urlConnection = (HttpURLConnection) url.openConnection();
