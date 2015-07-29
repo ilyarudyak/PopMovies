@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,7 +37,7 @@ public class PosterActivityFragment extends Fragment {
 
     // we have to make adapter global to update it
     // in onPostExecute() method of our fetch task
-    private PicassoAdapter mImageAdapter;
+    private PicassoAdapter mPicassoAdapter;
 
     public PosterActivityFragment() {
     }
@@ -48,15 +47,15 @@ public class PosterActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_main, container, false);
-        GridView mGridView = (GridView) v.findViewById(R.id.gridView);
-        mImageAdapter = new PicassoAdapter(getActivity(), new ArrayList<Movie>());
+        GridView gridView = (GridView) v.findViewById(R.id.gridView);
+        mPicassoAdapter = new PicassoAdapter(getActivity(), new ArrayList<Movie>());
 
-        mGridView.setAdapter(mImageAdapter);
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        gridView.setAdapter(mPicassoAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Movie movie = mImageAdapter.getItem(position);
+                Movie movie = mPicassoAdapter.getItem(position);
                 new FetchTrailersReviewsTask().execute(movie);
 
             }
@@ -92,11 +91,10 @@ public class PosterActivityFragment extends Fragment {
         super.onStart();
         // get preferences or use default value if they are not set
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sort_order = prefs.getString(getString(R.string.pref_sort_key),
+        String sortOrder = prefs.getString(getString(R.string.pref_sort_key),
                 getString(R.string.pref_sort_most_popular));
-        Log.d(LOG_TAG, sort_order);
         // fetch movies using preferred sort order
-        new FetchMoviesTask().execute(sort_order);
+        new FetchMoviesTask().execute(sortOrder);
 
     }
 
@@ -135,20 +133,16 @@ public class PosterActivityFragment extends Fragment {
      */
     public class FetchMoviesTask extends AsyncTask<String, Void, List<Movie>> {
 
-        private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
-
         @Override
         protected List<Movie> doInBackground(String... params) {
-            List<Movie> list = NetworkUtils.getMoviesFromNetwork(params[0]);
-//            addTrailersAndReviews(list); //TODO to a separate tasks
-            return list;
+            return NetworkUtils.getMoviesFromNetwork(params[0]);
         }
 
         @Override
         protected void onPostExecute(List<Movie> result) {
             if (result != null) {
-                mImageAdapter.clear();
-                mImageAdapter.addAll(result);
+                mPicassoAdapter.clear();
+                mPicassoAdapter.addAll(result);
             }
         }
 
@@ -164,24 +158,28 @@ public class PosterActivityFragment extends Fragment {
      * */
     public class FetchTrailersReviewsTask extends AsyncTask<Movie, Void, Void> {
 
-        private Movie m;
+        private Movie mMovie;
 
         @Override
         protected Void doInBackground(Movie... movies) {
-            m = movies[0];
+            mMovie = movies[0];
 
             // download list of trailers and set them on given movie
-            List<Movie.Trailer> trailers = NetworkUtils.getTrailersFromNetwork(m.getId());
-            m.setMovieTrailers(trailers);
+            List<Movie.Trailer> trailers = NetworkUtils.getTrailersFromNetwork(mMovie.getId());
+            if (trailers != null) {
+                mMovie.setMovieTrailers(trailers);
+            }
             // download list of reviews and set them on given movie
-            List<String> reviews = NetworkUtils.getReviewsFromNetwork(m.getId());
-            m.setMovieReviews(reviews);
+            List<String> reviews = NetworkUtils.getReviewsFromNetwork(mMovie.getId());
+            if (reviews != null) {
+                mMovie.setMovieReviews(reviews);
+            }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            startActivity(buildDetailsIntent(m));
+            startActivity(buildDetailsIntent(mMovie));
         }
     }
 }

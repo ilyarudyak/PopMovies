@@ -87,10 +87,10 @@ public class NetworkUtils {
 
     // -------------------- network calls --------------------
 
-    // given a URL, establishes an HttpUrlConnection and retrieves
-    // the web page content as a InputStream, which it returns as
-    // a string. code from here:
-    // http://developer.android.com/training/basics/network-ops/connecting.html#download
+    /** given a URL, establishes an HttpUrlConnection and retrieves
+     *  the web page content as a InputStream, which it returns as
+     *  a string. code from here:
+     *  http://developer.android.com/training/basics/network-ops/connecting.html#download */
     public static String downloadJsonString(URL url) throws IOException {
         InputStream is = null;
 
@@ -100,8 +100,8 @@ public class NetworkUtils {
 
             // starts the query
             conn.connect();
-            int response = conn.getResponseCode();
-            Log.d(LOG_TAG, "The response is: " + response);
+//            int response = conn.getResponseCode();
+//            Log.d(LOG_TAG, "The response is: " + response);
             is = conn.getInputStream();
 
             // convert the InputStream into a string
@@ -126,13 +126,13 @@ public class NetworkUtils {
             String moviewJsonString = downloadJsonString(url);
             return new JsonParser(moviewJsonString, NetworkUtils.MOVIE_FLAG).getMoviesList();
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, "exception", e);
             return null;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, "exception", e);
             return null;
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, "exception", e);
             return null;
         }
     }
@@ -143,13 +143,13 @@ public class NetworkUtils {
             String trailerJsonString = downloadJsonString(url);
             return new JsonParser(trailerJsonString, NetworkUtils.TRAILER_FLAG).getTrailersList();
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, "exception", e);
             return null;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, "exception", e);
             return null;
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, "exception", e);
             return null;
         }
     }
@@ -159,13 +159,13 @@ public class NetworkUtils {
             String reviewJsonString = downloadJsonString(url);
             return new JsonParser(reviewJsonString, NetworkUtils.REVIEW_FLAG).getReviewsList();
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, "exception", e);
             return null;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, "exception", e);
             return null;
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, "exception", e);
             return null;
         }
     }
