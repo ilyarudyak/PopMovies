@@ -26,4 +26,5 @@
     <string name="pref_sort_highest_rated">vote_average.desc</string>
     <string name="trailers">Trailers:</string>
     <string name="trailer_title">Trailer</string>
+    <string name="action_share_trailer">Share</string>
 </resources>

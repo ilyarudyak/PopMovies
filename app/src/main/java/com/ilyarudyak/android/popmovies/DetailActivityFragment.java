@@ -5,8 +5,13 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -29,10 +34,14 @@ public class DetailActivityFragment extends Fragment {
     private View rootView;
     private LinearLayout mainLinearLayout;
 
+    private List<Movie.Trailer> mTrailerList;
+    private ShareActionProvider mShareActionProvider;
+
     private Typeface qsRegular;
     private Typeface qsBold;
 
     public DetailActivityFragment() {
+//        setHasOptionsMenu(true);
     }
 
     @Override
@@ -60,9 +69,9 @@ public class DetailActivityFragment extends Fragment {
         plotSynopsis.setTypeface(qsRegular);
 
         // stage 2: add list of trailers
-        List<Movie.Trailer> trailersList =  getActivity().getIntent()
+        mTrailerList =  getActivity().getIntent()
                 .getParcelableArrayListExtra(Movie.TRAILER_LIST);
-        for(Movie.Trailer mt : trailersList) {
+        for(Movie.Trailer mt : mTrailerList) {
             View trailerView = inflater.inflate(R.layout.trailer, container, false);
             final String url = mt.getTrailerPathAbsolute();
 
@@ -125,6 +134,46 @@ public class DetailActivityFragment extends Fragment {
         if (i.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivity(i);
         }
+    }
+
+    // --------------------- menu ---------------------
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // now this fragment can handle menu events
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.menu_detail, menu);
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
+        setShareIntent();
+    }
+
+    // this method shares first trailer
+    private void setShareIntent() {
+
+        String trailerPath = mTrailerList.get(0).getTrailerPathAbsolute();
+        String shareTag = " #" + getActivity().getIntent()
+                .getStringExtra(Movie.TMDB_ORIGINAl_TITLE);
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT,
+                trailerPath + shareTag);
+
+        if (mShareActionProvider != null) {
+            mShareActionProvider.setShareIntent(shareIntent);
+        }
+
 
     }
+
+
 }
