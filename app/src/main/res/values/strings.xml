@@ -27,4 +27,5 @@
     <string name="trailers">Trailers:</string>
     <string name="trailer_title">Trailer</string>
     <string name="action_share_trailer">Share</string>
+    <string name="button_favorite">Mark as Favorite</string>
 </resources>

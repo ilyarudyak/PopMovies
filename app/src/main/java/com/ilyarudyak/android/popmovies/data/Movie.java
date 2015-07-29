@@ -64,7 +64,7 @@ public class Movie {
         movieReviews = new ArrayList<>();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
     public String getOriginalTitle() {

@@ -14,15 +14,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ilyarudyak.android.popmovies.data.Movie;
+import com.ilyarudyak.android.popmovies.utils.FavoritesUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -31,8 +34,10 @@ import java.util.List;
 public class DetailActivityFragment extends Fragment {
 
     private static final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
-    private View rootView;
+
+    private View mRootView;
     private LinearLayout mainLinearLayout;
+    private Integer mMovieId;
 
     private List<Movie.Trailer> mTrailerList;
     private ShareActionProvider mShareActionProvider;
@@ -48,19 +53,31 @@ public class DetailActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        mainLinearLayout = (LinearLayout) rootView.findViewById(R.id.mainLinearLayout);
+        mRootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        mainLinearLayout = (LinearLayout) mRootView.findViewById(R.id.mainLinearLayout);
 
         qsRegular = Typeface.createFromAsset(
                 getActivity().getAssets(), "fonts/QuattrocentoSans-Regular.ttf");
         qsBold = Typeface.createFromAsset(
                 getActivity().getAssets(), "fonts/QuattrocentoSans-Bold.ttf");
 
-        TextView originalTitle = (TextView) rootView.findViewById(R.id.textViewOriginalTitle);
-        ImageView posterImageView = (ImageView) rootView.findViewById(R.id.imageViewPoster);
-        TextView releaseDate = (TextView) rootView.findViewById(R.id.textViewReleaseDate);
-        TextView userRating = (TextView) rootView.findViewById(R.id.textViewUserRating);
-        TextView plotSynopsis = (TextView) rootView.findViewById(R.id.textViewPlotSynopsis);
+        TextView originalTitle = (TextView) mRootView.findViewById(R.id.textViewOriginalTitle);
+        ImageView posterImageView = (ImageView) mRootView.findViewById(R.id.imageViewPoster);
+        TextView releaseDate = (TextView) mRootView.findViewById(R.id.textViewReleaseDate);
+        TextView userRating = (TextView) mRootView.findViewById(R.id.textViewUserRating);
+        TextView plotSynopsis = (TextView) mRootView.findViewById(R.id.textViewPlotSynopsis);
+
+        // detail activity called via intent.
+        // inspect the intent for data.
+        final Intent intent = getActivity().getIntent();
+        mMovieId = intent.getIntExtra(Movie.TMDB_ID, 0);
+        originalTitle.setText(intent.getStringExtra(Movie.TMDB_ORIGINAl_TITLE));
+        releaseDate.setText(intent.getStringExtra(Movie.TMDB_RELEASE_DATE).substring(0,4));
+        final String MAX_RATING = "/10";
+        userRating.setText(intent.getStringExtra(Movie.TMDB_USER_RATING) + MAX_RATING);
+        plotSynopsis.setText(intent.getStringExtra(Movie.TMDB_PLOT_SYNOPSIS));
+
+        setShareButton();
 
         // change font to QuattrocentoSans
         originalTitle.setTypeface(qsBold);
@@ -109,14 +126,7 @@ public class DetailActivityFragment extends Fragment {
             mainLinearLayout.addView(divider);
         }
 
-        // detail activity called via intent.
-        // inspect the intent for data.
-        final Intent intent = getActivity().getIntent();
-        originalTitle.setText(intent.getStringExtra(Movie.TMDB_ORIGINAl_TITLE));
-        releaseDate.setText(intent.getStringExtra(Movie.TMDB_RELEASE_DATE).substring(0,4));
-        final String MAX_RATING = "/10";
-        userRating.setText(intent.getStringExtra(Movie.TMDB_USER_RATING) + MAX_RATING);
-        plotSynopsis.setText(intent.getStringExtra(Movie.TMDB_PLOT_SYNOPSIS));
+
 
         String posterPathAbsolute = intent.getStringExtra(Movie.TMDB_POSTER_PATH_ABSOLUTE);
         Picasso.with(getActivity())
@@ -125,7 +135,7 @@ public class DetailActivityFragment extends Fragment {
                 .resize(300, 450)
                 .into(posterImageView);
 
-        return rootView;
+        return mRootView;
     }
 
     private void openTrailer(String url) {
@@ -135,8 +145,31 @@ public class DetailActivityFragment extends Fragment {
             startActivity(i);
         }
     }
+    // ------------- fovorites button ---------------
 
-    // --------------------- menu ---------------------
+    private void setShareButton() {
+
+        Button shareButton = (Button) mRootView.findViewById(R.id.button_favorite);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FavoritesUtils.putFavorities(getActivity(), mMovieId);
+            }
+        });
+
+        // make button inactive for favorites
+        if (isFavorite()) {
+            shareButton.setEnabled(false);
+        }
+    }
+
+    // check if movie is already favorite
+    private boolean isFavorite() {
+        Set<String> favorites = FavoritesUtils.getFavorities(getActivity());
+        return favorites != null && favorites.contains(Integer.toString(mMovieId));
+    }
+
+    // ------------- menu  and share intent ---------------
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

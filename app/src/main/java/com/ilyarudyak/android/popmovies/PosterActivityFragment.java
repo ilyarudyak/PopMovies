@@ -66,6 +66,7 @@ public class PosterActivityFragment extends Fragment {
 
     private Intent buildDetailsIntent(Movie movie) {
         Intent intent = new Intent(getActivity(), DetailActivity.class)
+                .putExtra(Movie.TMDB_ID, movie.getId())
                 .putExtra(Movie.TMDB_ORIGINAl_TITLE, movie.getOriginalTitle())
                 .putExtra(Movie.TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute())
                 .putExtra(Movie.TMDB_RELEASE_DATE, movie.getReleaseDate())
