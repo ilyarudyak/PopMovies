@@ -17,21 +17,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.ilyarudyak.android.popmovies.data.JsonParser;
 import com.ilyarudyak.android.popmovies.data.Movie;
 import com.ilyarudyak.android.popmovies.data.PicassoAdapter;
-import com.ilyarudyak.android.popmovies.utils.Utils;
+import com.ilyarudyak.android.popmovies.utils.NetworkUtils;
 
-import org.json.JSONException;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -58,36 +48,35 @@ public class PosterActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_main, container, false);
-        GridView gridView = (GridView) v.findViewById(R.id.gridView);
+        GridView mGridView = (GridView) v.findViewById(R.id.gridView);
         mImageAdapter = new PicassoAdapter(getActivity(), new ArrayList<Movie>());
 
-        gridView.setAdapter(mImageAdapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mGridView.setAdapter(mImageAdapter);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Movie movie = mImageAdapter.getItem(position);
-                Intent intent = new Intent(getActivity(), DetailActivity.class)
-                        .putExtra(Movie.TMDB_ORIGINAl_TITLE, movie.getOriginalTitle())
-                        .putExtra(Movie.TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute())
-                        .putExtra(Movie.TMDB_RELEASE_DATE, movie.getReleaseDate())
-                        .putExtra(Movie.TMDB_USER_RATING, Double.toString(movie.getUserRating()))
-                        .putExtra(Movie.TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis())
-                        .putParcelableArrayListExtra(Movie.TRAILER_LIST,
-                                (ArrayList<? extends Parcelable>) movie.getMovieTrailers())
-                        .putStringArrayListExtra(Movie.REVIEW_LIST,
-                                (ArrayList<String>) movie.getMovieReviews());
-                if (movie.getMovieReviews() != null) {
-                    Log.i(LOG_TAG, movie.getOriginalTitle() + " " +
-                            movie.getMovieReviews().toString());
-                }
-                startActivity(intent);
+                new FetchTrailersReviewsTask().execute(movie);
+
             }
         });
 
-
-
         return v;
+    }
+
+    private Intent buildDetailsIntent(Movie movie) {
+        Intent intent = new Intent(getActivity(), DetailActivity.class)
+                .putExtra(Movie.TMDB_ORIGINAl_TITLE, movie.getOriginalTitle())
+                .putExtra(Movie.TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute())
+                .putExtra(Movie.TMDB_RELEASE_DATE, movie.getReleaseDate())
+                .putExtra(Movie.TMDB_USER_RATING, Double.toString(movie.getUserRating()))
+                .putExtra(Movie.TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis())
+                .putParcelableArrayListExtra(Movie.TRAILER_LIST,
+                        (ArrayList<? extends Parcelable>) movie.getMovieTrailers())
+                .putStringArrayListExtra(Movie.REVIEW_LIST,
+                        (ArrayList<String>) movie.getMovieReviews());
+        return intent;
     }
 
     @Override
@@ -123,10 +112,10 @@ public class PosterActivityFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_most_popular) {
-            new FetchMoviesTask().execute(Utils.MOST_POPULAR);
+            new FetchMoviesTask().execute(NetworkUtils.MOST_POPULAR);
             return true;
         } else if (id == R.id.action_highest_rated) {
-            new FetchMoviesTask().execute(Utils.HIGHEST_RATED);
+            new FetchMoviesTask().execute(NetworkUtils.HIGHEST_RATED);
             return true;
         } else if (id == R.id.action_settings) {
             startActivity(new Intent(getActivity(), SettingsActivity.class));
@@ -135,7 +124,7 @@ public class PosterActivityFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    // ------------------- async task -------------------
+    // ------------------- async tasks -------------------
 
     /**
      * We subclass AsyncTask to get data from API call
@@ -148,13 +137,10 @@ public class PosterActivityFragment extends Fragment {
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
-//        private final Integer TRAILER_FLAG = 0;
-//        private final Integer REVIEW_FLAG = 1;
-
         @Override
         protected List<Movie> doInBackground(String... params) {
-            List<Movie> list = getDataFromAPICall(params);
-            addTrailersAndReviews(list); //TODO to a separate tasks
+            List<Movie> list = NetworkUtils.getMoviesFromNetwork(params[0]);
+//            addTrailersAndReviews(list); //TODO to a separate tasks
             return list;
         }
 
@@ -166,141 +152,38 @@ public class PosterActivityFragment extends Fragment {
             }
         }
 
-        // ------------------- helper methods -------------------
 
-        private List<Movie> getDataFromAPICall(String...params) {
+    }
 
-            HttpURLConnection urlConnection = null;
+    /**
+     * We fetch trailers and reviews only when a user
+     * clicks on a poster image in PosterActivity. This makes
+     * interface much more responsive.
+     * We modify Movie object in place and use it to build intent.
+     * Than we start activity in onPostExecute() with this intent.
+     * */
+    public class FetchTrailersReviewsTask extends AsyncTask<Movie, Void, Void> {
 
-            try {
+        private Movie m;
 
-                URL url = Utils.buildMoviesAPIUrl(params[0]);
-                if (url != null) {
-                    urlConnection = (HttpURLConnection) url.openConnection();
-                    urlConnection.setRequestMethod("GET");
-                    urlConnection.connect();
-                }
-                if (urlConnection != null) {
-                    InputStream inputStream = urlConnection.getInputStream();
+        @Override
+        protected Void doInBackground(Movie... movies) {
+            m = movies[0];
 
-                    String moviesJsonStr = new BufferedReader(
-                            new InputStreamReader(inputStream)).readLine();
-
-                    return new JsonParser(moviesJsonStr, Utils.MOVIE_FLAG).getMoviesList();
-                }
-
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "Error ", e);
-                return null;
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, "Error ", e);
-                return null;
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
+            // download list of trailers and set them on given movie
+            List<Movie.Trailer> trailers = NetworkUtils.getTrailersFromNetwork(m.getId());
+            m.setMovieTrailers(trailers);
+            // download list of reviews and set them on given movie
+            List<String> reviews = NetworkUtils.getReviewsFromNetwork(m.getId());
+            m.setMovieReviews(reviews);
             return null;
         }
 
-        // stage 2 method to iterate over list,
-        // make API calls to get trailer URL
-        private void addTrailersAndReviews(List<Movie> movies) {
-
-            Iterator<Movie> i = movies.iterator();
-            while (i.hasNext()){
-                Movie m = i.next();
-
-                List<Movie.Trailer> trailers = getTrailersFromAPICall(m.getId());
-                m.setMovieTrailers(trailers);
-
-                List<String> reviews = getReviewsFromAPICall(m.getId());
-                if (reviews != null) {
-                    m.setMovieReviews(reviews);
-                    Log.i(LOG_TAG, m.getOriginalTitle() + " " + m.getMovieReviews().toString());
-                }
-
-            }
-        }
-
-        private List<Movie.Trailer> getTrailersFromAPICall(Integer movieId) {
-            String trailerJsonStr = getJsonStringFromAPICall(movieId, Utils.TRAILER_FLAG);
-            try {
-                return new JsonParser(trailerJsonStr, Utils.TRAILER_FLAG).getTrailersList();
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        private List<String> getReviewsFromAPICall(Integer movieId) {
-            String reviewJsonStr = getJsonStringFromAPICall(movieId, Utils.REVIEW_FLAG);
-            if (reviewJsonStr != null) {
-                try {
-                    return new JsonParser(reviewJsonStr, Utils.REVIEW_FLAG).getReviewsList();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-            return null;
-        }
-
-        private String getJsonStringFromAPICall(Integer movieId, Integer flag) {
-            HttpURLConnection urlConnection = null;
-            try {
-                URL url = null;
-                if (flag.equals(Utils.TRAILER_FLAG)) {
-                    url = Utils.buildTrailerReviewAPIUrl(movieId, Utils.TRAILER_FLAG);
-                } else if (flag.equals(Utils.REVIEW_FLAG)) {
-                    url = Utils.buildTrailerReviewAPIUrl(movieId, Utils.REVIEW_FLAG);
-                }
-                if (url != null) {
-                    urlConnection = (HttpURLConnection) url.openConnection();
-                    urlConnection.setRequestMethod("GET");
-                    urlConnection.connect();
-                }
-                if (urlConnection != null) {
-                    InputStream inputStream = urlConnection.getInputStream();
-
-                    String jsonStr = new BufferedReader(
-                            new InputStreamReader(inputStream)).readLine();
-
-                    return jsonStr;
-                }
-
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "Error ", e);
-                return null;
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-            return null;
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            startActivity(buildDetailsIntent(m));
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
