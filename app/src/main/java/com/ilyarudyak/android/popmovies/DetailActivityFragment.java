@@ -1,6 +1,7 @@
 package com.ilyarudyak.android.popmovies;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,9 @@ public class DetailActivityFragment extends Fragment {
     private View rootView;
     private LinearLayout mainLinearLayout;
 
+    private Typeface qsRegular;
+    private Typeface qsBold;
+
     public DetailActivityFragment() {
     }
 
@@ -38,11 +42,22 @@ public class DetailActivityFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         mainLinearLayout = (LinearLayout) rootView.findViewById(R.id.mainLinearLayout);
 
+        qsRegular = Typeface.createFromAsset(
+                getActivity().getAssets(), "fonts/QuattrocentoSans-Regular.ttf");
+        qsBold = Typeface.createFromAsset(
+                getActivity().getAssets(), "fonts/QuattrocentoSans-Bold.ttf");
+
         TextView originalTitle = (TextView) rootView.findViewById(R.id.textViewOriginalTitle);
         ImageView posterImageView = (ImageView) rootView.findViewById(R.id.imageViewPoster);
         TextView releaseDate = (TextView) rootView.findViewById(R.id.textViewReleaseDate);
         TextView userRating = (TextView) rootView.findViewById(R.id.textViewUserRating);
         TextView plotSynopsis = (TextView) rootView.findViewById(R.id.textViewPlotSynopsis);
+
+        // change font to QuattrocentoSans
+        originalTitle.setTypeface(qsBold);
+        releaseDate.setTypeface(qsRegular);
+        userRating.setTypeface(qsRegular);
+        plotSynopsis.setTypeface(qsRegular);
 
         // stage 2: add list of trailers
         List<Movie.Trailer> trailersList =  getActivity().getIntent()
@@ -63,6 +78,7 @@ public class DetailActivityFragment extends Fragment {
             TextView trailerTitle = (TextView) trailerView
                     .findViewById(R.id.trailer_title_text_view);
             trailerTitle.setText(mt.getTrailerName());
+            trailerTitle.setTypeface(qsRegular);
 
             mainLinearLayout.addView(trailerView);
 
@@ -78,6 +94,7 @@ public class DetailActivityFragment extends Fragment {
             View reviewView = inflater.inflate(R.layout.review, container, false);
             TextView reviewTextView = (TextView) reviewView.findViewById(R.id.review_text_view);
             reviewTextView.setText(review);
+            reviewTextView.setTypeface(qsRegular);
             mainLinearLayout.addView(reviewView);
             View divider = inflater.inflate(R.layout.divider, container, false);
             mainLinearLayout.addView(divider);
