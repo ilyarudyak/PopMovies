@@ -116,6 +116,9 @@ public class PosterActivityFragment extends Fragment {
         } else if (id == R.id.action_highest_rated) {
             new FetchMoviesTask().execute(NetworkUtils.HIGHEST_RATED);
             return true;
+        } else if (id == R.id.action_favorities) {
+            new FetchFavoritieMoviesTask().execute();
+            return true;
         } else if (id == R.id.action_settings) {
             startActivity(new Intent(getActivity(), SettingsActivity.class));
             return true;
@@ -146,8 +149,27 @@ public class PosterActivityFragment extends Fragment {
                 mPicassoAdapter.addAll(result);
             }
         }
+    }
 
+    /**
+     * We fetch information about favorite movies based on set
+     * of favorites from shared preferences. We fetch it for each movie
+     * individually using network call that is different from our main call.
+     * We than update our Picasso adapter in a usual way.
+     * */
+    public class FetchFavoritieMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
+        @Override
+        protected List<Movie> doInBackground(Void... voids) {
+            return NetworkUtils.getFavoriteMoviesFromNetwork(getActivity());
+        }
 
+        @Override
+        protected void onPostExecute(List<Movie> result) {
+            if (result != null) {
+                mPicassoAdapter.clear();
+                mPicassoAdapter.addAll(result);
+            }
+        }
     }
 
     /**
@@ -183,6 +205,8 @@ public class PosterActivityFragment extends Fragment {
             startActivity(buildDetailsIntent(mMovie));
         }
     }
+
+
 }
 
 

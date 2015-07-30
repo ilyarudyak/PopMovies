@@ -35,6 +35,9 @@ public class JsonParser {
         } else if (flag.equals(NetworkUtils.REVIEW_FLAG)) {
             reviewsList = new ArrayList<>();
             getReviewsDataFromJson();
+        } else if (flag.equals(NetworkUtils.FAVORITE_MOVIE_FLAG)) {
+            moviesList = new ArrayList<>();
+            getFavoriteMovieDataFromJson();
         } else {
             throw new JSONException("wrong flag: " + flag);
         }
@@ -60,16 +63,14 @@ public class JsonParser {
         for(int i = 0; i < moviesArray.length(); i++) {
 
             JSONObject movieJson = moviesArray.getJSONObject(i);
-
-            moviesList.add(new Movie(
-                    movieJson.getInt(Movie.TMDB_ID),
-                    movieJson.getString(Movie.TMDB_ORIGINAl_TITLE),
-                    movieJson.getString(Movie.TMDB_PLOT_SYNOPSIS),
-                    movieJson.getString(Movie.TMDB_POSTER_PATH_RELATIVE),
-                    movieJson.getString(Movie.TMDB_RELEASE_DATE),
-                    movieJson.getDouble(Movie.TMDB_USER_RATING)
-            ));
+            addMovie(movieJson);
         }
+    }
+    private void getFavoriteMovieDataFromJson() throws JSONException {
+
+        JSONObject movieJson = new JSONObject(jsonString);
+        addMovie(movieJson);
+
     }
     private void getTrailersDataFromJson() throws JSONException {
 
@@ -93,5 +94,16 @@ public class JsonParser {
             JSONObject reviewJson = reviewsArray.getJSONObject(i);
             reviewsList.add(reviewJson.getString(Movie.TMDB_REVIEW));
         }
+    }
+
+    private void addMovie(JSONObject movieJson) throws JSONException{
+        moviesList.add(new Movie(
+                movieJson.getInt(Movie.TMDB_ID),
+                movieJson.getString(Movie.TMDB_ORIGINAl_TITLE),
+                movieJson.getString(Movie.TMDB_PLOT_SYNOPSIS),
+                movieJson.getString(Movie.TMDB_POSTER_PATH_RELATIVE),
+                movieJson.getString(Movie.TMDB_RELEASE_DATE),
+                movieJson.getDouble(Movie.TMDB_USER_RATING)
+        ));
     }
 }

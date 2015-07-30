@@ -7,7 +7,10 @@ import com.ilyarudyak.android.popmovies.data.Movie;
 import com.ilyarudyak.android.popmovies.utils.NetworkUtils;
 
 import java.net.URL;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class TestNetworkUtils extends AndroidTestCase {
@@ -21,6 +24,17 @@ public class TestNetworkUtils extends AndroidTestCase {
         URL result = NetworkUtils.buildMoviesAPIUrl(NetworkUtils.MOST_POPULAR);
         if (result != null) {
             assertEquals(expectedUrlPopular, result.toString());
+        } else {
+            fail("result is null");
+        }
+    }
+    public void testBuildFavoriteMoviesAPIUrl() throws Throwable {
+
+        String expectedUrl = "http://api.themoviedb.org/3/movie/135397?" +
+                "api_key=99ee31c251ccebfbe8786aa49d9c6fe8";
+        URL result = NetworkUtils.buildFavoriteMoviesAPIUrl(135397);
+        if (result != null) {
+            assertEquals(expectedUrl, result.toString());
         } else {
             fail("result is null");
         }
@@ -46,6 +60,7 @@ public class TestNetworkUtils extends AndroidTestCase {
         }
     }
 
+
     // test network calls
     public void testGetReviewsFromNetwork() throws Throwable {
 
@@ -66,6 +81,24 @@ public class TestNetworkUtils extends AndroidTestCase {
         for (Movie m : movies) {
             if (NetworkUtils.getReviewsFromNetwork(m.getId()) == null) {
                 Log.d(LOG_TAG, "here we got an exception" + m.getId());
+            }
+        }
+    }
+    public void testGetFavoriteMoviesFromNetwork() throws Throwable {
+
+        Set<String> favorites = new HashSet<>(Arrays.asList("135397", "211672", "87101"));
+        String jw = "Jurassic World";
+        String mi = "Minions";
+        String tg = "Terminator Genisys";
+
+        List<Movie> favoritesList = NetworkUtils.getFavoriteMoviesFromNetworkTest(favorites);
+        for (Movie m : favoritesList) {
+            if (m.getId().equals(135397)) {
+                assertEquals(jw, m.getOriginalTitle());
+            } else if (m.getId().equals(211672)) {
+                assertEquals(mi, m.getOriginalTitle());
+            } else if (m.getId().equals(87101)) {
+                assertEquals(tg, m.getOriginalTitle());
             }
         }
     }

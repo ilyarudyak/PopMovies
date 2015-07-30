@@ -1,5 +1,6 @@
 package com.ilyarudyak.android.popmovies.utils;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
@@ -15,7 +16,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by ilyarudyak on 7/28/15.
@@ -28,13 +31,15 @@ public class NetworkUtils {
     public static final String MOST_POPULAR = "popularity.desc";
     public static final String HIGHEST_RATED = "vote_average.desc";
 
-    public static final Integer MOVIE_FLAG =   0;
-    public static final Integer TRAILER_FLAG = 1;
-    public static final Integer REVIEW_FLAG =  2;
+    public static final Integer MOVIE_FLAG =            0;
+    public static final Integer TRAILER_FLAG =          1;
+    public static final Integer REVIEW_FLAG =           2;
+    public static final Integer FAVORITE_MOVIE_FLAG =   3;
 
     // -------------------- build urls --------------------
 
-    public static URL buildMoviesAPIUrl(String sortParameter) {
+    public static URL buildMoviesAPIUrl(String sortParameter)
+            throws MalformedURLException {
 
         final String API_BASE_URL =
                 "http://api.themoviedb.org/3/discover/movie";
@@ -46,12 +51,22 @@ public class NetworkUtils {
                 .appendQueryParameter(SORT_PARAM, sortParameter)
                 .appendQueryParameter(API_KEY, KEY)
                 .build();
-        try {
-            return new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
-        }
+
+        return new URL(builtUri.toString());
+    }
+    public static URL buildFavoriteMoviesAPIUrl(Integer movieId)
+            throws MalformedURLException {
+        final String API_BASE_URL =
+                "http://api.themoviedb.org/3/movie";
+        final String API_KEY = "api_key";
+        final String KEY = "99ee31c251ccebfbe8786aa49d9c6fe8";
+
+        Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
+                .appendPath(Integer.toString(movieId))
+                .appendQueryParameter(API_KEY, KEY)
+                .build();
+
+        return new URL(builtUri.toString());
     }
     public static URL buildTrailerReviewAPIUrl(Integer movieId, Integer flag)
             throws MalformedURLException {
@@ -77,8 +92,7 @@ public class NetworkUtils {
                     .appendQueryParameter(API_KEY, KEY)
                     .build();
         } else {
-            Log.d(LOG_TAG, "wrong flag: " + flag);
-            return null;
+            throw new MalformedURLException("wrong flag: " + flag);
         }
 
         return new URL(builtUri.toString());
@@ -136,6 +150,51 @@ public class NetworkUtils {
             return null;
         }
     }
+    public static List<Movie> getFavoriteMoviesFromNetwork(Context context) {
+
+        Set<String> movies = FavoritesUtils.getFavorities(context);
+        List<Movie> moviesList = new ArrayList<>();
+        for (String movieIdString : movies) {
+            try {
+                URL url = buildFavoriteMoviesAPIUrl(Integer.parseInt(movieIdString));
+                String favoriteMoviewJsonString = downloadJsonString(url);
+                moviesList.add(new JsonParser(favoriteMoviewJsonString,
+                        NetworkUtils.FAVORITE_MOVIE_FLAG).getMoviesList().get(0));
+            } catch (MalformedURLException e) {
+                Log.e(LOG_TAG, "exception", e);
+                return null;
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "exception", e);
+                return null;
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, "exception", e);
+                return null;
+            }
+        }
+        return moviesList;
+    }
+    public static List<Movie> getFavoriteMoviesFromNetworkTest(Set<String> movies) {
+
+        List<Movie> moviesList = new ArrayList<>();
+        for (String movieIdString : movies) {
+            try {
+                URL url = buildFavoriteMoviesAPIUrl(Integer.parseInt(movieIdString));
+                String favoriteMoviewJsonString = downloadJsonString(url);
+                moviesList.add(new JsonParser(favoriteMoviewJsonString,
+                        NetworkUtils.FAVORITE_MOVIE_FLAG).getMoviesList().get(0));
+            } catch (MalformedURLException e) {
+                Log.e(LOG_TAG, "exception", e);
+                return null;
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "exception", e);
+                return null;
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, "exception", e);
+                return null;
+            }
+        }
+        return moviesList;
+    }
     public static List<Movie.Trailer> getTrailersFromNetwork (Integer movieId) {
 
         try {
@@ -169,6 +228,8 @@ public class NetworkUtils {
             return null;
         }
     }
+
+
 }
 
 

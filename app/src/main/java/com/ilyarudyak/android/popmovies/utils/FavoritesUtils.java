@@ -2,7 +2,6 @@ package com.ilyarudyak.android.popmovies.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,11 +15,11 @@ public class FavoritesUtils {
 
     // name of shared prefs file, that contains favorite movies ids
     public static final String PREFS_NAME = "FavoriteMovies";
-    public static final String FAVORITES = "favorites";
+    public static final String FAVORITIES = "favorities";
 
     public static Set<String> getFavorities(Context c) {
         return c.getSharedPreferences(PREFS_NAME, 0)
-                .getStringSet(FAVORITES, new HashSet<String>());
+                .getStringSet(FAVORITIES, new HashSet<String>());
     }
 
     public static void putFavorities(Context c, Integer movieId) {
@@ -31,10 +30,10 @@ public class FavoritesUtils {
             favorites = new HashSet<>();
         }
         favorites.add(Integer.toString(movieId));
-        Log.d(LOG_TAG, favorites.toString());
+//        Log.d(LOG_TAG, favorites.toString());
 
         // put updated set back into prefs file
         SharedPreferences.Editor editor = c.getSharedPreferences(PREFS_NAME, 0).edit();
-        editor.putStringSet(FAVORITES, favorites).apply();
+        editor.putStringSet(FAVORITIES, favorites).apply();
     }
 }
