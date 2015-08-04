@@ -4,7 +4,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ilyarudyak.android.popmovies.PosterActivity">
+    tools:context="com.ilyarudyak.android.popmovies.MainActivity">
 
     <fragment
         android:id="@+id/fragment_forecast"
