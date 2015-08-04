@@ -37,6 +37,8 @@ public class PicassoAdapter  extends ArrayAdapter<Movie> {
         }
 
         ImageView imageView = (ImageView) convertView.findViewById(R.id.grid_item_image);
+        // to eliminate horizontal spacing between images on a tablet
+        imageView.setAdjustViewBounds(true);
 
         Picasso.with(mContext)
                 .load(movie.getPosterPathAbsolute())
