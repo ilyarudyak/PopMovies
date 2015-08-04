@@ -7,14 +7,15 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/grey50"
+        android:background="@android:color/transparent"
         android:src="@drawable/ic_play_arrow_black_36dp"
         android:id="@+id/trailer_image_button"
         android:layout_margin="16dp"/>
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_margin="16dp"
         android:text="@string/trailer_title"
         android:textSize="16sp"
