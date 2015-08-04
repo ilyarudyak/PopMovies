@@ -7,37 +7,48 @@ import android.support.v7.app.ActionBarActivity;
 
 public class MainActivity extends ActionBarActivity {
 
+    // true if we use tablet layout
+    private boolean mTwoPane;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_poster);
+        setContentView(R.layout.activity_main);
 
         // we provide a tablet layout only for a landscape mode
         if(getResources().getBoolean(R.bool.landscape_only)){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
+
+        // dynamically add detail fragment on a tablet
+        // this fragment will be empty until we click
+        // on a poster - then we replace it in callback
+        if (findViewById(R.id.detail_container) != null) {
+
+            mTwoPane = true;
+
+            if (savedInstanceState == null) {
+                getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.detail_container, new DetailFragment(), null)
+                    .commit();
+            }
+        } else {
+            mTwoPane = false;
+        }
+
     }
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_poster, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

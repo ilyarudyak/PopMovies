@@ -1,0 +1,26 @@
+<!-- we deleted standard padding 16dp to fit mockups-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivityFragment">
+
+
+    <GridView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/gridView"
+        android:gravity="center"
+
+        android:numColumns="auto_fit"
+
+        android:horizontalSpacing="0dp"
+        android:verticalSpacing="0dp"
+
+        android:columnWidth="160dp"
+
+        android:stretchMode="columnWidth"
+         />
+</LinearLayout>
+
+
