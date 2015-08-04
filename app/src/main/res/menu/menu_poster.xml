@@ -15,9 +15,15 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_favorities"
-        android:title="@string/action_favorities"
+        android:id="@+id/action_favorities_api"
+        android:title="@string/action_favorities_api"
         android:orderInCategory="3"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_favorities_db"
+        android:title="@string/action_favorities_db"
+        android:orderInCategory="4"
         app:showAsAction="never" />
 
     <item

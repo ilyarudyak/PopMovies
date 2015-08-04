@@ -7,7 +7,10 @@
     <!-- action bar menu -->
     <string name="action_popularity_sort">Most popular</string>
     <string name="action_highest_rated_sort">Highest rated</string>
+    <string name="action_favorities_api">Favorities (API)</string>
+    <string name="action_favorities_db">Favorities (DB)</string>
     <string name="action_settings">Settings</string>
+
 
     <!-- debugging strings for details screen -->
     <string name="chappie">Chappie</string>
@@ -28,5 +31,5 @@
     <string name="trailer_title">Trailer</string>
     <string name="action_share_trailer">Share</string>
     <string name="button_favorite">Mark as Favorite</string>
-    <string name="action_favorities">Favorities</string>
+
 </resources>

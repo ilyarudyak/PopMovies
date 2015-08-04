@@ -116,7 +116,7 @@ public class PosterFragment extends Fragment {
         } else if (id == R.id.action_highest_rated) {
             new FetchMoviesTask().execute(NetworkUtils.HIGHEST_RATED);
             return true;
-        } else if (id == R.id.action_favorities) {
+        } else if (id == R.id.action_favorities_api) {
             new FetchFavoritieMoviesTask().execute();
             return true;
         } else if (id == R.id.action_settings) {
