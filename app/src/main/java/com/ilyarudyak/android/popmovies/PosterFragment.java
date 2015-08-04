@@ -31,22 +31,22 @@ import java.util.List;
  * and transition to a details screen with additional
  * information.
  */
-public class PosterActivityFragment extends Fragment {
+public class PosterFragment extends Fragment {
 
-    private final String LOG_TAG = PosterActivityFragment.class.getSimpleName();
+    private final String LOG_TAG = PosterFragment.class.getSimpleName();
 
     // we have to make adapter global to update it
     // in onPostExecute() method of our fetch task
     private PicassoAdapter mPicassoAdapter;
 
-    public PosterActivityFragment() {
+    public PosterFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_main, container, false);
+        View v = inflater.inflate(R.layout.fragment_poster, container, false);
         GridView gridView = (GridView) v.findViewById(R.id.gridView);
         mPicassoAdapter = new PicassoAdapter(getActivity(), new ArrayList<Movie>());
 

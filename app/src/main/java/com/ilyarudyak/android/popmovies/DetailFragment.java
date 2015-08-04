@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,9 +30,9 @@ import java.util.Set;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailActivityFragment extends Fragment {
+public class DetailFragment extends Fragment {
 
-    private static final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
+    private static final String LOG_TAG = DetailFragment.class.getSimpleName();
 
     private View mRootView;
     private LinearLayout mainLinearLayout;
@@ -45,7 +44,7 @@ public class DetailActivityFragment extends Fragment {
     private Typeface qsRegular;
     private Typeface qsBold;
 
-    public DetailActivityFragment() {
+    public DetailFragment() {
 //        setHasOptionsMenu(true);
     }
 
@@ -56,10 +55,7 @@ public class DetailActivityFragment extends Fragment {
         mRootView = inflater.inflate(R.layout.fragment_detail, container, false);
         mainLinearLayout = (LinearLayout) mRootView.findViewById(R.id.mainLinearLayout);
 
-        qsRegular = Typeface.createFromAsset(
-                getActivity().getAssets(), "fonts/QuattrocentoSans-Regular.ttf");
-        qsBold = Typeface.createFromAsset(
-                getActivity().getAssets(), "fonts/QuattrocentoSans-Bold.ttf");
+
 
         TextView originalTitle = (TextView) mRootView.findViewById(R.id.textViewOriginalTitle);
         ImageView posterImageView = (ImageView) mRootView.findViewById(R.id.imageViewPoster);
@@ -80,6 +76,7 @@ public class DetailActivityFragment extends Fragment {
         setShareButton();
 
         // change font to QuattrocentoSans
+        setQuattrocentoFont();
         originalTitle.setTypeface(qsBold);
         releaseDate.setTypeface(qsRegular);
         userRating.setTypeface(qsRegular);
@@ -112,20 +109,21 @@ public class DetailActivityFragment extends Fragment {
             mainLinearLayout.addView(divider);
         }
 
+        setReviewsList(inflater, container);
         // stage 2 add list of reviews
-        List<String> reviewsList = getActivity().getIntent()
-                .getStringArrayListExtra(Movie.REVIEW_LIST);
-        if (reviewsList != null) { Log.i(LOG_TAG, reviewsList.toString()); }
-        for (String review : reviewsList) {
-            View reviewView = inflater.inflate(R.layout.review, container, false);
-            TextView reviewTextView = (TextView) reviewView.findViewById(R.id.review_text_view);
-            reviewTextView.setText(review);
-            reviewTextView.setTypeface(qsRegular);
-            mainLinearLayout.addView(reviewView);
-            View divider = inflater.inflate(R.layout.divider, container, false);
-            mainLinearLayout.addView(divider);
-        }
-
+//        List<String> reviewsList = getActivity().getIntent()
+//                .getStringArrayListExtra(Movie.REVIEW_LIST);
+//        if (reviewsList != null && reviewsList.size() > 0) {
+//            for (String review : reviewsList) {
+//                View reviewView = inflater.inflate(R.layout.review, container, false);
+//                TextView reviewTextView = (TextView) reviewView.findViewById(R.id.review_text_view);
+//                reviewTextView.setText(review);
+//                reviewTextView.setTypeface(qsRegular);
+//                mainLinearLayout.addView(reviewView);
+//                View divider = inflater.inflate(R.layout.divider, container, false);
+//                mainLinearLayout.addView(divider);
+//            }
+//        }
 
 
         String posterPathAbsolute = intent.getStringExtra(Movie.TMDB_POSTER_PATH_ABSOLUTE);
@@ -138,6 +136,7 @@ public class DetailActivityFragment extends Fragment {
         return mRootView;
     }
 
+    // helper functions
     private void openTrailer(String url) {
         Uri webpage = Uri.parse(url);
         Intent i = new Intent(Intent.ACTION_VIEW, webpage);
@@ -145,7 +144,29 @@ public class DetailActivityFragment extends Fragment {
             startActivity(i);
         }
     }
-    // ------------- fovorites button ---------------
+    private void setReviewsList(LayoutInflater inflater, ViewGroup container) {
+        List<String> reviewsList = getActivity().getIntent()
+                .getStringArrayListExtra(Movie.REVIEW_LIST);
+        if (reviewsList != null && reviewsList.size() > 0) {
+            for (String review : reviewsList) {
+                View reviewView = inflater.inflate(R.layout.review, container, false);
+                TextView reviewTextView = (TextView) reviewView.findViewById(R.id.review_text_view);
+                reviewTextView.setText(review);
+                reviewTextView.setTypeface(qsRegular);
+                mainLinearLayout.addView(reviewView);
+                View divider = inflater.inflate(R.layout.divider, container, false);
+                mainLinearLayout.addView(divider);
+            }
+        }
+    }
+    private void setQuattrocentoFont() {
+        qsRegular = Typeface.createFromAsset(
+                getActivity().getAssets(), "fonts/QuattrocentoSans-Regular.ttf");
+        qsBold = Typeface.createFromAsset(
+                getActivity().getAssets(), "fonts/QuattrocentoSans-Bold.ttf");
+    }
+
+    // ------------- favorites button ---------------
 
     private void setShareButton() {
 
