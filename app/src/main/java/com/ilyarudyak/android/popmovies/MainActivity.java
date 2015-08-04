@@ -4,8 +4,11 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
+import com.ilyarudyak.android.popmovies.data.Movie;
 
-public class MainActivity extends ActionBarActivity {
+
+public class MainActivity extends ActionBarActivity
+    implements PosterFragment.Callback {
 
     // true if we use tablet layout
     private boolean mTwoPane;
@@ -37,6 +40,28 @@ public class MainActivity extends ActionBarActivity {
             mTwoPane = false;
         }
 
+    }
+
+    // -------------- callback interface ----------------
+
+    @Override
+    public void onPosterSelected(Movie movie) {
+
+        if (mTwoPane) {
+            // create detail fragment with bundle
+            DetailFragment df = new DetailFragment();
+            Bundle args = new Bundle();
+            Movie.buildDetailsBundle(args, movie);
+            df.setArguments(args);
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.detail_container, df)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            // send intent to detail activity
+            startActivity(Movie.buildDetailsIntent(this, movie));
+        }
     }
 }
 
