@@ -1,8 +1,13 @@
 package com.ilyarudyak.android.popmovies.data;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.ilyarudyak.android.popmovies.DetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,7 +120,7 @@ public class Movie {
 
     }
 
-    // stage 2
+
     public void setMovieTrailers(List<Trailer> trailers) {
         movieTrailers.addAll(trailers);
     }
@@ -192,6 +197,35 @@ public class Movie {
     }
     public void setMovieReviews(List<String> movieReviews) {
         this.movieReviews.addAll(movieReviews);
+    }
+
+    public static Intent buildDetailsIntent(Context context, Movie movie) {
+        Intent intent = new Intent(context, DetailActivity.class)
+                .putExtra(TMDB_ID, movie.getId())
+                .putExtra(TMDB_ORIGINAl_TITLE, movie.getOriginalTitle())
+                .putExtra(TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute())
+                .putExtra(TMDB_RELEASE_DATE, movie.getReleaseDate())
+                .putExtra(TMDB_USER_RATING, Double.toString(movie.getUserRating()))
+                .putExtra(TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis())
+                .putParcelableArrayListExtra(TRAILER_LIST,
+                        (ArrayList<? extends Parcelable>) movie.getMovieTrailers())
+                .putStringArrayListExtra(REVIEW_LIST,
+                        (ArrayList<String>) movie.getMovieReviews());
+        return intent;
+    }
+
+    public static void buildDetailsBundle(Bundle bundle, Movie movie) {
+
+        bundle.putInt(TMDB_ID, movie.getId());
+        bundle.putString(TMDB_ORIGINAl_TITLE, movie.getOriginalTitle());
+        bundle.putString(TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute());
+        bundle.putString(TMDB_RELEASE_DATE, movie.getReleaseDate());
+        bundle.putString(TMDB_USER_RATING, Double.toString(movie.getUserRating()));
+        bundle.putString(TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis());
+        bundle.putParcelableArrayList(TRAILER_LIST,
+                (ArrayList<? extends Parcelable>) movie.getMovieTrailers());
+        bundle.putStringArrayList(REVIEW_LIST,
+                (ArrayList<String>) movie.getMovieReviews());
     }
 }
 
