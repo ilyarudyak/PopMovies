@@ -30,13 +30,22 @@ public class PicassoAdapter  extends ArrayAdapter<Movie> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         Movie movie = getItem(position);
+        ViewHolder holder;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext())
                     .inflate(R.layout.grid_item_image, parent, false);
+
+            // cache view fields into the holder
+            holder = new ViewHolder();
+            holder.imageView = (ImageView) convertView.findViewById(R.id.grid_item_image);
+            convertView.setTag(holder);
+        } else {
+            // view already exists, get the holder instance from the view
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.grid_item_image);
+        ImageView imageView = holder.imageView;
         // to eliminate horizontal spacing between images on a tablet
         imageView.setAdjustViewBounds(true);
 
@@ -48,6 +57,13 @@ public class PicassoAdapter  extends ArrayAdapter<Movie> {
                 .into(imageView);
 
         return convertView;
+    }
+
+    /**
+     * Cache of the children views for a forecast list item.
+     */
+    public static class ViewHolder {
+        public ImageView imageView;
     }
 }
 
