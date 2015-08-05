@@ -1,12 +1,13 @@
 package com.ilyarudyak.android.popmovies;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.ilyarudyak.android.popmovies.data.Movie;
 import com.ilyarudyak.android.popmovies.data.PicassoAdapter;
@@ -39,6 +41,8 @@ public class PosterFragment extends Fragment {
     // in onPostExecute() method of our fetch task
     private PicassoAdapter mPicassoAdapter;
 
+    private Callback mCallback;
+
     public PosterFragment() {
     }
 
@@ -50,33 +54,25 @@ public class PosterFragment extends Fragment {
         GridView gridView = (GridView) v.findViewById(R.id.gridView);
         mPicassoAdapter = new PicassoAdapter(getActivity(), new ArrayList<Movie>());
 
+        // set empty view in case movies list is empty, no internet etc.
+        View emptyView = v.findViewById(R.id.empty_movies_list);
+        gridView.setEmptyView(emptyView);
+
         gridView.setAdapter(mPicassoAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Movie movie = mPicassoAdapter.getItem(position);
+                Log.d(LOG_TAG, "we are in onclick");
                 new FetchTrailersReviewsTask().execute(movie);
 
             }
         });
 
-        return v;
-    }
 
-    private Intent buildDetailsIntent(Movie movie) {
-        Intent intent = new Intent(getActivity(), DetailActivity.class)
-                .putExtra(Movie.TMDB_ID, movie.getId())
-                .putExtra(Movie.TMDB_ORIGINAl_TITLE, movie.getOriginalTitle())
-                .putExtra(Movie.TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute())
-                .putExtra(Movie.TMDB_RELEASE_DATE, movie.getReleaseDate())
-                .putExtra(Movie.TMDB_USER_RATING, Double.toString(movie.getUserRating()))
-                .putExtra(Movie.TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis())
-                .putParcelableArrayListExtra(Movie.TRAILER_LIST,
-                        (ArrayList<? extends Parcelable>) movie.getMovieTrailers())
-                .putStringArrayListExtra(Movie.REVIEW_LIST,
-                        (ArrayList<String>) movie.getMovieReviews());
-        return intent;
+
+        return v;
     }
 
     @Override
@@ -116,7 +112,7 @@ public class PosterFragment extends Fragment {
         } else if (id == R.id.action_highest_rated) {
             new FetchMoviesTask().execute(NetworkUtils.HIGHEST_RATED);
             return true;
-        } else if (id == R.id.action_favorities) {
+        } else if (id == R.id.action_favorities_api) {
             new FetchFavoritieMoviesTask().execute();
             return true;
         } else if (id == R.id.action_settings) {
@@ -148,6 +144,7 @@ public class PosterFragment extends Fragment {
                 mPicassoAdapter.clear();
                 mPicassoAdapter.addAll(result);
             }
+            updateEmptyView();
         }
     }
 
@@ -202,9 +199,67 @@ public class PosterFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            startActivity(buildDetailsIntent(mMovie));
+            Log.d(LOG_TAG, "we are inside async task");
+            mCallback.onPosterSelected(mMovie);
         }
     }
+
+    // -------------- callback interface ----------------
+
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        void onPosterSelected(Movie movie);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (Callback) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallback = null;
+    }
+
+    // -------- empty view for no connection etc. ---------
+
+    /*
+    Updates the empty list view with contextually relevant information that the user can
+    use to determine why they aren't seeing weather.
+ */
+    private void updateEmptyView() {
+        if ( mPicassoAdapter.getCount() == 0 ) {
+            TextView tv = null;
+            if (getView() != null) {
+                tv = (TextView) getView().findViewById(R.id.empty_movies_list);
+            }
+            if (tv != null) {
+                int message = R.string.empty_movies_list;
+                if (!NetworkUtils.isNetworkAvailable(getActivity()) ) {
+                    message = R.string.empty_movies_list_no_network;
+                }
+                tv.setText(message);
+            }
+        }
+    }
+
 
 
 }

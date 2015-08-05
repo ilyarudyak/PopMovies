@@ -15,19 +15,12 @@
         android:numColumns="auto_fit"
 
         android:horizontalSpacing="0dp"
-        android:verticalSpacing="-5dp"
+        android:verticalSpacing="0dp"
 
-        android:columnWidth="150dp"
+        android:columnWidth="160dp"
 
-        android:stretchMode="columnWidth" />
-
-    <TextView
-        android:id="@+id/empty_movies_list"
-        android:text="@string/empty_movies_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"/>
-
+        android:stretchMode="columnWidth"
+         />
 </LinearLayout>
 
 

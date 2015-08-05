@@ -21,12 +21,6 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_favorities_db"
-        android:title="@string/action_favorities_db"
-        android:orderInCategory="4"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
