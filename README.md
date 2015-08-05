@@ -1,4 +1,14 @@
 # PopMovies
+We document here some implementation details primarily related to the stage 2 of the project.
+
+## User interface
+1. We allow user to choose UI for `PosterFragment` from given in the rubric options including favorities. We have two implementations of Favorities (only on a phone, on a tablet we use only the first one):
+  * `Favorities (API)`. In the first implementation we store favorite movies id in `SharedPreference`. So when a user clicks the favorities button we add the movies id into set from `SharedPreference`. We also check the list of movies when rendering layout of detail fragment and the favorities button is disabled for movies in this list. When a user clicks on this option in the menu we make new API calls for each movie using its id (this API call is not mentioned in the project description: https://api.themoviedb.org/3/movie/135397?api_key=..., where 135397 is the movie id).
+  * `Favorities (DB)`. Here we use our implementation of content provider (see below).
+2. We also implemented shared intent to share first trailer in the list. Before trying to load poster images we added check of internet connection. We also implemented `ViewHolder` pattern in our adapter.
+
+## Movie class
+1. We encapsulate movie details into Movie class. We also create `Trailer` class as an inner class of `Movie`. It implements `Parcelable` interface to be stored into bundle. We store reviews just as `List<String>`. In a production app we will probably encapsulate them in class as well.
 
 
 ## Tablet 
@@ -12,4 +22,6 @@
 ### Callback
 1. Code for callback implementation is taken from [android site](http://developer.android.com/training/basics/fragments/communicating.html). It's basically the same that is used in Sunshine. We use Movie as a parameter in callback method. We call `mCallback.onPosterSelected(mMovie)` inside `onPostExecute()` method of our background task to fetch trailers and reviews. 
 2. We use `mTwoPane` member variable in callback implementation to distinguish between one and two pane layouts. In case of a phone layout we send intent to detail activity as usual. In case of a tablet layout we create new detail fragment and replace the existing one.
-3. 
+3. We refactor intent to package all data into bundle and build intent with `putExtra(BUNDLE, bundle)`. Than in `DetailActivity` we use this bundle to set detail fragment arguments `df.setArguments(bundle)`.
+
+## Content provider
