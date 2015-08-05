@@ -50,9 +50,7 @@ public class MainActivity extends ActionBarActivity
         if (mTwoPane) {
             // create detail fragment with bundle
             DetailFragment df = new DetailFragment();
-            Bundle args = new Bundle();
-            Movie.buildDetailsBundle(args, movie);
-            df.setArguments(args);
+            df.setArguments(Movie.buildDetailsBundle(movie));
             getFragmentManager()
                     .beginTransaction()
                     .replace(R.id.detail_container, df)

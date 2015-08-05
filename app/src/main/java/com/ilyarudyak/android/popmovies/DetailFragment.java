@@ -43,7 +43,7 @@ public class DetailFragment extends Fragment {
     private TextView mPlotSynopsis;
 
     private Integer mMovieId;
-    private Intent mIntent;
+    private Bundle mBundle;
 
     private List<Movie.Trailer> mTrailerList;
     private ShareActionProvider mShareActionProvider;
@@ -73,7 +73,11 @@ public class DetailFragment extends Fragment {
 
         mRootView = inflater.inflate(R.layout.fragment_detail, container, false);
         mMainLinearLayout = (LinearLayout) mRootView.findViewById(R.id.mainLinearLayout);
-        mIntent = getActivity().getIntent();
+
+        Bundle args = getArguments();
+        if (args != null) {
+            mBundle = args.getBundle(Movie.BUNDLE);
+        }
 
         mOriginalTitle = (TextView) mRootView.findViewById(R.id.textViewOriginalTitle);
         mPosterImageView = (ImageView) mRootView.findViewById(R.id.imageViewPoster);
@@ -81,13 +85,13 @@ public class DetailFragment extends Fragment {
         mUserRating = (TextView) mRootView.findViewById(R.id.textViewUserRating);
         mPlotSynopsis = (TextView) mRootView.findViewById(R.id.textViewPlotSynopsis);
 
-        if (mIntent != null && mIntent.getData() != null) {
-            mMovieId = mIntent.getIntExtra(Movie.TMDB_ID, 0);
-            mOriginalTitle.setText(mIntent.getStringExtra(Movie.TMDB_ORIGINAl_TITLE));
-            mReleaseDate.setText(mIntent.getStringExtra(Movie.TMDB_RELEASE_DATE).substring(0, 4));
+        if (mBundle != null) {
+            mMovieId = mBundle.getInt(Movie.TMDB_ID, 0);
+            mOriginalTitle.setText(mBundle.getString(Movie.TMDB_ORIGINAl_TITLE));
+            mReleaseDate.setText(mBundle.getString(Movie.TMDB_RELEASE_DATE).substring(0, 4));
             final String MAX_RATING = "/10";
-            mUserRating.setText(mIntent.getStringExtra(Movie.TMDB_USER_RATING) + MAX_RATING);
-            mPlotSynopsis.setText(mIntent.getStringExtra(Movie.TMDB_PLOT_SYNOPSIS));
+            mUserRating.setText(mBundle.getString(Movie.TMDB_USER_RATING) + MAX_RATING);
+            mPlotSynopsis.setText(mBundle.getString(Movie.TMDB_PLOT_SYNOPSIS));
         }
     }
     private void openTrailer(String url) {
@@ -125,9 +129,9 @@ public class DetailFragment extends Fragment {
     }
     private void addListOfTrailers(LayoutInflater inflater, ViewGroup container) {
         // stage 2: add list of trailers
-        if (mIntent != null && mIntent.getData() != null) {
-            mTrailerList = mIntent
-                    .getParcelableArrayListExtra(Movie.TRAILER_LIST);
+        if (mBundle != null) {
+            mTrailerList = mBundle
+                    .getParcelableArrayList(Movie.TRAILER_LIST);
             for (Movie.Trailer mt : mTrailerList) {
                 View trailerView = inflater.inflate(R.layout.trailer, container, false);
                 final String url = mt.getTrailerPathAbsolute();
@@ -154,8 +158,8 @@ public class DetailFragment extends Fragment {
         }
     }
     private void setPosterImage() {
-        if (mIntent != null && mIntent.getData() != null) {
-            String posterPathAbsolute = mIntent.getStringExtra(Movie.TMDB_POSTER_PATH_ABSOLUTE);
+        if (mBundle != null) {
+            String posterPathAbsolute = mBundle.getString(Movie.TMDB_POSTER_PATH_ABSOLUTE);
             Picasso.with(getActivity())
                     .load(posterPathAbsolute)
                     .placeholder(R.raw.place_holder)

@@ -48,6 +48,8 @@ public class Movie {
 
     public static final String TMDB_REVIEW =                        "content";
     public static final String REVIEW_LIST = "com.ilyarudyak.android.popmovies.data.review_list";
+
+    public static final String BUNDLE = "bundle";
     
     private List<Trailer> movieTrailers;
     private List<String> movieReviews;
@@ -201,21 +203,23 @@ public class Movie {
 
     public static Intent buildDetailsIntent(Context context, Movie movie) {
         Intent intent = new Intent(context, DetailActivity.class)
-                .putExtra(TMDB_ID, movie.getId())
-                .putExtra(TMDB_ORIGINAl_TITLE, movie.getOriginalTitle())
-                .putExtra(TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute())
-                .putExtra(TMDB_RELEASE_DATE, movie.getReleaseDate())
-                .putExtra(TMDB_USER_RATING, Double.toString(movie.getUserRating()))
-                .putExtra(TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis())
-                .putParcelableArrayListExtra(TRAILER_LIST,
-                        (ArrayList<? extends Parcelable>) movie.getMovieTrailers())
-                .putStringArrayListExtra(REVIEW_LIST,
-                        (ArrayList<String>) movie.getMovieReviews());
+                .putExtra(BUNDLE, buildDetailsBundle(movie));
+//                .putExtra(TMDB_ID, movie.getId())
+//                .putExtra(TMDB_ORIGINAl_TITLE, movie.getOriginalTitle())
+//                .putExtra(TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute())
+//                .putExtra(TMDB_RELEASE_DATE, movie.getReleaseDate())
+//                .putExtra(TMDB_USER_RATING, Double.toString(movie.getUserRating()))
+//                .putExtra(TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis())
+//                .putParcelableArrayListExtra(TRAILER_LIST,
+//                        (ArrayList<? extends Parcelable>) movie.getMovieTrailers())
+//                .putStringArrayListExtra(REVIEW_LIST,
+//                        (ArrayList<String>) movie.getMovieReviews());
         return intent;
     }
 
-    public static void buildDetailsBundle(Bundle bundle, Movie movie) {
+    public static Bundle buildDetailsBundle(Movie movie) {
 
+        Bundle bundle = new Bundle();
         bundle.putInt(TMDB_ID, movie.getId());
         bundle.putString(TMDB_ORIGINAl_TITLE, movie.getOriginalTitle());
         bundle.putString(TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute());
@@ -226,6 +230,7 @@ public class Movie {
                 (ArrayList<? extends Parcelable>) movie.getMovieTrailers());
         bundle.putStringArrayList(REVIEW_LIST,
                 (ArrayList<String>) movie.getMovieReviews());
+        return bundle;
     }
 }
 
