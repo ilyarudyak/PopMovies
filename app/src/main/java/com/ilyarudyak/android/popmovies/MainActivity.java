@@ -3,12 +3,15 @@ package com.ilyarudyak.android.popmovies;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 
 import com.ilyarudyak.android.popmovies.data.Movie;
 
 
 public class MainActivity extends ActionBarActivity
     implements PosterFragment.Callback {
+
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
 
     // true if we use tablet layout
     private boolean mTwoPane;
@@ -47,10 +50,14 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onPosterSelected(Movie movie) {
 
+        Log.d(LOG_TAG, "we are inside callback method");
+        Log.d(LOG_TAG, "mTwoPane=" + mTwoPane);
         if (mTwoPane) {
             // create detail fragment with bundle
             DetailFragment df = new DetailFragment();
-            df.setArguments(Movie.buildDetailsBundle(movie));
+            Bundle args = Movie.buildDetailsBundle(movie);
+            Log.d(LOG_TAG, "args created " + args);
+            df.setArguments(args);
             getFragmentManager()
                     .beginTransaction()
                     .replace(R.id.detail_container, df)

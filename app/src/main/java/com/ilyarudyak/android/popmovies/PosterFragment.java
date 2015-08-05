@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -58,6 +59,7 @@ public class PosterFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Movie movie = mPicassoAdapter.getItem(position);
+                Log.d(LOG_TAG, "we are in onclick");
                 new FetchTrailersReviewsTask().execute(movie);
 
             }
@@ -189,6 +191,7 @@ public class PosterFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            Log.d(LOG_TAG, "we are inside async task");
             mCallback.onPosterSelected(mMovie);
         }
     }

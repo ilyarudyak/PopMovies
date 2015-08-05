@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -76,7 +77,9 @@ public class DetailFragment extends Fragment {
 
         Bundle args = getArguments();
         if (args != null) {
-            mBundle = args.getBundle(Movie.BUNDLE);
+            mBundle = args;
+            Log.d(LOG_TAG, "args is not null");
+            Log.d(LOG_TAG, "what about bundle" + mBundle);
         }
 
         mOriginalTitle = (TextView) mRootView.findViewById(R.id.textViewOriginalTitle);
@@ -88,6 +91,7 @@ public class DetailFragment extends Fragment {
         if (mBundle != null) {
             mMovieId = mBundle.getInt(Movie.TMDB_ID, 0);
             mOriginalTitle.setText(mBundle.getString(Movie.TMDB_ORIGINAl_TITLE));
+            Log.d(LOG_TAG, "release date" + mBundle.getString(Movie.TMDB_RELEASE_DATE));
             mReleaseDate.setText(mBundle.getString(Movie.TMDB_RELEASE_DATE).substring(0, 4));
             final String MAX_RATING = "/10";
             mUserRating.setText(mBundle.getString(Movie.TMDB_USER_RATING) + MAX_RATING);
