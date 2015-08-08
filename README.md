@@ -25,3 +25,8 @@ We document here some implementation details primarily related to the stage 2 of
 3. We refactor intent to package all data into bundle and build intent with `putExtra(BUNDLE, bundle)`. Than in `DetailActivity` we use this bundle to set detail fragment arguments `df.setArguments(bundle)`.
 
 ## Content provider
+1. We create content provider for database of popular movies. We may add or delete a movie or slect all movies and show its posters. We don't use any libraries and create it from scratch.
+2. We insert and delete a movie upon click on a favorite button. We insert a movie using `Bundle` object and helper method `Movie.buildContentValuesFromBundle()`. We delete a movie using its `id` and sql `WHERE tmdb_id = id`.
+3. We create custom `CursorAdapter` that is similar to our `PicassoAdapter`, in particular we fetch posters using `Picasso`. We don't store any posters on a device. In case of no internet connection we just get an error message: `no internet connection`. 
+4. We use CursorLoader to get information about posters from database in `FavPosterFragment` and all other information in `FavDetailFragment`. An alternative solution would be use `AsynctaskLoader<List<Movie>>` - we probably can use `PicassoAdapter` in this case. We use `AsynTask` to add or remove a movie from database.
+5. We create new activities to show favorites and their details just not to get overcomplicated fragments. We also have different logic of calling `DetailFragment` - we use `Bundle` and `Uri` in these cases.
