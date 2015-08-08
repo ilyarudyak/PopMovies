@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.ilyarudyak.android.popmovies.data.Movie;
 import com.ilyarudyak.android.popmovies.data.PicassoAdapter;
+import com.ilyarudyak.android.popmovies.favorities.FavPosterActivity;
 import com.ilyarudyak.android.popmovies.utils.NetworkUtils;
 
 import java.util.ArrayList;
@@ -115,7 +116,10 @@ public class PosterFragment extends Fragment {
         } else if (id == R.id.action_favorities_api) {
             new FetchFavoritieMoviesTask().execute();
             return true;
-        } else if (id == R.id.action_settings) {
+        } else if (id == R.id.action_favorities_db) {
+            startActivity(new Intent(getActivity(), FavPosterActivity.class));
+            return true;
+        }else if (id == R.id.action_settings) {
             startActivity(new Intent(getActivity(), SettingsActivity.class));
             return true;
         }

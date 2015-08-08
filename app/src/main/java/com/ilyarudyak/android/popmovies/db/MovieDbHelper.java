@@ -27,7 +27,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieTable._ID +                    " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 MovieTable.DB_TMDB_ID +             " INTEGER UNIQUE NOT NULL, " +
                 MovieTable.DB_TITLE +               " TEXT NOT NULL, " +
-                MovieTable.DB_POSTER_PATH_ABSOLUTE +         " TEXT NOT NULL, " +
+                MovieTable.DB_POSTER_PATH_ABSOLUTE + " TEXT NOT NULL, " +
                 MovieTable.DB_RELEASE_DATE +        " TEXT NOT NULL, " +
                 MovieTable.DB_USER_RATING +         " REAL NOT NULL, " +
                 MovieTable.DB_PLOT_SYNOPSIS +       " TEXT NOT NULL " +
@@ -52,6 +52,11 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_TRAILER_TABLE);
         db.execSQL(SQL_CREATE_REVIEW_TABLE);
 
+        final String jw = "INSERT INTO movie VALUES(NULL, 1, 't', " +
+                "'http://image.tmdb.org/t/p/w185/uXZYawqUsChGSj54wcuBtEdUJbh.jpg', " +
+                "'rd', 1.0, 'ps')";
+
+        db.execSQL(jw);
     }
 
     @Override

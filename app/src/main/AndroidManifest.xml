@@ -31,9 +31,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
         <provider
-            android:authorities="com.ilyarudyak.android.popmovies"
-            android:name=".db.MovieProvider" />
+            android:name=".db.MovieProvider"
+            android:authorities="com.ilyarudyak.android.popmovies" />
+
+        <activity
+            android:name=".favorities.FavPosterActivity"
+            android:label="@string/title_activity_fav_poster" >
+        </activity>
+        <activity
+            android:name=".favorities.FavDetailActivity"
+            android:label="@string/title_activity_fav_detail" >
+        </activity>
     </application>
 
 </manifest>

@@ -49,7 +49,7 @@ public class MovieProvider extends ContentProvider {
                         String[] selectionArgs,
                         String sortOrder) {
         Cursor c;
-        final SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
+        final SQLiteDatabase db = mMovieDbHelper.getReadableDatabase();
         final int match = sUriMatcher.match(uri);
         switch(match) {
             case MOVIES:

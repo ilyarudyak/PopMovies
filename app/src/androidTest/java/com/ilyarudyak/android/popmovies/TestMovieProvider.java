@@ -1,52 +1,43 @@
 package com.ilyarudyak.android.popmovies;
 
+import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.test.AndroidTestCase;
 
 import com.ilyarudyak.android.popmovies.db.MovieContract;
-import com.ilyarudyak.android.popmovies.db.MovieDbHelper;
 
 /**
- * Created by ilyarudyak on 8/6/15.
+ * Created by ilyarudyak on 8/8/15.
  */
 public class TestMovieProvider extends AndroidTestCase {
 
     public static final String TAG = TestMovieProvider.class.getSimpleName();
 
-    private SQLiteDatabase db;
-    private Cursor c;
-
     @Override
     public void setUp() {
-        db = new MovieDbHelper(mContext).getWritableDatabase();
+
+        mContext.getContentResolver().delete(
+                MovieContract.MovieTable.CONTENT_URI,
+                null,
+                null
+        );
     }
 
-
-    public void testQuery() throws Throwable {
+    public void testInsert() throws Throwable {
 
         String plot = "Twenty-two years after the events of Jurassic Park, " +
                 "Isla Nublar now features a fully functioning dinosaur theme park, " +
                 "Jurassic World, as originally envisioned by John Hammond.";
 
-        // insert entry to database
-        String query = "INSERT INTO movie VALUES (" +
-                "NULL, " +
-                "135397, " +
-                "'Jurassic World', " +
-                "'http://image.tmdb.org/t/p/w185/uXZYawqUsChGSj54wcuBtEdUJbh.jpg', " +
-                "'2015-06-12', " +
-                "7.0, " +
-                "'Twenty-two years after the events of Jurassic Park, Isla Nublar now " +
-                "features a fully functioning dinosaur theme park, Jurassic World, as " +
-                "originally envisioned by John Hammond.')";
-        db.execSQL(query);
+        ContentValues cv = TestUtils.createJWMovieContentValues();
+        mContext.getContentResolver().insert(MovieContract.MovieTable.CONTENT_URI, cv);
 
         // query db and check entry
-        c = mContext.getContentResolver().query(
+        Cursor c = mContext.getContentResolver().query(
                 MovieContract.MovieTable.CONTENT_URI,
                 null, null, null, null);
-        assertEquals("problems from testQuery()", 1, c.getCount());
+        assertEquals("problems from testInsert()", 1, c.getCount());
 
         c.moveToFirst();
         assertEquals(135397, c.getInt(1));
@@ -56,12 +47,22 @@ public class TestMovieProvider extends AndroidTestCase {
         assertEquals(7.0, c.getDouble(5));
         assertEquals(plot, c.getString(6));
         c.close();
-
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        db.close();
-        mContext.deleteDatabase(MovieDbHelper.DATABASE_NAME);
+    public void testDelete() throws Throwable {
+
+        // insert entry to database
+        ContentValues cv = TestUtils.createJWMovieContentValues();
+        Uri uri = mContext.getContentResolver().insert(MovieContract.MovieTable.CONTENT_URI, cv);
+
+        mContext.getContentResolver().delete(uri, null, null);
+
+        // query db and check entry
+        Cursor c = mContext.getContentResolver().query(
+                MovieContract.MovieTable.CONTENT_URI,
+                null, null, null, null);
+        assertEquals("problems from testDelete()", 0, c.getCount());
+        c.close();
+
     }
 }

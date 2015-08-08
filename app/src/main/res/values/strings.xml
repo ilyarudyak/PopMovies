@@ -38,5 +38,8 @@
     <string name="empty_movies_list">no movies available. </string>
     <string name="empty_movies_list_no_network">no movies available.
         network is not available.</string>
+    <string name="title_activity_fav_poster">FavPosterActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_fav_detail">FavDetailActivity</string>
 
 </resources>
