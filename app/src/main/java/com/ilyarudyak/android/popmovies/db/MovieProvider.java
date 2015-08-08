@@ -101,10 +101,14 @@ public class MovieProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
+
+        // this makes delete all rows return the number of rows deleted
+        if (selection == null) selection = "1";
+
         switch(match) {
             case MOVIES:
                 // delete everything from table and return the number of rows deleted
-                return db.delete(MovieTable.DB_TABLE_NAME, "1", null);
+                return db.delete(MovieTable.DB_TABLE_NAME, selection, selectionArgs);
             case MOVIES_ID:
                 String id = MovieTable.getMovieId(uri);
                 String selectionCriteria = BaseColumns._ID + "=" + id

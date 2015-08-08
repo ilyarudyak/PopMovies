@@ -1,9 +1,11 @@
 package com.ilyarudyak.android.popmovies;
 
 import android.app.Fragment;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
@@ -21,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ilyarudyak.android.popmovies.data.Movie;
+import com.ilyarudyak.android.popmovies.db.MovieContract;
 import com.ilyarudyak.android.popmovies.utils.FavoritesUtils;
 import com.squareup.picasso.Picasso;
 
@@ -60,7 +63,7 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         setMainLinearLayout(inflater, container);
-        setShareButton();
+        setFavButton();
         setQuattrocentoFont();
         addListOfTrailers(inflater, container);
         setReviewsList(inflater, container);
@@ -174,20 +177,31 @@ public class DetailFragment extends Fragment {
 
     // ------------- favorites button ---------------
 
-    private void setShareButton() {
+    private void setFavButton() {
 
-        Button shareButton = (Button) mRootView.findViewById(R.id.button_favorite);
-        shareButton.setOnClickListener(new View.OnClickListener() {
+        final Button favButton = (Button) mRootView.findViewById(R.id.button_favorite);
+        if (!isFavorite()) {
+            favButton.setText(getActivity().getString(R.string.button_favorite));
+        } else {
+            favButton.setText(getActivity().getString(R.string.button_favorite_remove));
+        }
+        favButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FavoritesUtils.putFavorities(getActivity(), mMovieId);
+                if (!isFavorite()) {
+                    // put to favorities and database
+                    FavoritesUtils.putFavorities(getActivity(), mMovieId);
+                    favButton.setText(getActivity().getString(R.string.button_favorite_remove));
+                    new AddMovieToFavDbTask().execute();
+                } else {
+                    // remove from favorities and database
+                    FavoritesUtils.removeFromFavorities(getActivity(), mMovieId);
+                    favButton.setText(getActivity().getString(R.string.button_favorite));
+                    new RemoveMovieFromFavDbTask().execute();
+                }
             }
         });
 
-        // make button inactive for favorites
-        if (mMovieId != null && isFavorite()) {
-            shareButton.setEnabled(false);
-        }
     }
 
     // check if movie is already favorite
@@ -240,6 +254,31 @@ public class DetailFragment extends Fragment {
 
 
     }
+
+    // -------------- add/remove favorities to/from db --------------
+
+    public class AddMovieToFavDbTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            ContentValues cv = Movie.buildContentValuesFromBundle(mBundle);
+            getActivity().getContentResolver().insert(MovieContract.MovieTable.CONTENT_URI,cv);
+            return null;
+        }
+    }
+    public class RemoveMovieFromFavDbTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            getActivity().getContentResolver().delete(MovieContract.MovieTable.CONTENT_URI,
+                    "tmdb_id=" + mMovieId, null);
+            return null;
+        }
+    }
+
+
 
 
 }

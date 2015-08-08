@@ -36,4 +36,19 @@ public class FavoritesUtils {
         SharedPreferences.Editor editor = c.getSharedPreferences(PREFS_NAME, 0).edit();
         editor.putStringSet(FAVORITIES, favorites).apply();
     }
+    public static void removeFromFavorities(Context c, Integer movieId) {
+
+        // get set of favorite movies and remove elemant
+        Set<String> favorites = getFavorities(c);
+        favorites.remove(Integer.toString(movieId));
+
+        // put updated set back into prefs file
+        SharedPreferences.Editor editor = c.getSharedPreferences(PREFS_NAME, 0).edit();
+        editor.putStringSet(FAVORITIES, favorites).apply();
+    }
+
+    public static void addFavoriteMovieToDb(Context c, Integer movieId) {
+
+    }
+
 }

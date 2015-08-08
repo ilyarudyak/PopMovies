@@ -1,5 +1,6 @@
 package com.ilyarudyak.android.popmovies.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.ilyarudyak.android.popmovies.DetailActivity;
+import com.ilyarudyak.android.popmovies.db.MovieContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -216,7 +218,6 @@ public class Movie {
 //                        (ArrayList<String>) movie.getMovieReviews());
         return intent;
     }
-
     public static Bundle buildDetailsBundle(Movie movie) {
 
         Bundle bundle = new Bundle();
@@ -232,6 +233,35 @@ public class Movie {
                 (ArrayList<String>) movie.getMovieReviews());
         return bundle;
     }
+
+    public static ContentValues buildContentValuesFromMovie(Movie m) {
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(MovieContract.MovieTable.DB_TMDB_ID, m.getId());
+        cv.put(MovieContract.MovieTable.DB_TITLE, m.getOriginalTitle());
+        cv.put(MovieContract.MovieTable.DB_POSTER_PATH_ABSOLUTE, m.getPosterPathAbsolute());
+        cv.put(MovieContract.MovieTable.DB_RELEASE_DATE, m.getReleaseDate());
+        cv.put(MovieContract.MovieTable.DB_USER_RATING, m.getUserRating());
+        cv.put(MovieContract.MovieTable.DB_PLOT_SYNOPSIS, m.getPlotSynopsis());
+
+        return cv;
+
+    }
+    public static ContentValues buildContentValuesFromBundle(Bundle b) {
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(MovieContract.MovieTable.DB_TMDB_ID, b.getInt(TMDB_ID, 0));
+        cv.put(MovieContract.MovieTable.DB_TITLE, b.getString(TMDB_ORIGINAl_TITLE));
+        cv.put(MovieContract.MovieTable.DB_POSTER_PATH_ABSOLUTE, b.getString(TMDB_POSTER_PATH_ABSOLUTE));
+        cv.put(MovieContract.MovieTable.DB_RELEASE_DATE, b.getString(TMDB_RELEASE_DATE));
+        cv.put(MovieContract.MovieTable.DB_USER_RATING, b.getString(TMDB_USER_RATING));
+        cv.put(MovieContract.MovieTable.DB_PLOT_SYNOPSIS, b.getString(TMDB_PLOT_SYNOPSIS));
+
+        return cv;
+    }
+
 }
 
 

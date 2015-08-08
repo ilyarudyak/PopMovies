@@ -14,11 +14,11 @@ import com.squareup.picasso.Picasso;
 /**
  * Created by ilyarudyak on 8/8/15.
  */
-public class FavAdapter extends CursorAdapter {
+public class MovieFavAdapter extends CursorAdapter {
 
     private Context mContext;
 
-    public FavAdapter(Context context, Cursor c, int flags) {
+    public MovieFavAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
         mContext = context;
     }

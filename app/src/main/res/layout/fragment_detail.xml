@@ -68,7 +68,6 @@
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="83dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/button_favorite"
                     android:id="@+id/button_favorite"
                     android:layout_marginTop="16dp"
                     android:background="@color/teal500"

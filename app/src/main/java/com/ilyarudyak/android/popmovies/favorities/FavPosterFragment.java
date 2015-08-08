@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 
 import com.ilyarudyak.android.popmovies.R;
-import com.ilyarudyak.android.popmovies.db.FavAdapter;
+import com.ilyarudyak.android.popmovies.db.MovieFavAdapter;
 import com.ilyarudyak.android.popmovies.db.MovieContract;
 
 /**
@@ -23,7 +23,7 @@ public class FavPosterFragment extends Fragment
 
     private static final int FAV_LOADER = 0;
 
-    private FavAdapter mFavAdapter;
+    private MovieFavAdapter mMovieFavAdapter;
 
     public FavPosterFragment() {
     }
@@ -34,9 +34,9 @@ public class FavPosterFragment extends Fragment
 
         View rootView = inflater.inflate(R.layout.fragment_poster, container, false);
 
-        mFavAdapter = new FavAdapter(getActivity(), null, 0);
+        mMovieFavAdapter = new MovieFavAdapter(getActivity(), null, 0);
         GridView gridView = (GridView) rootView.findViewById(R.id.gridView);
-        gridView.setAdapter(mFavAdapter);
+        gridView.setAdapter(mMovieFavAdapter);
 
         return rootView;
     }
@@ -57,10 +57,10 @@ public class FavPosterFragment extends Fragment
     }
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mFavAdapter.swapCursor(data);
+        mMovieFavAdapter.swapCursor(data);
     }
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mFavAdapter.swapCursor(null);
+        mMovieFavAdapter.swapCursor(null);
     }
 }

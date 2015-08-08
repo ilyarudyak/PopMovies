@@ -32,7 +32,11 @@
     <string name="trailers">Trailers:</string>
     <string name="trailer_title">Trailer</string>
     <string name="action_share_trailer">Share</string>
+
+    <!-- favorite button -->
     <string name="button_favorite">Mark as Favorite</string>
+    <string name="button_favorite_remove">Remove from Favorites</string>
+
 
     <!-- handle empty adapter, no internet etc.-->
     <string name="empty_movies_list">no movies available. </string>
