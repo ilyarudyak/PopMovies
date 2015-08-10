@@ -52,6 +52,7 @@ public class DetailFragment extends Fragment {
     private ShareActionProvider mShareActionProvider;
 
     private Typeface qsRegular;
+    private Typeface qsBold;
 
     public DetailFragment() {
     }
@@ -61,13 +62,12 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         setBundle();
+        setQuattrocentoFont();
         inflateMainLayout(inflater, container);
         setMainLayoutFromBundle();
 
         setTrailerList(inflater, container);
         setReviewList(inflater, container);
-
-        setQuattrocentoFont();
 
         return mRootView;
     }
@@ -117,6 +117,11 @@ public class DetailFragment extends Fragment {
             } else {
                 mPlotSynopsis.setText(getActivity().getString(R.string.placeholder_plot));
             }
+
+            mOriginalTitle.setTypeface(qsBold);
+            mReleaseDate.setTypeface(qsRegular);
+            mUserRating.setTypeface(qsRegular);
+            mPlotSynopsis.setTypeface(qsRegular);
         }
     }
     private void setPosterImage() {
@@ -141,6 +146,8 @@ public class DetailFragment extends Fragment {
 
                 LinearLayout l = (LinearLayout) inflater.inflate(R.layout.trailers_title,
                         container, false);
+                TextView tv = (TextView) l.findViewById(R.id.trailers_title);
+                tv.setTypeface(qsRegular);
                 mMainLinearLayout.addView(l);
 
                 for (Movie.Trailer mt : mTrailerList) {
@@ -176,6 +183,8 @@ public class DetailFragment extends Fragment {
 
                 LinearLayout l = (LinearLayout) inflater.inflate(R.layout.reviews_title,
                         container, false);
+                TextView tv = (TextView) l.findViewById(R.id.reviews_title);
+                tv.setTypeface(qsRegular);
                 mMainLinearLayout.addView(l);
 
                 for (String review : mReviewList) {
@@ -194,13 +203,8 @@ public class DetailFragment extends Fragment {
     private void setQuattrocentoFont() {
         qsRegular = Typeface.createFromAsset(
                 getActivity().getAssets(), "fonts/QuattrocentoSans-Regular.ttf");
-        Typeface qsBold = Typeface.createFromAsset(
+        qsBold = Typeface.createFromAsset(
                 getActivity().getAssets(), "fonts/QuattrocentoSans-Bold.ttf");
-
-        mOriginalTitle.setTypeface(qsBold);
-        mReleaseDate.setTypeface(qsRegular);
-        mUserRating.setTypeface(qsRegular);
-        mPlotSynopsis.setTypeface(qsRegular);
     }
 
 
@@ -310,8 +314,15 @@ public class DetailFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... params) {
 
-            ContentValues cv = Movie.buildContentValues(mBundle);
+            ContentValues cv = Movie.buildMovieContentValues(mBundle);
             getActivity().getContentResolver().insert(MovieContract.MovieTable.CONTENT_URI,cv);
+
+            ContentValues[] cvTrailers = Movie.buildTrailersContentValues(mBundle);
+            getActivity().getContentResolver().bulkInsert(MovieContract.TrailerTable.CONTENT_URI, cvTrailers);
+
+            ContentValues[] cvReviews = Movie.buildReviewsContentValues(mBundle);
+            getActivity().getContentResolver().bulkInsert(MovieContract.ReviewTable.CONTENT_URI, cvReviews);
+
             return null;
         }
     }

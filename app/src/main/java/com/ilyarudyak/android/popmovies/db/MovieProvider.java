@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
-import com.ilyarudyak.android.popmovies.db.MovieContract.MovieTable;
 
 /**
  * Created by ilyarudyak on 8/6/15.
@@ -20,6 +19,10 @@ public class MovieProvider extends ContentProvider {
 
     private static final int MOVIES = 100;
     private static final int MOVIES_ID = 101;
+    private static final int TRAILERS = 200;
+    private static final int TRAILERS_ID = 201;
+    private static final int REVIEWS = 300;
+    private static final int REVIEWS_ID = 301;
 
     private MovieDbHelper mMovieDbHelper;
 
@@ -28,9 +31,15 @@ public class MovieProvider extends ContentProvider {
     private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = MovieContract.CONTENT_AUTHORITY;
+
         matcher.addURI(authority, MovieContract.PATH_MOVIE, MOVIES);
-        // movie id is a string in this matcher
+        matcher.addURI(authority, MovieContract.PATH_TRAILER, TRAILERS);
+        matcher.addURI(authority, MovieContract.PATH_REVIEW, REVIEWS);
+
         matcher.addURI(authority, MovieContract.PATH_MOVIE + "/*", MOVIES_ID);
+        matcher.addURI(authority, MovieContract.PATH_TRAILER + "/*", TRAILERS_ID);
+        matcher.addURI(authority, MovieContract.PATH_REVIEW + "/*", REVIEWS_ID);
+
         return matcher;
     }
 
@@ -55,14 +64,40 @@ public class MovieProvider extends ContentProvider {
             case MOVIES:
                 // we don't use SQLiteQueryBuilder and
                 // call db itself
-                c = db.query(MovieTable.DB_TABLE_NAME, projection, selection,
+                c = db.query(MovieContract.MovieTable.DB_TABLE_NAME, projection, selection,
                         selectionArgs, null, null, sortOrder);
                 break;
             case MOVIES_ID:
-                String id = MovieTable.getMovieId(uri);
-                c = db.query(MovieTable.DB_TABLE_NAME, projection,
+                String movieId = MovieContract.MovieTable.getMovieId(uri);
+                c = db.query(MovieContract.MovieTable.DB_TABLE_NAME, projection,
                         // WHERE _ID=id
-                        BaseColumns._ID +"=" + id,
+                        BaseColumns._ID +"=" + movieId,
+                        selectionArgs, null, null, sortOrder);
+                break;
+            case TRAILERS:
+                // we don't use SQLiteQueryBuilder and
+                // call db itself
+                c = db.query(MovieContract.TrailerTable.DB_TABLE_NAME, projection, selection,
+                        selectionArgs, null, null, sortOrder);
+                break;
+            case TRAILERS_ID:
+                String trailerId = MovieContract.TrailerTable.getTrailerId(uri);
+                c = db.query(MovieContract.TrailerTable.DB_TABLE_NAME, projection,
+                        // WHERE _ID=id
+                        BaseColumns._ID +"=" + trailerId,
+                        selectionArgs, null, null, sortOrder);
+                break;
+            case REVIEWS:
+                // we don't use SQLiteQueryBuilder and
+                // call db itself
+                c = db.query(MovieContract.ReviewTable.DB_TABLE_NAME, projection, selection,
+                        selectionArgs, null, null, sortOrder);
+                break;
+            case REVIEWS_ID:
+                String reviewId = MovieContract.ReviewTable.getReviewId(uri);
+                c = db.query(MovieContract.ReviewTable.DB_TABLE_NAME, projection,
+                        // WHERE _ID=id
+                        BaseColumns._ID +"=" + reviewId,
                         selectionArgs, null, null, sortOrder);
                 break;
             default:
@@ -76,9 +111,17 @@ public class MovieProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch(match) {
             case MOVIES:
-                return MovieTable.CONTENT_TYPE;
+                return MovieContract.MovieTable.CONTENT_TYPE;
             case MOVIES_ID:
-                return MovieTable.CONTENT_ITEM_TYPE;
+                return MovieContract.TrailerTable.CONTENT_ITEM_TYPE;
+            case TRAILERS:
+                return MovieContract.TrailerTable.CONTENT_TYPE;
+            case TRAILERS_ID:
+                return MovieContract.MovieTable.CONTENT_ITEM_TYPE;
+            case REVIEWS:
+                return MovieContract.ReviewTable.CONTENT_TYPE;
+            case REVIEWS_ID:
+                return MovieContract.ReviewTable.CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalArgumentException("Unknown Uri: " + uri);
         }
@@ -90,8 +133,14 @@ public class MovieProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch(match) {
             case MOVIES:
-                long id = db.insertOrThrow(MovieTable.DB_TABLE_NAME, null, contentValues);
-                return MovieTable.buildMovieUri(id);
+                long movieId = db.insertOrThrow(MovieContract.MovieTable.DB_TABLE_NAME, null, contentValues);
+                return MovieContract.MovieTable.buildMovieUri(movieId);
+            case TRAILERS:
+                long trailerId = db.insertOrThrow(MovieContract.TrailerTable.DB_TABLE_NAME, null, contentValues);
+                return MovieContract.TrailerTable.buildTrailerUri(trailerId);
+            case REVIEWS:
+                long reviewId = db.insertOrThrow(MovieContract.ReviewTable.DB_TABLE_NAME, null, contentValues);
+                return MovieContract.ReviewTable.buildReviewUri(reviewId);
             default:
                 throw new IllegalArgumentException("Unknown Uri: " + uri);
         }
@@ -102,19 +151,34 @@ public class MovieProvider extends ContentProvider {
         final SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
 
+        String id;
+        String selectionCriteria;
+
         // this makes delete all rows return the number of rows deleted
         if (selection == null) selection = "1";
 
         switch(match) {
             case MOVIES:
                 // delete everything from table and return the number of rows deleted
-                return db.delete(MovieTable.DB_TABLE_NAME, selection, selectionArgs);
+                return db.delete(MovieContract.MovieTable.DB_TABLE_NAME, selection, selectionArgs);
             case MOVIES_ID:
-                String id = MovieTable.getMovieId(uri);
-                String selectionCriteria = BaseColumns._ID + "=" + id
+                id = MovieContract.MovieTable.getMovieId(uri);
+                selectionCriteria = BaseColumns._ID + "=" + id
                         + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ")" : "");
 
-                return db.delete(MovieTable.DB_TABLE_NAME, selectionCriteria, selectionArgs);
+                return db.delete(MovieContract.MovieTable.DB_TABLE_NAME, selectionCriteria, selectionArgs);
+            case TRAILERS_ID:
+                id = MovieContract.TrailerTable.getTrailerId(uri);
+                selectionCriteria = BaseColumns._ID + "=" + id
+                        + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ")" : "");
+
+                return db.delete(MovieContract.MovieTable.DB_TABLE_NAME, selectionCriteria, selectionArgs);
+            case REVIEWS_ID:
+                id = MovieContract.ReviewTable.getReviewId(uri);
+                selectionCriteria = BaseColumns._ID + "=" + id
+                        + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ")" : "");
+
+                return db.delete(MovieContract.MovieTable.DB_TABLE_NAME, selectionCriteria, selectionArgs);
             default:
                 throw new IllegalArgumentException("Unknown Uri: " + uri);
         }
@@ -124,4 +188,47 @@ public class MovieProvider extends ContentProvider {
     public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
         throw new UnsupportedOperationException("this method is not implemented");
     }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case TRAILERS:
+                db.beginTransaction();
+                int insertCount = 0;
+                try {
+                    for (ContentValues value : values) {
+                        long id = db.insert(MovieContract.TrailerTable.DB_TABLE_NAME, null, value);
+                        if (id != -1) {
+                            insertCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                // TODO do we need this notifications?
+//                getContext().getContentResolver().notifyChange(uri, null);
+                return insertCount;
+            default:
+                return super.bulkInsert(uri, values);
+        }
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -246,7 +246,7 @@ public class Movie {
         return intent;
     }
 
-    public static ContentValues buildContentValues(Movie m) {
+    public static ContentValues buildMovieContentValues(Movie m) {
 
         ContentValues cv = new ContentValues();
 
@@ -260,7 +260,7 @@ public class Movie {
         return cv;
 
     }
-    public static ContentValues buildContentValues(Bundle b) {
+    public static ContentValues buildMovieContentValues(Bundle b) {
 
         ContentValues cv = new ContentValues();
 
@@ -273,7 +273,39 @@ public class Movie {
 
         return cv;
     }
+    public static ContentValues[] buildTrailersContentValues(Bundle b) {
 
+        List<Trailer> trailers = b.getParcelableArrayList(TRAILER_LIST);
+        Integer movieId = b.getInt(TMDB_ID, 0);
+
+        ContentValues[] contentValues = new ContentValues[trailers.size()];
+        int index = 0;
+        for (Trailer t : trailers) {
+            ContentValues cv = new ContentValues();
+            cv.put(MovieContract.TrailerTable.DB_MOVIE_ID, movieId);
+            cv.put(MovieContract.TrailerTable.DB_NAME, t.getTrailerName());
+            cv.put(MovieContract.TrailerTable.DB_PATH, t.getTrailerPathAbsolute());
+            contentValues[index++] = cv;
+        }
+
+        return contentValues;
+    }
+    public static ContentValues[] buildReviewsContentValues(Bundle b) {
+
+        List<String> reviews = b.getStringArrayList(REVIEW_LIST);
+        Integer movieId = b.getInt(TMDB_ID, 0);
+
+        ContentValues[] contentValues = new ContentValues[reviews.size()];
+        int index = 0;
+        for (String r : reviews) {
+            ContentValues cv = new ContentValues();
+            cv.put(MovieContract.TrailerTable.DB_MOVIE_ID, movieId);
+            cv.put(MovieContract.TrailerTable.DB_NAME, r);
+            contentValues[index++] = cv;
+        }
+
+        return contentValues;
+    }
 
 
 }
