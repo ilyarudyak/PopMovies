@@ -36,7 +36,7 @@ import java.util.Set;
  */
 public class DetailFragment extends Fragment {
 
-    private static final String LOG_TAG = DetailFragment.class.getSimpleName();
+    private static final String TAG = DetailFragment.class.getSimpleName();
 
     private View mRootView;
     private LinearLayout mMainLinearLayout;
@@ -47,14 +47,12 @@ public class DetailFragment extends Fragment {
     private TextView mPlotSynopsis;
 
     private Integer mMovieId;
-    private Bundle mBundle;
+    public Bundle mBundle;
 
     private List<Movie.Trailer> mTrailerList;
-    private List<String> mReviewList;
     private ShareActionProvider mShareActionProvider;
 
     private Typeface qsRegular;
-    private Typeface qsBold;
 
     public DetailFragment() {
     }
@@ -63,23 +61,29 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        setMainLinearLayout(inflater, container);
-        setFavButton();
-        setQuattrocentoFont();
+        setBundle();
+        inflateMainLayout(inflater, container);
+        setMainLayoutFromBundle();
+
         setTrailerList(inflater, container);
         setReviewList(inflater, container);
-        setPosterImage();
+
+        setQuattrocentoFont();
+
 
         return mRootView;
     }
 
     // helper methods to set layout
-    private void setMainLinearLayout (LayoutInflater inflater, ViewGroup container) {
+    private void setBundle() {
+        // receive arguments from: a) detail activity on a phone
+        // and b) from main activity on a tablet
+        mBundle = getArguments();
+    }
+    private void inflateMainLayout(LayoutInflater inflater, ViewGroup container) {
 
         mRootView = inflater.inflate(R.layout.fragment_detail, container, false);
         mMainLinearLayout = (LinearLayout) mRootView.findViewById(R.id.mainLinearLayout);
-
-        mBundle = getArguments();
 
         mOriginalTitle = (TextView) mRootView.findViewById(R.id.textViewOriginalTitle);
         mPosterImageView = (ImageView) mRootView.findViewById(R.id.imageViewPoster);
@@ -87,10 +91,18 @@ public class DetailFragment extends Fragment {
         mUserRating = (TextView) mRootView.findViewById(R.id.textViewUserRating);
         mPlotSynopsis = (TextView) mRootView.findViewById(R.id.textViewPlotSynopsis);
 
+
+    }
+    public void setMainLayoutFromBundle() {
+        setMainLinearLayout();
+        setPosterImage();
+        setFavButton();
+    }
+    private void setMainLinearLayout() {
         if (mBundle != null) {
             mMovieId = mBundle.getInt(Movie.TMDB_ID, 0);
             mOriginalTitle.setText(mBundle.getString(Movie.TMDB_ORIGINAl_TITLE));
-            Log.d(LOG_TAG, "release date" + mBundle.getString(Movie.TMDB_RELEASE_DATE));
+            Log.d(TAG, "release date" + mBundle.getString(Movie.TMDB_RELEASE_DATE));
             // TODO change to getYear()
             mReleaseDate.setText(mBundle.getString(Movie.TMDB_RELEASE_DATE).substring(0, 4));
             final String MAX_RATING = "/10";
@@ -98,16 +110,51 @@ public class DetailFragment extends Fragment {
             mPlotSynopsis.setText(mBundle.getString(Movie.TMDB_PLOT_SYNOPSIS));
         }
     }
-    private void openTrailer(String url) {
-        Uri webpage = Uri.parse(url);
-        Intent i = new Intent(Intent.ACTION_VIEW, webpage);
-        if (i.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivity(i);
+    private void setPosterImage() {
+        if (mBundle != null) {
+            String posterPathAbsolute = mBundle.getString(Movie.TMDB_POSTER_PATH_ABSOLUTE);
+            Picasso.with(getActivity())
+                    .load(posterPathAbsolute)
+                    .placeholder(R.raw.placeholder_detail)
+                    .resize(300, 450)
+                    .into(mPosterImageView);
+        }
+    }
+    private void setTrailerList(LayoutInflater inflater, ViewGroup container) {
+        // stage 2: add list of trailers
+        if (mBundle != null) {
+            mTrailerList = mBundle
+                    .getParcelableArrayList(Movie.TRAILER_LIST);
+            if (mTrailerList != null) {
+                for (Movie.Trailer mt : mTrailerList) {
+                    View trailerView = inflater.inflate(R.layout.trailer, container, false);
+                    final String url = mt.getTrailerPathAbsolute();
+
+                    ImageButton trailerButton = (ImageButton) trailerView
+                            .findViewById(R.id.trailer_image_button);
+                    trailerButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            openTrailer(url);
+                        }
+                    });
+
+                    TextView trailerTitle = (TextView) trailerView
+                            .findViewById(R.id.trailer_title_text_view);
+                    trailerTitle.setText(mt.getTrailerName());
+                    trailerTitle.setTypeface(qsRegular);
+
+                    mMainLinearLayout.addView(trailerView);
+
+                    View divider = inflater.inflate(R.layout.divider, container, false);
+                    mMainLinearLayout.addView(divider);
+                }
+            }
         }
     }
     private void setReviewList(LayoutInflater inflater, ViewGroup container) {
         if (mBundle != null) {
-            mReviewList = mBundle.getStringArrayList(Movie.REVIEW_LIST);
+            List<String> mReviewList = mBundle.getStringArrayList(Movie.REVIEW_LIST);
             if (mReviewList != null && mReviewList.size() > 0) {
                 LinearLayout l = (LinearLayout) inflater.inflate(R.layout.reviews_title,
                         container, false);
@@ -128,7 +175,7 @@ public class DetailFragment extends Fragment {
     private void setQuattrocentoFont() {
         qsRegular = Typeface.createFromAsset(
                 getActivity().getAssets(), "fonts/QuattrocentoSans-Regular.ttf");
-        qsBold = Typeface.createFromAsset(
+        Typeface qsBold = Typeface.createFromAsset(
                 getActivity().getAssets(), "fonts/QuattrocentoSans-Bold.ttf");
 
         mOriginalTitle.setTypeface(qsBold);
@@ -136,44 +183,13 @@ public class DetailFragment extends Fragment {
         mUserRating.setTypeface(qsRegular);
         mPlotSynopsis.setTypeface(qsRegular);
     }
-    private void setTrailerList(LayoutInflater inflater, ViewGroup container) {
-        // stage 2: add list of trailers
-        if (mBundle != null) {
-            mTrailerList = mBundle
-                    .getParcelableArrayList(Movie.TRAILER_LIST);
-            for (Movie.Trailer mt : mTrailerList) {
-                View trailerView = inflater.inflate(R.layout.trailer, container, false);
-                final String url = mt.getTrailerPathAbsolute();
 
-                ImageButton trailerButton = (ImageButton) trailerView
-                        .findViewById(R.id.trailer_image_button);
-                trailerButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        openTrailer(url);
-                    }
-                });
 
-                TextView trailerTitle = (TextView) trailerView
-                        .findViewById(R.id.trailer_title_text_view);
-                trailerTitle.setText(mt.getTrailerName());
-                trailerTitle.setTypeface(qsRegular);
-
-                mMainLinearLayout.addView(trailerView);
-
-                View divider = inflater.inflate(R.layout.divider, container, false);
-                mMainLinearLayout.addView(divider);
-            }
-        }
-    }
-    private void setPosterImage() {
-        if (mBundle != null) {
-            String posterPathAbsolute = mBundle.getString(Movie.TMDB_POSTER_PATH_ABSOLUTE);
-            Picasso.with(getActivity())
-                    .load(posterPathAbsolute)
-                    .placeholder(R.raw.placeholder_detail)
-                    .resize(300, 450)
-                    .into(mPosterImageView);
+    private void openTrailer(String url) {
+        Uri webpage = Uri.parse(url);
+        Intent i = new Intent(Intent.ACTION_VIEW, webpage);
+        if (i.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(i);
         }
     }
 
@@ -182,28 +198,29 @@ public class DetailFragment extends Fragment {
     private void setFavButton() {
 
         final Button favButton = (Button) mRootView.findViewById(R.id.button_favorite);
-        if (!isFavorite()) {
-            favButton.setText(getActivity().getString(R.string.button_favorite));
-        } else {
-            favButton.setText(getActivity().getString(R.string.button_favorite_remove));
-        }
-        favButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!isFavorite()) {
-                    // put to favorities and database
-                    FavoritesUtils.putFavorities(getActivity(), mMovieId);
-                    favButton.setText(getActivity().getString(R.string.button_favorite_remove));
-                    new AddMovieToFavDbTask().execute();
-                } else {
-                    // remove from favorities and database
-                    FavoritesUtils.removeFromFavorities(getActivity(), mMovieId);
-                    favButton.setText(getActivity().getString(R.string.button_favorite));
-                    new RemoveMovieFromFavDbTask().execute();
-                }
+        if (mBundle != null && mMovieId != null) {
+            if (!isFavorite()) {
+                favButton.setText(getActivity().getString(R.string.button_favorite));
+            } else {
+                favButton.setText(getActivity().getString(R.string.button_favorite_remove));
             }
-        });
-
+            favButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!isFavorite()) {
+                        // put to favorities and database
+                        FavoritesUtils.putFavorities(getActivity(), mMovieId);
+                        favButton.setText(getActivity().getString(R.string.button_favorite_remove));
+                        new AddMovieToFavDbTask().execute();
+                    } else {
+                        // remove from favorities and database
+                        FavoritesUtils.removeFromFavorities(getActivity(), mMovieId);
+                        favButton.setText(getActivity().getString(R.string.button_favorite));
+                        new RemoveMovieFromFavDbTask().execute();
+                    }
+                }
+            });
+        }
     }
 
     // check if movie is already favorite
@@ -215,7 +232,7 @@ public class DetailFragment extends Fragment {
         return false;
     }
 
-    // ------------- menu  and share intent ---------------
+    // ------------- menu and share intent ---------------
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -257,7 +274,7 @@ public class DetailFragment extends Fragment {
 
     }
 
-    // -------------- add/remove favorities to/from db --------------
+    // -------------- add/remove favorites to/from db --------------
 
     public class AddMovieToFavDbTask extends AsyncTask<Void, Void, Void> {
 
@@ -279,8 +296,5 @@ public class DetailFragment extends Fragment {
             return null;
         }
     }
-
-
-
 
 }

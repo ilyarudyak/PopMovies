@@ -3,6 +3,7 @@ package com.ilyarudyak.android.popmovies.data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -263,6 +264,17 @@ public class Movie {
         cv.put(MovieContract.MovieTable.DB_PLOT_SYNOPSIS, b.getString(TMDB_PLOT_SYNOPSIS));
 
         return cv;
+    }
+
+    public static Bundle buildDetailsBundle(Cursor c) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(TMDB_ID, c.getInt(1));
+        bundle.putString(TMDB_ORIGINAl_TITLE, c.getString(2));
+        bundle.putString(TMDB_POSTER_PATH_ABSOLUTE, c.getString(3));
+        bundle.putString(TMDB_RELEASE_DATE, c.getString(4));
+        bundle.putString(TMDB_USER_RATING, Double.toString(c.getDouble(5)));
+        bundle.putString(TMDB_PLOT_SYNOPSIS, c.getString(6));
+        return bundle;
     }
 
 }
