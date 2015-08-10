@@ -43,7 +43,7 @@ public class FavDetailFragment extends DetailFragment {
             Cursor c = getActivity().getContentResolver().query(movieUri,
                     null, null, null, null);
             c.moveToFirst();
-            mBundle = Movie.buildDetailsBundle(c);
+            mBundle = Movie.buildDetailBundle(c);
             Log.d(TAG, mBundle.toString());
             return null;
         }

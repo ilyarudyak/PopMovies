@@ -20,13 +20,13 @@ import java.util.List;
  */
 public class Movie {
 
-    // stage 1
     public static final String TMDB_RESULTS =                   "results";
 
     public static final String TMDB_ID =                         "id";
     public static final String TMDB_ORIGINAl_TITLE =             "original_title";
     public static final String TMDB_POSTER_PATH_RELATIVE =       "poster_path";
     public static final String TMDB_RELEASE_DATE =               "release_date";
+    public static final String RELEASE_YEAR =                    "release_year";
     public static final String TMDB_USER_RATING =                "vote_average";
     public static final String TMDB_PLOT_SYNOPSIS =              "overview";
 
@@ -43,7 +43,6 @@ public class Movie {
     private Double userRating;                  // vote_average
     private String plotSynopsis;                // overview
 
-    // stage 2
     public static final String TMDB_TRAILER_KEY =                   "key";
     public static final String TMDB_TRAILER_NAME =                  "name";
     public static final String TRAILER_BASE_URL = "https://www.youtube.com/watch?";
@@ -52,11 +51,10 @@ public class Movie {
     public static final String TMDB_REVIEW =                        "content";
     public static final String REVIEW_LIST = "com.ilyarudyak.android.popmovies.data.review_list";
 
-    public static final String BUNDLE = "bundle";
+    public static final String MOVIE_BUNDLE = "bundle";
     
     private List<Trailer> movieTrailers;
     private List<String> movieReviews;
-
 
     public Movie(Integer id, String originalTitle,
                  String plotSynopsis, String posterPathRelative,
@@ -74,6 +72,7 @@ public class Movie {
         movieReviews = new ArrayList<>();
     }
 
+    // getters
     public Integer getId() {
         return id;
     }
@@ -97,7 +96,11 @@ public class Movie {
     }
     // get year from release date
     public String getYear() {
-        return releaseDate.substring(0, 4);
+        if (releaseDate != null && releaseDate.length() >= 4) {
+            return releaseDate.substring(0, 4);
+        } else {
+            return "";
+        }
     }
 
     @Override
@@ -115,6 +118,7 @@ public class Movie {
                 '}';
     }
 
+    // helper methods
     private void buildPosterPathAbsolute() {
 
         posterPathAbsolute = Uri.parse(POSTER_BASE_URL).buildUpon()
@@ -128,13 +132,8 @@ public class Movie {
 
     }
 
+    // ----------------- trailer & review -----------------
 
-    public void setMovieTrailers(List<Trailer> trailers) {
-        movieTrailers.addAll(trailers);
-    }
-    public List<Trailer> getMovieTrailers() {
-        return movieTrailers;
-    }
     public static class Trailer implements Parcelable {
 
         private String trailerName;
@@ -199,6 +198,12 @@ public class Movie {
         }
 
     }
+    public void setMovieTrailers(List<Trailer> trailers) {
+        movieTrailers.addAll(trailers);
+    }
+    public List<Trailer> getMovieTrailers() {
+        return movieTrailers;
+    }
 
     public List<String> getMovieReviews() {
         return movieReviews;
@@ -207,38 +212,41 @@ public class Movie {
         this.movieReviews.addAll(movieReviews);
     }
 
-    public static Intent buildDetailsIntent(Context context, Movie movie) {
-        Intent intent = new Intent(context, DetailActivity.class)
-                .putExtra(BUNDLE, buildDetailsBundle(movie));
-//                .putExtra(TMDB_ID, movie.getId())
-//                .putExtra(TMDB_ORIGINAl_TITLE, movie.getOriginalTitle())
-//                .putExtra(TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute())
-//                .putExtra(TMDB_RELEASE_DATE, movie.getReleaseDate())
-//                .putExtra(TMDB_USER_RATING, Double.toString(movie.getUserRating()))
-//                .putExtra(TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis())
-//                .putParcelableArrayListExtra(TRAILER_LIST,
-//                        (ArrayList<? extends Parcelable>) movie.getMovieTrailers())
-//                .putStringArrayListExtra(REVIEW_LIST,
-//                        (ArrayList<String>) movie.getMovieReviews());
-        return intent;
-    }
-    public static Bundle buildDetailsBundle(Movie movie) {
+    // ----------------- build bundle etc. -----------------
+
+    public static Bundle buildDetailBundle(Movie m) {
 
         Bundle bundle = new Bundle();
-        bundle.putInt(TMDB_ID, movie.getId());
-        bundle.putString(TMDB_ORIGINAl_TITLE, movie.getOriginalTitle());
-        bundle.putString(TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute());
-        bundle.putString(TMDB_RELEASE_DATE, movie.getReleaseDate());
-        bundle.putString(TMDB_USER_RATING, Double.toString(movie.getUserRating()));
-        bundle.putString(TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis());
+        bundle.putInt(TMDB_ID, m.getId());
+        bundle.putString(TMDB_ORIGINAl_TITLE, m.getOriginalTitle());
+        bundle.putString(TMDB_POSTER_PATH_ABSOLUTE, m.getPosterPathAbsolute());
+        bundle.putString(RELEASE_YEAR, m.getYear());
+        bundle.putString(TMDB_USER_RATING, Double.toString(m.getUserRating()));
+        bundle.putString(TMDB_PLOT_SYNOPSIS, m.getPlotSynopsis());
         bundle.putParcelableArrayList(TRAILER_LIST,
-                (ArrayList<? extends Parcelable>) movie.getMovieTrailers());
+                (ArrayList<? extends Parcelable>) m.getMovieTrailers());
         bundle.putStringArrayList(REVIEW_LIST,
-                (ArrayList<String>) movie.getMovieReviews());
+                (ArrayList<String>) m.getMovieReviews());
         return bundle;
     }
+    // cursor.moveToFirst() not included
+    public static Bundle buildDetailBundle(Cursor c) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(TMDB_ID, c.getInt(1));
+        bundle.putString(TMDB_ORIGINAl_TITLE, c.getString(2));
+        bundle.putString(TMDB_POSTER_PATH_ABSOLUTE, c.getString(3));
+        bundle.putString(RELEASE_YEAR, c.getString(4).substring(0, 4));
+        bundle.putString(TMDB_USER_RATING, Double.toString(c.getDouble(5)));
+        bundle.putString(TMDB_PLOT_SYNOPSIS, c.getString(6));
+        return bundle;
+    }
+    public static Intent buildDetailIntent(Context context, Movie m) {
+        Intent intent = new Intent(context, DetailActivity.class)
+                .putExtra(MOVIE_BUNDLE, buildDetailBundle(m));
+        return intent;
+    }
 
-    public static ContentValues buildContentValuesFromMovie(Movie m) {
+    public static ContentValues buildContentValues(Movie m) {
 
         ContentValues cv = new ContentValues();
 
@@ -252,7 +260,7 @@ public class Movie {
         return cv;
 
     }
-    public static ContentValues buildContentValuesFromBundle(Bundle b) {
+    public static ContentValues buildContentValues(Bundle b) {
 
         ContentValues cv = new ContentValues();
 
@@ -266,16 +274,7 @@ public class Movie {
         return cv;
     }
 
-    public static Bundle buildDetailsBundle(Cursor c) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(TMDB_ID, c.getInt(1));
-        bundle.putString(TMDB_ORIGINAl_TITLE, c.getString(2));
-        bundle.putString(TMDB_POSTER_PATH_ABSOLUTE, c.getString(3));
-        bundle.putString(TMDB_RELEASE_DATE, c.getString(4));
-        bundle.putString(TMDB_USER_RATING, Double.toString(c.getDouble(5)));
-        bundle.putString(TMDB_PLOT_SYNOPSIS, c.getString(6));
-        return bundle;
-    }
+
 
 }
 

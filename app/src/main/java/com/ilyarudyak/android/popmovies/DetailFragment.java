@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -70,7 +69,6 @@ public class DetailFragment extends Fragment {
 
         setQuattrocentoFont();
 
-
         return mRootView;
     }
 
@@ -102,9 +100,7 @@ public class DetailFragment extends Fragment {
         if (mBundle != null) {
             mMovieId = mBundle.getInt(Movie.TMDB_ID, 0);
             mOriginalTitle.setText(mBundle.getString(Movie.TMDB_ORIGINAl_TITLE));
-            Log.d(TAG, "release date" + mBundle.getString(Movie.TMDB_RELEASE_DATE));
-            // TODO change to getYear()
-            mReleaseDate.setText(mBundle.getString(Movie.TMDB_RELEASE_DATE).substring(0, 4));
+            mReleaseDate.setText(mBundle.getString(Movie.RELEASE_YEAR));
             final String MAX_RATING = "/10";
             mUserRating.setText(mBundle.getString(Movie.TMDB_USER_RATING) + MAX_RATING);
             mPlotSynopsis.setText(mBundle.getString(Movie.TMDB_PLOT_SYNOPSIS));
@@ -255,7 +251,7 @@ public class DetailFragment extends Fragment {
     // this method shares first trailer
     private void setShareIntent() {
 
-        if (mTrailerList != null) {
+        if (mTrailerList != null && mTrailerList.size() > 0) {
             String trailerPath = mTrailerList.get(0).getTrailerPathAbsolute();
             String shareTag = " #" + getActivity().getIntent()
                     .getStringExtra(Movie.TMDB_ORIGINAl_TITLE);
@@ -281,7 +277,7 @@ public class DetailFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... params) {
 
-            ContentValues cv = Movie.buildContentValuesFromBundle(mBundle);
+            ContentValues cv = Movie.buildContentValues(mBundle);
             getActivity().getContentResolver().insert(MovieContract.MovieTable.CONTENT_URI,cv);
             return null;
         }

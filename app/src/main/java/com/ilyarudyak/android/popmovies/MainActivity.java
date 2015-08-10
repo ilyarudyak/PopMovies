@@ -55,7 +55,7 @@ public class MainActivity extends ActionBarActivity
         if (mTwoPane) {
             // create detail fragment with bundle
             DetailFragment df = new DetailFragment();
-            Bundle args = Movie.buildDetailsBundle(movie);
+            Bundle args = Movie.buildDetailBundle(movie);
             Log.d(LOG_TAG, "args created " + args);
             df.setArguments(args);
             getFragmentManager()
@@ -65,7 +65,7 @@ public class MainActivity extends ActionBarActivity
                     .commit();
         } else {
             // send intent to detail activity
-            startActivity(Movie.buildDetailsIntent(this, movie));
+            startActivity(Movie.buildDetailIntent(this, movie));
         }
     }
 }
