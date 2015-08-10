@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +36,7 @@ import java.util.List;
  */
 public class PosterFragment extends Fragment {
 
-    private final String LOG_TAG = PosterFragment.class.getSimpleName();
+    private final String TAG = PosterFragment.class.getSimpleName();
 
     // we have to make adapter global to update it
     // in onPostExecute() method of our fetch task
@@ -66,7 +65,7 @@ public class PosterFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Movie movie = mPicassoAdapter.getItem(position);
-                Log.d(LOG_TAG, "we are in onclick");
+//                Log.d(TAG, "we are in onclick");
                 new FetchTrailersReviewsTask().execute(movie);
 
             }
@@ -199,12 +198,13 @@ public class PosterFragment extends Fragment {
             if (reviews != null) {
                 mMovie.setMovieReviews(reviews);
             }
+//            Log.d(TAG, mMovie.toString());
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Log.d(LOG_TAG, "we are inside async task");
+//            Log.d(TAG, "we are inside async task");
             mCallback.onPosterSelected(mMovie);
         }
     }

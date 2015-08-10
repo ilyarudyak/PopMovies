@@ -104,10 +104,13 @@ public class Movie {
         return "Movie{" +
                 "id=" + id +
                 ", originalTitle='" + originalTitle + '\'' +
-                ", posterPath='" + posterPathAbsolute + '\'' +
+                ", posterPathRelative='" + posterPathRelative + '\'' +
+                ", posterPathAbsolute='" + posterPathAbsolute + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
-                ", userRating='" + userRating + '\'' +
+                ", userRating=" + userRating +
                 ", plotSynopsis='" + plotSynopsis + '\'' +
+                ", movieTrailers=" + movieTrailers +
+                ", movieReviews=" + movieReviews +
                 '}';
     }
 

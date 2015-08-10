@@ -50,6 +50,7 @@ public class DetailFragment extends Fragment {
     private Bundle mBundle;
 
     private List<Movie.Trailer> mTrailerList;
+    private List<String> mReviewList;
     private ShareActionProvider mShareActionProvider;
 
     private Typeface qsRegular;
@@ -65,8 +66,8 @@ public class DetailFragment extends Fragment {
         setMainLinearLayout(inflater, container);
         setFavButton();
         setQuattrocentoFont();
-        addListOfTrailers(inflater, container);
-        setReviewsList(inflater, container);
+        setTrailerList(inflater, container);
+        setReviewList(inflater, container);
         setPosterImage();
 
         return mRootView;
@@ -78,12 +79,7 @@ public class DetailFragment extends Fragment {
         mRootView = inflater.inflate(R.layout.fragment_detail, container, false);
         mMainLinearLayout = (LinearLayout) mRootView.findViewById(R.id.mainLinearLayout);
 
-        Bundle args = getArguments();
-        if (args != null) {
-            mBundle = args;
-            Log.d(LOG_TAG, "args is not null");
-            Log.d(LOG_TAG, "what about bundle" + mBundle);
-        }
+        mBundle = getArguments();
 
         mOriginalTitle = (TextView) mRootView.findViewById(R.id.textViewOriginalTitle);
         mPosterImageView = (ImageView) mRootView.findViewById(R.id.imageViewPoster);
@@ -95,6 +91,7 @@ public class DetailFragment extends Fragment {
             mMovieId = mBundle.getInt(Movie.TMDB_ID, 0);
             mOriginalTitle.setText(mBundle.getString(Movie.TMDB_ORIGINAl_TITLE));
             Log.d(LOG_TAG, "release date" + mBundle.getString(Movie.TMDB_RELEASE_DATE));
+            // TODO change to getYear()
             mReleaseDate.setText(mBundle.getString(Movie.TMDB_RELEASE_DATE).substring(0, 4));
             final String MAX_RATING = "/10";
             mUserRating.setText(mBundle.getString(Movie.TMDB_USER_RATING) + MAX_RATING);
@@ -108,18 +105,23 @@ public class DetailFragment extends Fragment {
             startActivity(i);
         }
     }
-    private void setReviewsList(LayoutInflater inflater, ViewGroup container) {
-        List<String> reviewsList = getActivity().getIntent()
-                .getStringArrayListExtra(Movie.REVIEW_LIST);
-        if (reviewsList != null && reviewsList.size() > 0) {
-            for (String review : reviewsList) {
-                View reviewView = inflater.inflate(R.layout.review, container, false);
-                TextView reviewTextView = (TextView) reviewView.findViewById(R.id.review_text_view);
-                reviewTextView.setText(review);
-                reviewTextView.setTypeface(qsRegular);
-                mMainLinearLayout.addView(reviewView);
-                View divider = inflater.inflate(R.layout.divider, container, false);
-                mMainLinearLayout.addView(divider);
+    private void setReviewList(LayoutInflater inflater, ViewGroup container) {
+        if (mBundle != null) {
+            mReviewList = mBundle.getStringArrayList(Movie.REVIEW_LIST);
+            if (mReviewList != null && mReviewList.size() > 0) {
+                LinearLayout l = (LinearLayout) inflater.inflate(R.layout.reviews_title,
+                        container, false);
+                mMainLinearLayout.addView(l);
+                for (String review : mReviewList) {
+                    View reviewView = inflater.inflate(R.layout.review, container, false);
+                    TextView reviewTextView = (TextView) reviewView.findViewById(
+                            R.id.review_text_view);
+                    reviewTextView.setText(review);
+                    reviewTextView.setTypeface(qsRegular);
+                    mMainLinearLayout.addView(reviewView);
+                    View divider = inflater.inflate(R.layout.divider, container, false);
+                    mMainLinearLayout.addView(divider);
+                }
             }
         }
     }
@@ -134,7 +136,7 @@ public class DetailFragment extends Fragment {
         mUserRating.setTypeface(qsRegular);
         mPlotSynopsis.setTypeface(qsRegular);
     }
-    private void addListOfTrailers(LayoutInflater inflater, ViewGroup container) {
+    private void setTrailerList(LayoutInflater inflater, ViewGroup container) {
         // stage 2: add list of trailers
         if (mBundle != null) {
             mTrailerList = mBundle
