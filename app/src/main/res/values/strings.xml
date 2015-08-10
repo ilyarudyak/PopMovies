@@ -3,6 +3,8 @@
     <!-- app and activities-->
     <string name="app_name">PopMovies</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_fav_poster">FavPosterActivity</string>
+    <string name="title_activity_fav_detail">FavDetailActivity</string>
 
     <!-- action bar menu -->
     <string name="action_popularity_sort">Most popular</string>
@@ -39,11 +41,11 @@
 
 
     <!-- handle empty adapter, no internet etc.-->
-    <string name="empty_movies_list">no movies available. </string>
-    <string name="empty_movies_list_no_network">no movies available.
-        network is not available.</string>
-    <string name="title_activity_fav_poster">FavPosterActivity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_fav_detail">FavDetailActivity</string>
+    <string name="empty_movies_text_view">No movies available. That\'s all we know.</string>
+    <string name="empty_movies_list_no_network">No internet connection.
+        Please try again later.</string>
+
+
+
 
 </resources>

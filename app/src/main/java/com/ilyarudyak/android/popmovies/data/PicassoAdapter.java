@@ -51,7 +51,7 @@ public class PicassoAdapter  extends ArrayAdapter<Movie> {
 
         Picasso.with(mContext)
                 .load(movie.getPosterPathAbsolute())
-                .placeholder(R.raw.place_holder)
+                .placeholder(R.raw.placeholder)
                 .error(R.raw.big_problem)
                 .resize(550, 775)
                 .into(imageView);

@@ -169,7 +169,7 @@ public class DetailFragment extends Fragment {
             String posterPathAbsolute = mBundle.getString(Movie.TMDB_POSTER_PATH_ABSOLUTE);
             Picasso.with(getActivity())
                     .load(posterPathAbsolute)
-                    .placeholder(R.raw.place_holder)
+                    .placeholder(R.raw.placeholder_detail)
                     .resize(300, 450)
                     .into(mPosterImageView);
         }

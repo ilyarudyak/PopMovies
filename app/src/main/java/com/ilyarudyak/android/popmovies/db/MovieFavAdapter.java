@@ -38,7 +38,7 @@ public class MovieFavAdapter extends CursorAdapter {
 
         Picasso.with(mContext)
                 .load(posterPathAbsolute)
-                .placeholder(R.raw.place_holder)
+                .placeholder(R.raw.placeholder)
                 .error(R.raw.big_problem)
                 .resize(550, 775)
                 .into(imageView);

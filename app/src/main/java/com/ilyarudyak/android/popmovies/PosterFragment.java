@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ilyarudyak.android.popmovies.data.Movie;
@@ -56,7 +57,7 @@ public class PosterFragment extends Fragment {
         mPicassoAdapter = new PicassoAdapter(getActivity(), new ArrayList<Movie>());
 
         // set empty view in case movies list is empty, no internet etc.
-        View emptyView = v.findViewById(R.id.empty_movies_list);
+        View emptyView = v.findViewById(R.id.empty_layout);
         gridView.setEmptyView(emptyView);
 
         gridView.setAdapter(mPicassoAdapter);
@@ -250,12 +251,14 @@ public class PosterFragment extends Fragment {
  */
     private void updateEmptyView() {
         if ( mPicassoAdapter.getCount() == 0 ) {
+            LinearLayout l = null;
             TextView tv = null;
             if (getView() != null) {
-                tv = (TextView) getView().findViewById(R.id.empty_movies_list);
+                l = (LinearLayout) getView().findViewById(R.id.empty_layout);
+                tv = (TextView) l.findViewById(R.id.empty_movies_text_view);
             }
             if (tv != null) {
-                int message = R.string.empty_movies_list;
+                int message = R.string.empty_movies_text_view;
                 if (!NetworkUtils.isNetworkAvailable(getActivity()) ) {
                     message = R.string.empty_movies_list_no_network;
                 }

@@ -21,12 +21,29 @@
 
         android:stretchMode="columnWidth" />
 
-    <TextView
-        android:id="@+id/empty_movies_list"
-        android:text="@string/empty_movies_list"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingTop="64dp"
+        android:padding="32dp"
+        android:id="@+id/empty_layout">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/ic_highlight_off_black_48dp"
+        />
+
+    <TextView
+        android:id="@+id/empty_movies_text_view"
+        android:text="@string/empty_movies_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:textAppearanceMedium"
         android:padding="16dp"/>
+
+    </LinearLayout>
 
 </LinearLayout>
 
