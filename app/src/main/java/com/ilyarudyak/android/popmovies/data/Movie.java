@@ -235,7 +235,7 @@ public class Movie {
         bundle.putInt(TMDB_ID, c.getInt(1));
         bundle.putString(TMDB_ORIGINAl_TITLE, c.getString(2));
         bundle.putString(TMDB_POSTER_PATH_ABSOLUTE, c.getString(3));
-        bundle.putString(RELEASE_YEAR, c.getString(4).substring(0, 4));
+        bundle.putString(RELEASE_YEAR, c.getString(4));
         bundle.putString(TMDB_USER_RATING, Double.toString(c.getDouble(5)));
         bundle.putString(TMDB_PLOT_SYNOPSIS, c.getString(6));
         return bundle;
@@ -253,7 +253,7 @@ public class Movie {
         cv.put(MovieContract.MovieTable.DB_TMDB_ID, m.getId());
         cv.put(MovieContract.MovieTable.DB_TITLE, m.getOriginalTitle());
         cv.put(MovieContract.MovieTable.DB_POSTER_PATH_ABSOLUTE, m.getPosterPathAbsolute());
-        cv.put(MovieContract.MovieTable.DB_RELEASE_DATE, m.getReleaseDate());
+        cv.put(MovieContract.MovieTable.DB_RELEASE_YEAR, m.getReleaseDate());
         cv.put(MovieContract.MovieTable.DB_USER_RATING, m.getUserRating());
         cv.put(MovieContract.MovieTable.DB_PLOT_SYNOPSIS, m.getPlotSynopsis());
 
@@ -267,7 +267,7 @@ public class Movie {
         cv.put(MovieContract.MovieTable.DB_TMDB_ID, b.getInt(TMDB_ID, 0));
         cv.put(MovieContract.MovieTable.DB_TITLE, b.getString(TMDB_ORIGINAl_TITLE));
         cv.put(MovieContract.MovieTable.DB_POSTER_PATH_ABSOLUTE, b.getString(TMDB_POSTER_PATH_ABSOLUTE));
-        cv.put(MovieContract.MovieTable.DB_RELEASE_DATE, b.getString(TMDB_RELEASE_DATE));
+        cv.put(MovieContract.MovieTable.DB_RELEASE_YEAR, b.getString(RELEASE_YEAR));
         cv.put(MovieContract.MovieTable.DB_USER_RATING, b.getString(TMDB_USER_RATING));
         cv.put(MovieContract.MovieTable.DB_PLOT_SYNOPSIS, b.getString(TMDB_PLOT_SYNOPSIS));
 

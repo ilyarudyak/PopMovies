@@ -271,6 +271,16 @@ public class DetailFragment extends Fragment {
         setShareIntent();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(getActivity(), SettingsActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     // this method shares first trailer
     private void setShareIntent() {
 

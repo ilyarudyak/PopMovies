@@ -119,7 +119,7 @@ public class PosterFragment extends Fragment {
         } else if (id == R.id.action_favorities_db) {
             startActivity(new Intent(getActivity(), FavPosterActivity.class));
             return true;
-        }else if (id == R.id.action_settings) {
+        } else if (id == R.id.action_settings) {
             startActivity(new Intent(getActivity(), SettingsActivity.class));
             return true;
         }

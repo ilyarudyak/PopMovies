@@ -28,7 +28,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieTable.DB_TMDB_ID +             " INTEGER UNIQUE NOT NULL, " +
                 MovieTable.DB_TITLE +               " TEXT NOT NULL, " +
                 MovieTable.DB_POSTER_PATH_ABSOLUTE + " TEXT NOT NULL, " +
-                MovieTable.DB_RELEASE_DATE +        " TEXT NOT NULL, " +
+                MovieTable.DB_RELEASE_YEAR +        " TEXT NOT NULL, " +
                 MovieTable.DB_USER_RATING +         " REAL NOT NULL, " +
                 MovieTable.DB_PLOT_SYNOPSIS +       " TEXT NOT NULL " +
                 " );";

@@ -27,7 +27,7 @@ public class MovieContract {
         public static final String DB_TMDB_ID = "tmdb_id";
         public static final String DB_TITLE = "title";
         public static final String DB_POSTER_PATH_ABSOLUTE = "poster_path_absolute";
-        public static final String DB_RELEASE_DATE = "release_date";
+        public static final String DB_RELEASE_YEAR = "release_date";
         public static final String DB_USER_RATING = "user_rating";
         public static final String DB_PLOT_SYNOPSIS = "plot_synopsis";
 
