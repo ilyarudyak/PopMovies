@@ -37,11 +37,11 @@
             android:authorities="com.ilyarudyak.android.popmovies" />
 
         <activity
-            android:name=".favorities.FavPosterActivity"
+            android:name=".fav.FavPosterActivity"
             android:label="@string/title_activity_fav_poster" >
         </activity>
         <activity
-            android:name=".favorities.FavDetailActivity"
+            android:name=".fav.FavDetailActivity"
             android:label="@string/title_activity_fav_detail" >
         </activity>
     </application>

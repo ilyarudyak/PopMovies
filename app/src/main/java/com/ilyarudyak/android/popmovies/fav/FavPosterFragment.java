@@ -1,4 +1,4 @@
-package com.ilyarudyak.android.popmovies.favorities;
+package com.ilyarudyak.android.popmovies.fav;
 
 import android.app.Fragment;
 import android.app.LoaderManager;

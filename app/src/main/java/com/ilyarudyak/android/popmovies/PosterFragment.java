@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.ilyarudyak.android.popmovies.data.Movie;
 import com.ilyarudyak.android.popmovies.data.PicassoAdapter;
-import com.ilyarudyak.android.popmovies.favorities.FavPosterActivity;
+import com.ilyarudyak.android.popmovies.fav.FavPosterActivity;
 import com.ilyarudyak.android.popmovies.utils.NetworkUtils;
 
 import java.util.ArrayList;

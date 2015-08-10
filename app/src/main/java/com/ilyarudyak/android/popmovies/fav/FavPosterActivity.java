@@ -1,4 +1,4 @@
-package com.ilyarudyak.android.popmovies.favorities;
+package com.ilyarudyak.android.popmovies.fav;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

@@ -1,5 +1,5 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"
-    android:name="com.ilyarudyak.android.popmovies.favorities.FavPosterFragment"
+    android:name="com.ilyarudyak.android.popmovies.fav.FavPosterFragment"
     tools:layout="@layout/fragment_fav_poster" android:layout_width="match_parent"
     android:layout_height="match_parent" />
