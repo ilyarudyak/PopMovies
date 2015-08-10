@@ -32,18 +32,28 @@
                 android:value=".MainActivity" />
         </activity>
 
+        <activity
+            android:name=".fav.FavPosterActivity"
+            android:label="@string/title_activity_fav_poster"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".fav.FavDetailActivity"
+            android:label="@string/title_activity_fav_detail"
+            android:parentActivityName=".fav.FavPosterActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".fav.FavPosterActivity" />
+        </activity>
+
         <provider
             android:name=".db.MovieProvider"
             android:authorities="com.ilyarudyak.android.popmovies" />
 
-        <activity
-            android:name=".fav.FavPosterActivity"
-            android:label="@string/title_activity_fav_poster" >
-        </activity>
-        <activity
-            android:name=".fav.FavDetailActivity"
-            android:label="@string/title_activity_fav_detail" >
-        </activity>
+
     </application>
 
 </manifest>

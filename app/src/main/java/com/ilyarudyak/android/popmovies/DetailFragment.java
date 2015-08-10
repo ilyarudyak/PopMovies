@@ -88,8 +88,6 @@ public class DetailFragment extends Fragment {
         mReleaseDate = (TextView) mRootView.findViewById(R.id.textViewReleaseDate);
         mUserRating = (TextView) mRootView.findViewById(R.id.textViewUserRating);
         mPlotSynopsis = (TextView) mRootView.findViewById(R.id.textViewPlotSynopsis);
-
-
     }
     public void setMainLayoutFromBundle() {
         setMainLinearLayout();
@@ -98,12 +96,27 @@ public class DetailFragment extends Fragment {
     }
     private void setMainLinearLayout() {
         if (mBundle != null) {
+
+            // we don't provide error handling for first 3 variables
             mMovieId = mBundle.getInt(Movie.TMDB_ID, 0);
             mOriginalTitle.setText(mBundle.getString(Movie.TMDB_ORIGINAl_TITLE));
             mReleaseDate.setText(mBundle.getString(Movie.RELEASE_YEAR));
+
             final String MAX_RATING = "/10";
-            mUserRating.setText(mBundle.getString(Movie.TMDB_USER_RATING) + MAX_RATING);
-            mPlotSynopsis.setText(mBundle.getString(Movie.TMDB_PLOT_SYNOPSIS));
+            final String PLACEHOLDER_RATING = "-/10";
+            String rating = mBundle.getString(Movie.TMDB_USER_RATING);
+            if (rating != null) {
+                mUserRating.setText(rating + MAX_RATING);
+            } else {
+                mUserRating.setText(PLACEHOLDER_RATING);
+            }
+
+            String plot = mBundle.getString(Movie.TMDB_PLOT_SYNOPSIS);
+            if (plot != null && plot.length() != 0 && !plot.equals("null")) {
+                mPlotSynopsis.setText(plot);
+            } else {
+                mPlotSynopsis.setText(getActivity().getString(R.string.placeholder_plot));
+            }
         }
     }
     private void setPosterImage() {
@@ -121,7 +134,15 @@ public class DetailFragment extends Fragment {
         if (mBundle != null) {
             mTrailerList = mBundle
                     .getParcelableArrayList(Movie.TRAILER_LIST);
-            if (mTrailerList != null) {
+            if (mTrailerList != null && mTrailerList.size() > 0) {
+
+                View v = inflater.inflate(R.layout.divider, container, false);
+                mMainLinearLayout.addView(v);
+
+                LinearLayout l = (LinearLayout) inflater.inflate(R.layout.trailers_title,
+                        container, false);
+                mMainLinearLayout.addView(l);
+
                 for (Movie.Trailer mt : mTrailerList) {
                     View trailerView = inflater.inflate(R.layout.trailer, container, false);
                     final String url = mt.getTrailerPathAbsolute();
@@ -152,9 +173,11 @@ public class DetailFragment extends Fragment {
         if (mBundle != null) {
             List<String> mReviewList = mBundle.getStringArrayList(Movie.REVIEW_LIST);
             if (mReviewList != null && mReviewList.size() > 0) {
+
                 LinearLayout l = (LinearLayout) inflater.inflate(R.layout.reviews_title,
                         container, false);
                 mMainLinearLayout.addView(l);
+
                 for (String review : mReviewList) {
                     View reviewView = inflater.inflate(R.layout.review, container, false);
                     TextView reviewTextView = (TextView) reviewView.findViewById(
