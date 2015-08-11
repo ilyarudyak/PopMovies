@@ -1,10 +1,11 @@
-package com.ilyarudyak.android.popmovies;
+package com.ilyarudyak.android.popmovies.provider;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 
+import com.ilyarudyak.android.popmovies.tests.TestUtils;
 import com.ilyarudyak.android.popmovies.db.MovieContract;
 
 /**
@@ -43,7 +44,7 @@ public class TestMovieProvider extends AndroidTestCase {
         assertEquals(135397, c.getInt(1));
         assertEquals("Jurassic World", c.getString(2));
         assertEquals("http://image.tmdb.org/t/p/w185/uXZYawqUsChGSj54wcuBtEdUJbh.jpg", c.getString(3));
-        assertEquals("2015-06-12", c.getString(4));
+        assertEquals("2015", c.getString(4));
         assertEquals(7.0, c.getDouble(5));
         assertEquals(plot, c.getString(6));
         c.close();

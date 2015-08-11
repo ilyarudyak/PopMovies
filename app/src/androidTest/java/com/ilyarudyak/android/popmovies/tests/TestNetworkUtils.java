@@ -1,4 +1,4 @@
-package com.ilyarudyak.android.popmovies;
+package com.ilyarudyak.android.popmovies.tests;
 
 import android.test.AndroidTestCase;
 import android.util.Log;

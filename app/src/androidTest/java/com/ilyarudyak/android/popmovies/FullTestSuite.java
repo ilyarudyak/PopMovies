@@ -23,7 +23,8 @@ import junit.framework.TestSuite;
 public class FullTestSuite extends TestSuite {
     public static Test suite() {
         return new TestSuiteBuilder(FullTestSuite.class)
-                .includeAllPackagesUnderHere().build();
+                .includePackages("com.ilyarudyak.android.popmovies.tests")
+                .build();
     }
 
     public FullTestSuite() {

@@ -1,4 +1,4 @@
-package com.ilyarudyak.android.popmovies;
+package com.ilyarudyak.android.popmovies.tests;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

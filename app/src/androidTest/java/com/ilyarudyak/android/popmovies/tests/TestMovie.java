@@ -1,4 +1,4 @@
-package com.ilyarudyak.android.popmovies;
+package com.ilyarudyak.android.popmovies.tests;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -28,8 +28,8 @@ public class TestMovie extends AndroidTestCase {
         );
 
         List<Movie.Trailer> trailers = new ArrayList<>();
-        trailers.add(new Movie.Trailer("lP-sUUUfamw", "Official Trailer 3"));
-        trailers.add(new Movie.Trailer("bvu-zlR5A8Q", "Teaser"));
+        trailers.add(new Movie.Trailer("lP-sUUUfamw", "Official Trailer 3", false));
+        trailers.add(new Movie.Trailer("bvu-zlR5A8Q", "Teaser", false));
         m.setMovieTrailers(trailers);
 
         List<String> reviews = new ArrayList<>();

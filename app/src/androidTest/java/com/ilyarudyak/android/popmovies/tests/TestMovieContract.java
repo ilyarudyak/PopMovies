@@ -1,4 +1,4 @@
-package com.ilyarudyak.android.popmovies;
+package com.ilyarudyak.android.popmovies.tests;
 
 import android.net.Uri;
 import android.test.AndroidTestCase;

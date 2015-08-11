@@ -1,4 +1,4 @@
-package com.ilyarudyak.android.popmovies;
+package com.ilyarudyak.android.popmovies.tests;
 
 import android.content.ContentValues;
 import android.test.AndroidTestCase;
@@ -39,7 +39,7 @@ public class TestUtils extends AndroidTestCase {
         jwcv.put(MovieContract.MovieTable.DB_TITLE, "Jurassic World");
         jwcv.put(MovieContract.MovieTable.DB_POSTER_PATH_ABSOLUTE,
                 "http://image.tmdb.org/t/p/w185/uXZYawqUsChGSj54wcuBtEdUJbh.jpg");
-        jwcv.put(MovieContract.MovieTable.DB_RELEASE_YEAR, "2015-06-12");
+        jwcv.put(MovieContract.MovieTable.DB_RELEASE_YEAR, "2015");
         jwcv.put(MovieContract.MovieTable.DB_USER_RATING, 7.0);
         jwcv.put(MovieContract.MovieTable.DB_PLOT_SYNOPSIS, plot);
 
