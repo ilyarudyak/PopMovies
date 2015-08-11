@@ -4,6 +4,10 @@ We document here some implementation details primarily related to the stage 2 of
 ## API Key
 There is the single place where we store our API Key - `ApiKey` class.
 
+## Tests
+1. There is some problems with testing `MovieProvider` - when we run `TestMovieProvider` separately everything is ok, but when we run it with other DB tests there are some problems. We don't understand the reason for that. The similar problem is described [here](https://groups.google.com/forum/#!topic/android-developers/oOCF2V8tf90). So we created test suit without `TestMovieProvider` file. You should run `FullTestSuite` and `TestMovieProvider` separately.
+2. We tested our app on Genymotion Nexus 5 and Nexus 7 devices and on physical Nexus 5. 
+
 ## User interface
 1. We allow user to choose UI for `PosterFragment` from given in the rubric options including favorities. We have two implementations of Favorities (only on a phone, on a tablet we use only the first one):
   * `Favorities (API)`. In the first implementation we store favorite movies id in `SharedPreference`. So when a user clicks the favorities button we add the movies id into set from `SharedPreference`. We also check the list of movies when rendering layout of detail fragment and the favorities button is disabled for movies in this list. When a user clicks on this option in the menu we make new API calls for each movie using its id (this API call is not mentioned in the project description: https://api.themoviedb.org/3/movie/135397?api_key=..., where 135397 is the movie id).
@@ -33,4 +37,4 @@ There is the single place where we store our API Key - `ApiKey` class.
 3. We create custom `CursorAdapter` that is similar to our `PicassoAdapter`, in particular we fetch posters using `Picasso`. We don't store any posters on a device. In case of no internet connection we just get an error message: `no internet connection`. 
 4. We use CursorLoader to get information about posters from database in `FavPosterFragment` and all other information in `FavDetailFragment`. An alternative solution would be use `AsynctaskLoader<List<Movie>>` - we probably can use `PicassoAdapter` in this case. We use `AsynTask` to add or remove a movie from database.
 5. We create new activities to show favorites and their details just not to get overcomplicated fragments. We also have different logic of calling `DetailFragment` - we transfer `Uri` object in these cases and call content provider in detail activity based on this object.
-6. Our second detail fragment extends the first one. The only difference - we get `Bundle` object from call to content provider. We use `AsyncTask`, not loaders. We call it within our `onCreateView()` method and then call method of `super` class. 
+6. Our second detail fragment extends the first one. The only difference - we get `Bundle` object from call to content provider. We use `AsyncTask`, not loaders. We call it within our `onCreate()` method. The app is working but we don't sure that's the optimal way to place this task.  
