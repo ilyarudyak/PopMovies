@@ -7,9 +7,6 @@ import com.ilyarudyak.android.popmovies.data.JsonParser;
 import com.ilyarudyak.android.popmovies.data.Movie;
 import com.ilyarudyak.android.popmovies.utils.NetworkUtils;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 
 public class TestJsonParser extends AndroidTestCase {
@@ -18,11 +15,8 @@ public class TestJsonParser extends AndroidTestCase {
 
     public void testJsonMovieParser() throws Throwable {
 
-        String file = "assets/movies.json";
-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(file);
-        String jsonStr = new BufferedReader(
-                new InputStreamReader(inputStream)).readLine();
-
+        // we read movies2.json into string
+        String jsonStr = TestUtils.getJsonMoviesString();
         JsonParser mp = new JsonParser(jsonStr, NetworkUtils.MOVIE_FLAG);
         List<Movie> movies = mp.getMoviesList();
 
@@ -47,11 +41,8 @@ public class TestJsonParser extends AndroidTestCase {
 
     public void testJsonMovieParserFavorites() throws Throwable {
 
-        String file = "assets/movie.json";
-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(file);
-        String jsonStr = new BufferedReader(
-                new InputStreamReader(inputStream)).readLine();
-
+        // read from movie2.json
+        String jsonStr = TestUtils.getJWJsonMovieString();
         JsonParser mp = new JsonParser(jsonStr, NetworkUtils.FAVORITE_MOVIE_FLAG);
         List<Movie> movies = mp.getMoviesList();
 

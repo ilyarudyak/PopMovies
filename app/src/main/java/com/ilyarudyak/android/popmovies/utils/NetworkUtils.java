@@ -47,11 +47,10 @@ public class NetworkUtils {
                 "http://api.themoviedb.org/3/discover/movie";
         final String SORT_PARAM = "sort_by";
         final String API_KEY = "api_key";
-        final String KEY = "99ee31c251ccebfbe8786aa49d9c6fe8";
 
         Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
                 .appendQueryParameter(SORT_PARAM, sortParameter)
-                .appendQueryParameter(API_KEY, KEY)
+                .appendQueryParameter(API_KEY, ApiKey.KEY)
                 .build();
 
         return new URL(builtUri.toString());
@@ -61,11 +60,10 @@ public class NetworkUtils {
         final String API_BASE_URL =
                 "http://api.themoviedb.org/3/movie";
         final String API_KEY = "api_key";
-        final String KEY = "99ee31c251ccebfbe8786aa49d9c6fe8";
 
         Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
                 .appendPath(Integer.toString(movieId))
-                .appendQueryParameter(API_KEY, KEY)
+                .appendQueryParameter(API_KEY, ApiKey.KEY)
                 .build();
 
         return new URL(builtUri.toString());
@@ -78,20 +76,19 @@ public class NetworkUtils {
         final String VIDEOS = "videos";
         final String REVIEWS = "reviews";
         final String API_KEY = "api_key";
-        final String KEY = "99ee31c251ccebfbe8786aa49d9c6fe8";
 
         Uri builtUri;
         if (flag.equals(TRAILER_FLAG)) {
             builtUri = Uri.parse(API_BASE_URL).buildUpon()
                     .appendPath(Integer.toString(movieId))
                     .appendPath(VIDEOS)
-                    .appendQueryParameter(API_KEY, KEY)
+                    .appendQueryParameter(API_KEY, ApiKey.KEY)
                     .build();
         } else if (flag.equals(REVIEW_FLAG)) {
             builtUri = Uri.parse(API_BASE_URL).buildUpon()
                     .appendPath(Integer.toString(movieId))
                     .appendPath(REVIEWS)
-                    .appendQueryParameter(API_KEY, KEY)
+                    .appendQueryParameter(API_KEY, ApiKey.KEY)
                     .build();
         } else {
             throw new MalformedURLException("wrong flag: " + flag);
@@ -154,7 +151,7 @@ public class NetworkUtils {
     }
     public static List<Movie> getFavoriteMoviesFromNetwork(Context context) {
 
-        Set<String> movies = FavoritesUtils.getFavorities(context);
+        Set<String> movies = FavPrefUtils.getFavorities(context);
         List<Movie> moviesList = new ArrayList<>();
         for (String movieIdString : movies) {
             try {

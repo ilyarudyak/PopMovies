@@ -81,7 +81,8 @@ public class JsonParser {
             JSONObject trailerJson = trailersArray.getJSONObject(i);
             trailersList.add(new Movie.Trailer(
                     trailerJson.getString(Movie.TMDB_TRAILER_KEY),
-                    trailerJson.getString(Movie.TMDB_TRAILER_NAME)
+                    trailerJson.getString(Movie.TMDB_TRAILER_NAME),
+                    false
             ));
         }
     }

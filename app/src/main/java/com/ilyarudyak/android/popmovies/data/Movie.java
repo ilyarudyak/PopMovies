@@ -1,13 +1,16 @@
 package com.ilyarudyak.android.popmovies.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.ilyarudyak.android.popmovies.DetailActivity;
+import com.ilyarudyak.android.popmovies.db.MovieContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +20,13 @@ import java.util.List;
  */
 public class Movie {
 
-    // stage 1
     public static final String TMDB_RESULTS =                   "results";
 
     public static final String TMDB_ID =                         "id";
     public static final String TMDB_ORIGINAl_TITLE =             "original_title";
     public static final String TMDB_POSTER_PATH_RELATIVE =       "poster_path";
     public static final String TMDB_RELEASE_DATE =               "release_date";
+    public static final String RELEASE_YEAR =                    "release_year";
     public static final String TMDB_USER_RATING =                "vote_average";
     public static final String TMDB_PLOT_SYNOPSIS =              "overview";
 
@@ -40,7 +43,6 @@ public class Movie {
     private Double userRating;                  // vote_average
     private String plotSynopsis;                // overview
 
-    // stage 2
     public static final String TMDB_TRAILER_KEY =                   "key";
     public static final String TMDB_TRAILER_NAME =                  "name";
     public static final String TRAILER_BASE_URL = "https://www.youtube.com/watch?";
@@ -49,11 +51,10 @@ public class Movie {
     public static final String TMDB_REVIEW =                        "content";
     public static final String REVIEW_LIST = "com.ilyarudyak.android.popmovies.data.review_list";
 
-    public static final String BUNDLE = "bundle";
+    public static final String MOVIE_BUNDLE = "bundle";
     
     private List<Trailer> movieTrailers;
     private List<String> movieReviews;
-
 
     public Movie(Integer id, String originalTitle,
                  String plotSynopsis, String posterPathRelative,
@@ -71,6 +72,7 @@ public class Movie {
         movieReviews = new ArrayList<>();
     }
 
+    // getters
     public Integer getId() {
         return id;
     }
@@ -94,7 +96,11 @@ public class Movie {
     }
     // get year from release date
     public String getYear() {
-        return releaseDate.substring(0, 4);
+        if (releaseDate != null && releaseDate.length() >= 4) {
+            return releaseDate.substring(0, 4);
+        } else {
+            return "";
+        }
     }
 
     @Override
@@ -102,13 +108,17 @@ public class Movie {
         return "Movie{" +
                 "id=" + id +
                 ", originalTitle='" + originalTitle + '\'' +
-                ", posterPath='" + posterPathAbsolute + '\'' +
+                ", posterPathRelative='" + posterPathRelative + '\'' +
+                ", posterPathAbsolute='" + posterPathAbsolute + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
-                ", userRating='" + userRating + '\'' +
+                ", userRating=" + userRating +
                 ", plotSynopsis='" + plotSynopsis + '\'' +
+                ", movieTrailers=" + movieTrailers +
+                ", movieReviews=" + movieReviews +
                 '}';
     }
 
+    // helper methods
     private void buildPosterPathAbsolute() {
 
         posterPathAbsolute = Uri.parse(POSTER_BASE_URL).buildUpon()
@@ -122,20 +132,19 @@ public class Movie {
 
     }
 
+    // ----------------- trailer & review -----------------
 
-    public void setMovieTrailers(List<Trailer> trailers) {
-        movieTrailers.addAll(trailers);
-    }
-    public List<Trailer> getMovieTrailers() {
-        return movieTrailers;
-    }
     public static class Trailer implements Parcelable {
 
         private String trailerName;
         private String trailerPathAbsolute;
 
-        public Trailer(String trailerKey, String trailerName) {
-            this.trailerPathAbsolute = buildPathAbsolute(trailerKey);
+        public Trailer(String trailerPathOrKey, String trailerName, boolean isPath) {
+            if (isPath) {
+                this.trailerPathAbsolute = trailerPathOrKey;
+            } else {
+                this.trailerPathAbsolute = buildPathAbsolute(trailerPathOrKey);
+            }
             this.trailerName = trailerName;
         }
 
@@ -146,11 +155,9 @@ public class Movie {
                     .build()
                     .toString();
         }
-
         public String getTrailerName() {
             return trailerName;
         }
-
         public String getTrailerPathAbsolute() {
             return trailerPathAbsolute;
         }
@@ -193,6 +200,12 @@ public class Movie {
         }
 
     }
+    public void setMovieTrailers(List<Trailer> trailers) {
+        movieTrailers.addAll(trailers);
+    }
+    public List<Trailer> getMovieTrailers() {
+        return movieTrailers;
+    }
 
     public List<String> getMovieReviews() {
         return movieReviews;
@@ -201,37 +214,124 @@ public class Movie {
         this.movieReviews.addAll(movieReviews);
     }
 
-    public static Intent buildDetailsIntent(Context context, Movie movie) {
+    // ----------------- build bundle etc. -----------------
+
+    public static Bundle buildDetailBundle(Movie m) {
+
+        Bundle bundle = new Bundle();
+        bundle.putInt(TMDB_ID, m.getId());
+        bundle.putString(TMDB_ORIGINAl_TITLE, m.getOriginalTitle());
+        bundle.putString(TMDB_POSTER_PATH_ABSOLUTE, m.getPosterPathAbsolute());
+        bundle.putString(RELEASE_YEAR, m.getYear());
+        bundle.putString(TMDB_USER_RATING, Double.toString(m.getUserRating()));
+        bundle.putString(TMDB_PLOT_SYNOPSIS, m.getPlotSynopsis());
+        bundle.putParcelableArrayList(TRAILER_LIST,
+                (ArrayList<? extends Parcelable>) m.getMovieTrailers());
+        bundle.putStringArrayList(REVIEW_LIST,
+                (ArrayList<String>) m.getMovieReviews());
+        return bundle;
+    }
+    public static Bundle buildDetailBundle(Cursor c) {
+        c.moveToFirst();
+        Bundle bundle = new Bundle();
+        bundle.putInt(TMDB_ID, c.getInt(1));
+        bundle.putString(TMDB_ORIGINAl_TITLE, c.getString(2));
+        bundle.putString(TMDB_POSTER_PATH_ABSOLUTE, c.getString(3));
+        bundle.putString(RELEASE_YEAR, c.getString(4));
+        bundle.putString(TMDB_USER_RATING, Double.toString(c.getDouble(5)));
+        bundle.putString(TMDB_PLOT_SYNOPSIS, c.getString(6));
+
+        return bundle;
+    }
+    public static void addTrailersToBundle(Cursor c, Bundle b) {
+        List<Trailer> trailers = new ArrayList<>();
+        if (c.moveToFirst()){
+            do {
+                String name = c.getString(2);
+                String path = c.getString(3);
+                trailers.add(new Trailer(path, name, true));
+            } while(c.moveToNext());
+        }
+        b.putParcelableArrayList(TRAILER_LIST, (ArrayList<? extends Parcelable>) trailers);
+    }
+    public static void addReviewsToBundle(Cursor c, Bundle b) {
+        List<String> reviews = new ArrayList<>();
+        if (c.moveToFirst()){
+            do {
+                String review = c.getString(2);
+                reviews.add(review);
+            } while(c.moveToNext());
+        }
+        b.putStringArrayList(REVIEW_LIST, (ArrayList<String>) reviews);
+    }
+    public static Intent buildDetailIntent(Context context, Movie m) {
         Intent intent = new Intent(context, DetailActivity.class)
-                .putExtra(BUNDLE, buildDetailsBundle(movie));
-//                .putExtra(TMDB_ID, movie.getId())
-//                .putExtra(TMDB_ORIGINAl_TITLE, movie.getOriginalTitle())
-//                .putExtra(TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute())
-//                .putExtra(TMDB_RELEASE_DATE, movie.getReleaseDate())
-//                .putExtra(TMDB_USER_RATING, Double.toString(movie.getUserRating()))
-//                .putExtra(TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis())
-//                .putParcelableArrayListExtra(TRAILER_LIST,
-//                        (ArrayList<? extends Parcelable>) movie.getMovieTrailers())
-//                .putStringArrayListExtra(REVIEW_LIST,
-//                        (ArrayList<String>) movie.getMovieReviews());
+                .putExtra(MOVIE_BUNDLE, buildDetailBundle(m));
         return intent;
     }
 
-    public static Bundle buildDetailsBundle(Movie movie) {
+    public static ContentValues buildMovieContentValues(Movie m) {
 
-        Bundle bundle = new Bundle();
-        bundle.putInt(TMDB_ID, movie.getId());
-        bundle.putString(TMDB_ORIGINAl_TITLE, movie.getOriginalTitle());
-        bundle.putString(TMDB_POSTER_PATH_ABSOLUTE, movie.getPosterPathAbsolute());
-        bundle.putString(TMDB_RELEASE_DATE, movie.getReleaseDate());
-        bundle.putString(TMDB_USER_RATING, Double.toString(movie.getUserRating()));
-        bundle.putString(TMDB_PLOT_SYNOPSIS, movie.getPlotSynopsis());
-        bundle.putParcelableArrayList(TRAILER_LIST,
-                (ArrayList<? extends Parcelable>) movie.getMovieTrailers());
-        bundle.putStringArrayList(REVIEW_LIST,
-                (ArrayList<String>) movie.getMovieReviews());
-        return bundle;
+        ContentValues cv = new ContentValues();
+
+        cv.put(MovieContract.MovieTable.DB_TMDB_MOVIE_ID, m.getId());
+        cv.put(MovieContract.MovieTable.DB_TITLE, m.getOriginalTitle());
+        cv.put(MovieContract.MovieTable.DB_POSTER_PATH_ABSOLUTE, m.getPosterPathAbsolute());
+        cv.put(MovieContract.MovieTable.DB_RELEASE_YEAR, m.getReleaseDate());
+        cv.put(MovieContract.MovieTable.DB_USER_RATING, m.getUserRating());
+        cv.put(MovieContract.MovieTable.DB_PLOT_SYNOPSIS, m.getPlotSynopsis());
+
+        return cv;
+
     }
+    public static ContentValues buildMovieContentValues(Bundle b) {
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(MovieContract.MovieTable.DB_TMDB_MOVIE_ID, b.getInt(TMDB_ID, 0));
+        cv.put(MovieContract.MovieTable.DB_TITLE, b.getString(TMDB_ORIGINAl_TITLE));
+        cv.put(MovieContract.MovieTable.DB_POSTER_PATH_ABSOLUTE, b.getString(TMDB_POSTER_PATH_ABSOLUTE));
+        cv.put(MovieContract.MovieTable.DB_RELEASE_YEAR, b.getString(RELEASE_YEAR));
+        cv.put(MovieContract.MovieTable.DB_USER_RATING, b.getString(TMDB_USER_RATING));
+        cv.put(MovieContract.MovieTable.DB_PLOT_SYNOPSIS, b.getString(TMDB_PLOT_SYNOPSIS));
+
+        return cv;
+    }
+    public static ContentValues[] buildTrailersContentValues(Bundle b) {
+
+        List<Trailer> trailers = b.getParcelableArrayList(TRAILER_LIST);
+        Integer movieId = b.getInt(TMDB_ID, 0);
+
+        ContentValues[] contentValues = new ContentValues[trailers.size()];
+        int index = 0;
+        for (Trailer t : trailers) {
+            ContentValues cv = new ContentValues();
+            cv.put(MovieContract.TrailerTable.DB_TMDB_MOVIE_ID, movieId);
+            cv.put(MovieContract.TrailerTable.DB_NAME, t.getTrailerName());
+            cv.put(MovieContract.TrailerTable.DB_PATH, t.getTrailerPathAbsolute());
+            contentValues[index++] = cv;
+        }
+
+        return contentValues;
+    }
+    public static ContentValues[] buildReviewsContentValues(Bundle b) {
+
+        List<String> reviews = b.getStringArrayList(REVIEW_LIST);
+        Integer movieId = b.getInt(TMDB_ID, 0);
+
+        ContentValues[] contentValues = new ContentValues[reviews.size()];
+        int index = 0;
+        for (String review : reviews) {
+            ContentValues cv = new ContentValues();
+            cv.put(MovieContract.ReviewTable.DB_TMDB_MOVIE_ID, movieId);
+            cv.put(MovieContract.ReviewTable.DB_REVIEW, review);
+            contentValues[index++] = cv;
+        }
+
+        return contentValues;
+    }
+
+
 }
 
 

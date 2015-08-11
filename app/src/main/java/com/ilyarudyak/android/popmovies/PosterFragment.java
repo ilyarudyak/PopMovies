@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,10 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ilyarudyak.android.popmovies.data.Movie;
 import com.ilyarudyak.android.popmovies.data.PicassoAdapter;
+import com.ilyarudyak.android.popmovies.fav.FavPosterActivity;
 import com.ilyarudyak.android.popmovies.utils.NetworkUtils;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import java.util.List;
  */
 public class PosterFragment extends Fragment {
 
-    private final String LOG_TAG = PosterFragment.class.getSimpleName();
+    private final String TAG = PosterFragment.class.getSimpleName();
 
     // we have to make adapter global to update it
     // in onPostExecute() method of our fetch task
@@ -55,7 +56,7 @@ public class PosterFragment extends Fragment {
         mPicassoAdapter = new PicassoAdapter(getActivity(), new ArrayList<Movie>());
 
         // set empty view in case movies list is empty, no internet etc.
-        View emptyView = v.findViewById(R.id.empty_movies_list);
+        View emptyView = v.findViewById(R.id.empty_layout);
         gridView.setEmptyView(emptyView);
 
         gridView.setAdapter(mPicassoAdapter);
@@ -64,7 +65,7 @@ public class PosterFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Movie movie = mPicassoAdapter.getItem(position);
-                Log.d(LOG_TAG, "we are in onclick");
+//                Log.d(TAG, "we are in onclick");
                 new FetchTrailersReviewsTask().execute(movie);
 
             }
@@ -114,6 +115,9 @@ public class PosterFragment extends Fragment {
             return true;
         } else if (id == R.id.action_favorities_api) {
             new FetchFavoritieMoviesTask().execute();
+            return true;
+        } else if (id == R.id.action_favorities_db) {
+            startActivity(new Intent(getActivity(), FavPosterActivity.class));
             return true;
         } else if (id == R.id.action_settings) {
             startActivity(new Intent(getActivity(), SettingsActivity.class));
@@ -194,12 +198,13 @@ public class PosterFragment extends Fragment {
             if (reviews != null) {
                 mMovie.setMovieReviews(reviews);
             }
+//            Log.d(TAG, mMovie.toString());
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Log.d(LOG_TAG, "we are inside async task");
+//            Log.d(TAG, "we are inside async task");
             mCallback.onPosterSelected(mMovie);
         }
     }
@@ -246,12 +251,14 @@ public class PosterFragment extends Fragment {
  */
     private void updateEmptyView() {
         if ( mPicassoAdapter.getCount() == 0 ) {
+            LinearLayout l = null;
             TextView tv = null;
             if (getView() != null) {
-                tv = (TextView) getView().findViewById(R.id.empty_movies_list);
+                l = (LinearLayout) getView().findViewById(R.id.empty_layout);
+                tv = (TextView) l.findViewById(R.id.empty_movies_text_view);
             }
             if (tv != null) {
-                int message = R.string.empty_movies_list;
+                int message = R.string.empty_movies_text_view;
                 if (!NetworkUtils.isNetworkAvailable(getActivity()) ) {
                     message = R.string.empty_movies_list_no_network;
                 }

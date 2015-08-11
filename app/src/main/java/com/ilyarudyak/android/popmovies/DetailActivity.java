@@ -18,7 +18,7 @@ public class DetailActivity extends ActionBarActivity {
             // using a fragment transaction.
 
             DetailFragment df = new DetailFragment();
-            df.setArguments(getIntent().getBundleExtra(Movie.BUNDLE));
+            df.setArguments(getIntent().getBundleExtra(Movie.MOVIE_BUNDLE));
 
             getFragmentManager()
                     .beginTransaction()

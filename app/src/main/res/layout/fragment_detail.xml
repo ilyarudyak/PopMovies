@@ -33,7 +33,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imageViewPoster"
-                android:src="@raw/place_holder"
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="32dp"
                 android:layout_marginRight="32dp"/>
@@ -68,7 +67,6 @@
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="83dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/button_favorite"
                     android:id="@+id/button_favorite"
                     android:layout_marginTop="16dp"
                     android:background="@color/teal500"
@@ -88,24 +86,8 @@
             android:id="@+id/textViewPlotSynopsis"
             android:layout_marginTop="32dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:background="@color/black"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="@string/trailers"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"/>
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"/>
 
     </LinearLayout>
 </ScrollView>

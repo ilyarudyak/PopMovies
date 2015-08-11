@@ -2,7 +2,16 @@
 
     <!-- app and activities-->
     <string name="app_name">PopMovies</string>
-    <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_detail">Details</string>
+    <string name="title_activity_fav_poster">Favorites</string>
+    <string name="title_activity_fav_detail">Details</string>
+
+    <!-- handle empty adapter, no internet etc.-->
+    <string name="empty_movies_text_view">No movies available. That\'s all we know.</string>
+    <string name="empty_movies_list_no_network">No internet connection.
+        Please try again later.</string>
+
+    <!-- ================= action bar ================= -->
 
     <!-- action bar menu -->
     <string name="action_popularity_sort">Most popular</string>
@@ -11,14 +20,8 @@
     <string name="action_favorities_db">Favorities (DB)</string>
     <string name="action_settings">Settings</string>
 
-
-    <!-- debugging strings for details screen -->
-    <string name="chappie">Chappie</string>
-    <string name="year_2015">2015</string>
-    <string name="rating_8_10">8/10</string>
-    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur
-        adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-        dolore magna.</string>
+    <!-- share button -->
+    <string name="action_share_trailer">Share</string>
 
     <!-- sort preferences-->
     <string name="pref_sort_label">Sort Order</string>
@@ -28,15 +31,26 @@
     <string name="pref_sort_most_popular">popularity.desc</string>
     <string name="pref_sort_highest_rated">vote_average.desc</string>
 
+    <!-- ================= details ================= -->
 
-    <string name="trailers">Trailers:</string>
+    <!-- debugging strings for details screen -->
+    <string name="chappie">Chappie</string>
+    <string name="year_2015">2015</string>
+    <string name="rating_8_10">8/10</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur
+        adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+        dolore magna.</string>
     <string name="trailer_title">Trailer</string>
-    <string name="action_share_trailer">Share</string>
-    <string name="button_favorite">Mark as Favorite</string>
 
-    <!-- handle empty adapter, no internet etc.-->
-    <string name="empty_movies_list">no movies available. </string>
-    <string name="empty_movies_list_no_network">no movies available.
-        network is not available.</string>
+    <!-- favorite button -->
+    <string name="button_favorite">Mark as Favorite</string>
+    <string name="button_favorite_remove">Remove from Favorites</string>
+
+    <!-- placeholder strings for empty values-->
+    <string name="placeholder_plot">We don\'t have a plot description for this movie.</string>
+
+    <!-- dividers on detail layout -->
+    <string name="reviews">Reviews:</string>
+    <string name="trailers">Trailers:</string>
 
 </resources>

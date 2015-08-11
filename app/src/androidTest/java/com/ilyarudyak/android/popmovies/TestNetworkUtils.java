@@ -4,6 +4,7 @@ import android.test.AndroidTestCase;
 import android.util.Log;
 
 import com.ilyarudyak.android.popmovies.data.Movie;
+import com.ilyarudyak.android.popmovies.utils.ApiKey;
 import com.ilyarudyak.android.popmovies.utils.NetworkUtils;
 
 import java.net.URL;
@@ -20,7 +21,7 @@ public class TestNetworkUtils extends AndroidTestCase {
     public void testBuildMoviesAPIUrl() throws Throwable {
 
         String expectedUrlPopular = "http://api.themoviedb.org/3/discover/movie?" +
-                "sort_by=popularity.desc&api_key=99ee31c251ccebfbe8786aa49d9c6fe8";
+                "sort_by=popularity.desc&api_key=" + ApiKey.KEY;
         URL result = NetworkUtils.buildMoviesAPIUrl(NetworkUtils.MOST_POPULAR);
         if (result != null) {
             assertEquals(expectedUrlPopular, result.toString());
@@ -31,7 +32,7 @@ public class TestNetworkUtils extends AndroidTestCase {
     public void testBuildFavoriteMoviesAPIUrl() throws Throwable {
 
         String expectedUrl = "http://api.themoviedb.org/3/movie/135397?" +
-                "api_key=99ee31c251ccebfbe8786aa49d9c6fe8";
+                "api_key=" + ApiKey.KEY;
         URL result = NetworkUtils.buildFavoriteMoviesAPIUrl(135397);
         if (result != null) {
             assertEquals(expectedUrl, result.toString());
@@ -42,7 +43,7 @@ public class TestNetworkUtils extends AndroidTestCase {
     public void testBuildTrailerReviewAPIUrl() throws Throwable {
 
         String expectedUrlTrailer = "http://api.themoviedb.org/3/movie/135397/videos?" +
-                "api_key=99ee31c251ccebfbe8786aa49d9c6fe8";
+                "api_key=" + ApiKey.KEY;
         URL result = NetworkUtils.buildTrailerReviewAPIUrl(135397, NetworkUtils.TRAILER_FLAG);
         if (result != null) {
             assertEquals(expectedUrlTrailer, result.toString());
@@ -51,7 +52,7 @@ public class TestNetworkUtils extends AndroidTestCase {
         }
 
         String expectedUrlReview = "http://api.themoviedb.org/3/movie/135397/reviews?" +
-                "api_key=99ee31c251ccebfbe8786aa49d9c6fe8";
+                "api_key=" + ApiKey.KEY;
         result = NetworkUtils.buildTrailerReviewAPIUrl(135397, NetworkUtils.REVIEW_FLAG);
         if (result != null) {
             assertEquals(expectedUrlReview, result.toString());
