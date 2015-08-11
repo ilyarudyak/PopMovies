@@ -1,6 +1,9 @@
 # PopMovies
 We document here some implementation details primarily related to the stage 2 of the project.
 
+## API Key
+There is the single place where we store our API Key - `ApiKey` class.
+
 ## User interface
 1. We allow user to choose UI for `PosterFragment` from given in the rubric options including favorities. We have two implementations of Favorities (only on a phone, on a tablet we use only the first one):
   * `Favorities (API)`. In the first implementation we store favorite movies id in `SharedPreference`. So when a user clicks the favorities button we add the movies id into set from `SharedPreference`. We also check the list of movies when rendering layout of detail fragment and the favorities button is disabled for movies in this list. When a user clicks on this option in the menu we make new API calls for each movie using its id (this API call is not mentioned in the project description: https://api.themoviedb.org/3/movie/135397?api_key=..., where 135397 is the movie id).
