@@ -154,7 +154,7 @@ public class NetworkUtils {
     }
     public static List<Movie> getFavoriteMoviesFromNetwork(Context context) {
 
-        Set<String> movies = FavoritesUtils.getFavorities(context);
+        Set<String> movies = FavPrefUtils.getFavorities(context);
         List<Movie> moviesList = new ArrayList<>();
         for (String movieIdString : movies) {
             try {

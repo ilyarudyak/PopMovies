@@ -24,7 +24,7 @@ public class MovieContract {
 
         public static final String DB_TABLE_NAME = "movie";
 
-        public static final String DB_TMDB_ID = "tmdb_id";
+        public static final String DB_TMDB_MOVIE_ID = "tmdb_movie_id";
         public static final String DB_TITLE = "title";
         public static final String DB_POSTER_PATH_ABSOLUTE = "poster_path_absolute";
         public static final String DB_RELEASE_YEAR = "release_date";
@@ -60,7 +60,7 @@ public class MovieContract {
 
         public static final String DB_TABLE_NAME = "trailer";
 
-        public static final String DB_MOVIE_TMDB_ID = "movie_id";
+        public static final String DB_TMDB_MOVIE_ID = "tmdb_movie_id";
         public static final String DB_NAME = "name";
         public static final String DB_PATH = "path";
 
@@ -88,7 +88,7 @@ public class MovieContract {
 
         public static final String DB_TABLE_NAME = "review";
 
-        public static final String DB_MOVIE_TMDB_ID = "movie_id";
+        public static final String DB_TMDB_MOVIE_ID = "tmdb_movie_id";
         public static final String DB_REVIEW = "review";
 
         // ------------ building trailer Uri ------------

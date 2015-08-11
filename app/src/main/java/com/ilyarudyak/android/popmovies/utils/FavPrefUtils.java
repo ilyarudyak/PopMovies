@@ -9,9 +9,9 @@ import java.util.Set;
 /**
  * Created by ilyarudyak on 7/30/15.
  */
-public class FavoritesUtils {
+public class FavPrefUtils {
 
-    private static final String LOG_TAG = FavoritesUtils.class.getSimpleName();
+    private static final String LOG_TAG = FavPrefUtils.class.getSimpleName();
 
     // name of shared prefs file, that contains favorite movies ids
     public static final String PREFS_NAME = "FavoriteMovies";
@@ -47,8 +47,5 @@ public class FavoritesUtils {
         editor.putStringSet(FAVORITIES, favorites).apply();
     }
 
-    public static void addFavoriteMovieToDb(Context c, Integer movieId) {
-
-    }
 
 }

@@ -35,7 +35,7 @@ public class TestUtils extends AndroidTestCase {
                 "Isla Nublar now features a fully functioning dinosaur theme park, " +
                 "Jurassic World, as originally envisioned by John Hammond.";
 
-        jwcv.put(MovieContract.MovieTable.DB_TMDB_ID, 135397);
+        jwcv.put(MovieContract.MovieTable.DB_TMDB_MOVIE_ID, 135397);
         jwcv.put(MovieContract.MovieTable.DB_TITLE, "Jurassic World");
         jwcv.put(MovieContract.MovieTable.DB_POSTER_PATH_ABSOLUTE,
                 "http://image.tmdb.org/t/p/w185/uXZYawqUsChGSj54wcuBtEdUJbh.jpg");

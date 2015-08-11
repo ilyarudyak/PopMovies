@@ -274,7 +274,7 @@ public class Movie {
 
         ContentValues cv = new ContentValues();
 
-        cv.put(MovieContract.MovieTable.DB_TMDB_ID, m.getId());
+        cv.put(MovieContract.MovieTable.DB_TMDB_MOVIE_ID, m.getId());
         cv.put(MovieContract.MovieTable.DB_TITLE, m.getOriginalTitle());
         cv.put(MovieContract.MovieTable.DB_POSTER_PATH_ABSOLUTE, m.getPosterPathAbsolute());
         cv.put(MovieContract.MovieTable.DB_RELEASE_YEAR, m.getReleaseDate());
@@ -288,7 +288,7 @@ public class Movie {
 
         ContentValues cv = new ContentValues();
 
-        cv.put(MovieContract.MovieTable.DB_TMDB_ID, b.getInt(TMDB_ID, 0));
+        cv.put(MovieContract.MovieTable.DB_TMDB_MOVIE_ID, b.getInt(TMDB_ID, 0));
         cv.put(MovieContract.MovieTable.DB_TITLE, b.getString(TMDB_ORIGINAl_TITLE));
         cv.put(MovieContract.MovieTable.DB_POSTER_PATH_ABSOLUTE, b.getString(TMDB_POSTER_PATH_ABSOLUTE));
         cv.put(MovieContract.MovieTable.DB_RELEASE_YEAR, b.getString(RELEASE_YEAR));
@@ -306,7 +306,7 @@ public class Movie {
         int index = 0;
         for (Trailer t : trailers) {
             ContentValues cv = new ContentValues();
-            cv.put(MovieContract.TrailerTable.DB_MOVIE_TMDB_ID, movieId);
+            cv.put(MovieContract.TrailerTable.DB_TMDB_MOVIE_ID, movieId);
             cv.put(MovieContract.TrailerTable.DB_NAME, t.getTrailerName());
             cv.put(MovieContract.TrailerTable.DB_PATH, t.getTrailerPathAbsolute());
             contentValues[index++] = cv;
@@ -323,7 +323,7 @@ public class Movie {
         int index = 0;
         for (String review : reviews) {
             ContentValues cv = new ContentValues();
-            cv.put(MovieContract.ReviewTable.DB_MOVIE_TMDB_ID, movieId);
+            cv.put(MovieContract.ReviewTable.DB_TMDB_MOVIE_ID, movieId);
             cv.put(MovieContract.ReviewTable.DB_REVIEW, review);
             contentValues[index++] = cv;
         }

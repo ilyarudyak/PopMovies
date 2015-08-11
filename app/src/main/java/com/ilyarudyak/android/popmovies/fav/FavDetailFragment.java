@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ilyarudyak.android.popmovies.DetailFragment;
-import com.ilyarudyak.android.popmovies.utils.DbUtils;
+import com.ilyarudyak.android.popmovies.utils.FavDbUtils;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -38,7 +38,7 @@ public class FavDetailFragment extends DetailFragment {
             Uri movieUri = getActivity().getIntent().getParcelableExtra(
                     FavPosterFragment.DETAIL_URI);
 
-            mBundle = DbUtils.getBundleFromUri(getActivity(), movieUri);
+            mBundle = FavDbUtils.getBundleFromUri(getActivity(), movieUri);
 
 //            Log.d(TAG, mBundle.toString());
             return null;

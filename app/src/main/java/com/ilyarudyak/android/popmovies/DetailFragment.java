@@ -1,7 +1,6 @@
 package com.ilyarudyak.android.popmovies;
 
 import android.app.Fragment;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -22,8 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ilyarudyak.android.popmovies.data.Movie;
-import com.ilyarudyak.android.popmovies.db.MovieContract;
-import com.ilyarudyak.android.popmovies.utils.FavoritesUtils;
+import com.ilyarudyak.android.popmovies.utils.FavDbUtils;
+import com.ilyarudyak.android.popmovies.utils.FavPrefUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -232,12 +231,12 @@ public class DetailFragment extends Fragment {
                 public void onClick(View view) {
                     if (!isFavorite()) {
                         // put to favorities and database
-                        FavoritesUtils.putFavorities(getActivity(), mMovieId);
+                        FavPrefUtils.putFavorities(getActivity(), mMovieId);
                         favButton.setText(getActivity().getString(R.string.button_favorite_remove));
                         new AddMovieToFavDbTask().execute();
                     } else {
                         // remove from favorities and database
-                        FavoritesUtils.removeFromFavorities(getActivity(), mMovieId);
+                        FavPrefUtils.removeFromFavorities(getActivity(), mMovieId);
                         favButton.setText(getActivity().getString(R.string.button_favorite));
                         new RemoveMovieFromFavDbTask().execute();
                     }
@@ -248,7 +247,7 @@ public class DetailFragment extends Fragment {
 
     // check if movie is already favorite
     private boolean isFavorite() {
-        Set<String> favorites = FavoritesUtils.getFavorities(getActivity());
+        Set<String> favorites = FavPrefUtils.getFavorities(getActivity());
         if (mMovieId != null) {
             return favorites != null && favorites.contains(Integer.toString(mMovieId));
         }
@@ -314,15 +313,7 @@ public class DetailFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... params) {
 
-            ContentValues cv = Movie.buildMovieContentValues(mBundle);
-            getActivity().getContentResolver().insert(MovieContract.MovieTable.CONTENT_URI,cv);
-
-            ContentValues[] cvTrailers = Movie.buildTrailersContentValues(mBundle);
-            getActivity().getContentResolver().bulkInsert(MovieContract.TrailerTable.CONTENT_URI, cvTrailers);
-
-            ContentValues[] cvReviews = Movie.buildReviewsContentValues(mBundle);
-            getActivity().getContentResolver().bulkInsert(MovieContract.ReviewTable.CONTENT_URI, cvReviews);
-
+            FavDbUtils.insertFavMovieIntoDb(getActivity(), mBundle);
             return null;
         }
     }
@@ -331,8 +322,7 @@ public class DetailFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... params) {
 
-            getActivity().getContentResolver().delete(MovieContract.MovieTable.CONTENT_URI,
-                    "tmdb_id=" + mMovieId, null);
+            FavDbUtils.deleteFavMovieFromDb(getActivity(), mMovieId);
             return null;
         }
     }
