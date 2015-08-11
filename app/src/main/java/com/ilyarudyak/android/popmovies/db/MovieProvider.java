@@ -159,7 +159,6 @@ public class MovieProvider extends ContentProvider {
 
         switch(match) {
             case MOVIES:
-                // delete everything from table and return the number of rows deleted
                 return db.delete(MovieContract.MovieTable.DB_TABLE_NAME, selection, selectionArgs);
             case MOVIES_ID:
                 id = MovieContract.MovieTable.getMovieId(uri);
@@ -167,12 +166,18 @@ public class MovieProvider extends ContentProvider {
                         + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ")" : "");
 
                 return db.delete(MovieContract.MovieTable.DB_TABLE_NAME, selectionCriteria, selectionArgs);
+
+            case TRAILERS:
+                return db.delete(MovieContract.TrailerTable.DB_TABLE_NAME, selection, selectionArgs);
             case TRAILERS_ID:
                 id = MovieContract.TrailerTable.getTrailerId(uri);
                 selectionCriteria = BaseColumns._ID + "=" + id
                         + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ")" : "");
 
                 return db.delete(MovieContract.MovieTable.DB_TABLE_NAME, selectionCriteria, selectionArgs);
+
+            case REVIEWS:
+                return db.delete(MovieContract.ReviewTable.DB_TABLE_NAME, selection, selectionArgs);
             case REVIEWS_ID:
                 id = MovieContract.ReviewTable.getReviewId(uri);
                 selectionCriteria = BaseColumns._ID + "=" + id
