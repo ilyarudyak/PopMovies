@@ -60,7 +60,7 @@ public class MovieContract {
 
         public static final String DB_TABLE_NAME = "trailer";
 
-        public static final String DB_MOVIE_ID = "movie_id";
+        public static final String DB_MOVIE_TMDB_ID = "movie_id";
         public static final String DB_NAME = "name";
         public static final String DB_PATH = "path";
 
@@ -88,7 +88,7 @@ public class MovieContract {
 
         public static final String DB_TABLE_NAME = "review";
 
-        public static final String DB_MOVIE_ID = "movie_id";
+        public static final String DB_MOVIE_TMDB_ID = "movie_id";
         public static final String DB_REVIEW = "review";
 
         // ------------ building trailer Uri ------------

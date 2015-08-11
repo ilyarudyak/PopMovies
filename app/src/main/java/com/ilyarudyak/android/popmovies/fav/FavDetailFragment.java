@@ -1,16 +1,14 @@
 package com.ilyarudyak.android.popmovies.fav;
 
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ilyarudyak.android.popmovies.DetailFragment;
-import com.ilyarudyak.android.popmovies.data.Movie;
+import com.ilyarudyak.android.popmovies.utils.DbUtils;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -39,12 +37,10 @@ public class FavDetailFragment extends DetailFragment {
         protected Void doInBackground(Void... params) {
             Uri movieUri = getActivity().getIntent().getParcelableExtra(
                     FavPosterFragment.DETAIL_URI);
-            Log.d(TAG, movieUri.toString());
-            Cursor c = getActivity().getContentResolver().query(movieUri,
-                    null, null, null, null);
-            c.moveToFirst();
-            mBundle = Movie.buildDetailBundle(c);
-            Log.d(TAG, mBundle.toString());
+
+            mBundle = DbUtils.getBundleFromUri(getActivity(), movieUri);
+
+//            Log.d(TAG, mBundle.toString());
             return null;
         }
     }

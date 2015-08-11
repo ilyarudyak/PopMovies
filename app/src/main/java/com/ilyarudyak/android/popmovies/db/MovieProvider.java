@@ -193,10 +193,10 @@ public class MovieProvider extends ContentProvider {
     public int bulkInsert(Uri uri, ContentValues[] values) {
         final SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
+        int insertCount = 0;
         switch (match) {
             case TRAILERS:
                 db.beginTransaction();
-                int insertCount = 0;
                 try {
                     for (ContentValues value : values) {
                         long id = db.insert(MovieContract.TrailerTable.DB_TABLE_NAME, null, value);
@@ -210,6 +210,20 @@ public class MovieProvider extends ContentProvider {
                 }
                 // TODO do we need this notifications?
 //                getContext().getContentResolver().notifyChange(uri, null);
+                return insertCount;
+            case REVIEWS:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long id = db.insert(MovieContract.ReviewTable.DB_TABLE_NAME, null, value);
+                        if (id != -1) {
+                            insertCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
                 return insertCount;
             default:
                 return super.bulkInsert(uri, values);

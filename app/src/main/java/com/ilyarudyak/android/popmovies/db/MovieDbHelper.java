@@ -36,14 +36,14 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_TRAILER_TABLE = "CREATE TABLE " + TrailerTable.DB_TABLE_NAME + " (" +
                 TrailerTable._ID +                   " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 //TODO add reference
-                TrailerTable.DB_MOVIE_ID +           " INTEGER NOT NULL, " +
+                TrailerTable.DB_MOVIE_TMDB_ID +           " INTEGER NOT NULL, " +
                 TrailerTable.DB_NAME +               " TEXT NOT NULL, " +
                 TrailerTable.DB_PATH +               " TEXT NOT NULL " +
                 " );";
 
         final String SQL_CREATE_REVIEW_TABLE = "CREATE TABLE " + ReviewTable.DB_TABLE_NAME + " (" +
                 ReviewTable._ID +                    " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                ReviewTable.DB_MOVIE_ID +            " INTEGER NOT NULL, " +
+                ReviewTable.DB_MOVIE_TMDB_ID +            " INTEGER NOT NULL, " +
                 ReviewTable.DB_REVIEW +              " TEXT NOT NULL " +
                 " );";
 
