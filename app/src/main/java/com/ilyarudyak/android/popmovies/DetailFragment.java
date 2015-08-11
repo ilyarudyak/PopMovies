@@ -289,8 +289,7 @@ public class DetailFragment extends Fragment {
 
         if (mTrailerList != null && mTrailerList.size() > 0) {
             String trailerPath = mTrailerList.get(0).getTrailerPathAbsolute();
-            String shareTag = " #" + getActivity().getIntent()
-                    .getStringExtra(Movie.TMDB_ORIGINAl_TITLE);
+            String shareTag = " #" + mBundle.getString(Movie.TMDB_ORIGINAl_TITLE);
 
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
