@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Model class to encapsulate a movie.
  */
-public class Movie {
+public class Movie implements Parcelable {
 
     public static final String TMDB_RESULTS =                   "results";
 
@@ -129,6 +129,46 @@ public class Movie {
                 .appendPath(posterPathRelative.replace("/", ""))
                 .build()
                 .toString();
+
+    }
+
+    // ---------------- Parcelable methods ----------------
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeInt(id);
+        parcel.writeString(originalTitle);
+        parcel.writeString(posterPathRelative);
+        parcel.writeString(posterPathAbsolute);
+        parcel.writeString(releaseDate);
+        parcel.writeDouble(userRating);
+        parcel.writeString(plotSynopsis);
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR
+            = new Parcelable.Creator<Movie>() {
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
+
+    private Movie(Parcel in) {
+        id = in.readInt();
+        originalTitle = in.readString();
+        posterPathRelative = in.readString();
+        posterPathAbsolute = in.readString();
+        releaseDate = in.readString();
+        userRating = in.readDouble();
+        plotSynopsis = in.readString();
 
     }
 

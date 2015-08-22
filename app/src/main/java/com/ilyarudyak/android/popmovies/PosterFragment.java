@@ -1,12 +1,14 @@
 package com.ilyarudyak.android.popmovies;
 
-import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,15 +38,35 @@ import java.util.List;
  */
 public class PosterFragment extends Fragment {
 
-    private final String TAG = PosterFragment.class.getSimpleName();
+    private static final String TAG = PosterFragment.class.getSimpleName();
+    public static final String MOVIES = "com.ilyarudyak.android.popmovies.MOVIES";
 
     // we have to make adapter global to update it
     // in onPostExecute() method of our fetch task
     private PicassoAdapter mPicassoAdapter;
+    private List<Movie> mMovies;
 
     private Callback mCallback;
 
     public PosterFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // now this fragment can handle menu events
+        setHasOptionsMenu(true);
+
+        // we fetch movies only if no saved bundle
+        if (savedInstanceState != null) {
+            mMovies = savedInstanceState.getParcelableArrayList(MOVIES);
+            if (mMovies == null) {
+                fetchMovies();
+            }
+        } else {
+            fetchMovies();
+        }
     }
 
     @Override
@@ -54,6 +76,11 @@ public class PosterFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_poster, container, false);
         GridView gridView = (GridView) v.findViewById(R.id.gridView);
         mPicassoAdapter = new PicassoAdapter(getActivity(), new ArrayList<Movie>());
+
+        // if we have saved movies after configuration change add them
+        if (mMovies != null) {
+            mPicassoAdapter.addAll(mMovies);
+        }
 
         // set empty view in case movies list is empty, no internet etc.
         View emptyView = v.findViewById(R.id.empty_layout);
@@ -71,31 +98,33 @@ public class PosterFragment extends Fragment {
             }
         });
 
-
-
         return v;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    /**
+     * We store list of movies into savedState and use them
+     * after configuration change. In this way we can eliminate
+     * calling fetch task again.
+     * */
+    public void onSaveInstanceState(Bundle savedState) {
 
-        // now this fragment can handle menu events
-        setHasOptionsMenu(true);
+        super.onSaveInstanceState(savedState);
+
+        List<Movie> movies = mPicassoAdapter.getMovies();
+        savedState.putParcelableArrayList(MOVIES, (ArrayList<? extends Parcelable>) movies);
+
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    // helper methods
+    private void fetchMovies() {
+
         // get preferences or use default value if they are not set
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortOrder = prefs.getString(getString(R.string.pref_sort_key),
                 getString(R.string.pref_sort_most_popular));
         // fetch movies using preferred sort order
         new FetchMoviesTask().execute(sortOrder);
-
     }
-
 
     // ------------------- menu methods -------------------
 
@@ -139,6 +168,7 @@ public class PosterFragment extends Fragment {
 
         @Override
         protected List<Movie> doInBackground(String... params) {
+            Log.d(TAG, "I'm going to fetch movies");
             return NetworkUtils.getMoviesFromNetwork(params[0]);
         }
 
@@ -148,7 +178,9 @@ public class PosterFragment extends Fragment {
                 mPicassoAdapter.clear();
                 mPicassoAdapter.addAll(result);
             }
-            updateEmptyView();
+
+            // if no result use empty view
+            setEmptyView();
         }
     }
 
@@ -224,15 +256,15 @@ public class PosterFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {
-            mCallback = (Callback) activity;
+            mCallback = (Callback) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + " must implement OnHeadlineSelectedListener");
         }
     }
@@ -245,11 +277,12 @@ public class PosterFragment extends Fragment {
 
     // -------- empty view for no connection etc. ---------
 
-    /*
-    Updates the empty list view with contextually relevant information that the user can
-    use to determine why they aren't seeing weather.
- */
-    private void updateEmptyView() {
+    /**
+     * Updates the empty list view with contextually relevant
+     * information that the user can
+     * use to determine why they aren't seeing weather.
+     */
+    private void setEmptyView() {
         if ( mPicassoAdapter.getCount() == 0 ) {
             LinearLayout l = null;
             TextView tv = null;

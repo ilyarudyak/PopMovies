@@ -2,13 +2,13 @@ package com.ilyarudyak.android.popmovies;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.ilyarudyak.android.popmovies.data.Movie;
 
 
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends AppCompatActivity
     implements PosterFragment.Callback {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -19,7 +19,15 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
+
+        // add PosterFragment
+        if (savedInstanceState == null) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .add(android.R.id.content, new PosterFragment(), null)
+                    .commit();
+        }
 
         // we provide a tablet layout only for a landscape mode
         if(getResources().getBoolean(R.bool.landscape_only)){

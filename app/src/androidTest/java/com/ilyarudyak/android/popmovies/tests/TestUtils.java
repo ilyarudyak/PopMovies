@@ -65,5 +65,4 @@ public class TestUtils extends AndroidTestCase {
         }
         return sb.toString();
     }
-
 }

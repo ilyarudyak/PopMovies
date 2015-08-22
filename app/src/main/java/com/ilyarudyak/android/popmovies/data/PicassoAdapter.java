@@ -20,10 +20,12 @@ import java.util.List;
 public class PicassoAdapter  extends ArrayAdapter<Movie> {
 
     private Context mContext;
+    private List<Movie> mMovies;
 
     public PicassoAdapter(Context context, List<Movie> movies) {
         super(context, 0, movies);
         mContext = context;
+        mMovies = movies;
     }
 
     @Override
@@ -64,6 +66,10 @@ public class PicassoAdapter  extends ArrayAdapter<Movie> {
      */
     public static class ViewHolder {
         public ImageView imageView;
+    }
+
+    public List<Movie> getMovies() {
+        return mMovies;
     }
 }
 
