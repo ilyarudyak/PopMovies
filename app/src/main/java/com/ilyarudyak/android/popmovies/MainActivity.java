@@ -1,6 +1,5 @@
 package com.ilyarudyak.android.popmovies;
 
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,20 +18,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
-        // add PosterFragment
         if (savedInstanceState == null) {
             getFragmentManager()
                     .beginTransaction()
-                    .add(android.R.id.content, new PosterFragment(), null)
+                    .add(R.id.poster_container, new PosterFragment(), null)
                     .commit();
         }
-
         // we provide a tablet layout only for a landscape mode
-        if(getResources().getBoolean(R.bool.landscape_only)){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
+//        if(getResources().getBoolean(R.bool.landscape_only)){
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//        }
 
         // dynamically add detail fragment on a tablet
         // this fragment will be empty until we click
