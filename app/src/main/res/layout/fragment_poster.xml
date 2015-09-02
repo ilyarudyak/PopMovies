@@ -1,50 +1,63 @@
-<!-- we deleted standard padding 16dp to fit mockups-->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivityFragment">
 
-
-    <GridView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gridView"
-        android:gravity="center"
-
-        android:numColumns="auto_fit"
-
-        android:horizontalSpacing="0dp"
-        android:verticalSpacing="-5dp"
-
-        android:columnWidth="150dp"
-
-        android:stretchMode="columnWidth" />
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="64dp"
-        android:padding="32dp"
-        android:id="@+id/empty_layout">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivityFragment">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_highlight_off_black_48dp"
-        />
+        <GridView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/gridView"
+            android:gravity="center"
 
-    <TextView
-        android:id="@+id/empty_movies_text_view"
-        android:text="@string/empty_movies_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:padding="16dp"/>
+            android:numColumns="auto_fit"
+
+            android:horizontalSpacing="0dp"
+            android:verticalSpacing="-5dp"
+
+            android:columnWidth="150dp"
+
+            android:stretchMode="columnWidth" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="64dp"
+            android:padding="32dp"
+            android:id="@+id/empty_layout">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_highlight_off_black_48dp"
+            />
+
+        <TextView
+            android:id="@+id/empty_movies_text_view"
+            android:text="@string/empty_movies_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:padding="16dp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/progress_spinner"
+        style="?android:attr/progressBarStyleLargeInverse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
 
+</FrameLayout>
 

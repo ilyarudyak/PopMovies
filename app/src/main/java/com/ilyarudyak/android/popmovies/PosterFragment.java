@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ilyarudyak.android.popmovies.data.Movie;
@@ -48,12 +49,16 @@ public class PosterFragment extends Fragment {
 
     private Callback mCallback;
 
+    private ProgressBar mSpinner;
+
     public PosterFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(TAG, "i'm in onCreate()");
 
         // now this fragment can handle menu events
         setHasOptionsMenu(true);
@@ -82,6 +87,10 @@ public class PosterFragment extends Fragment {
             mPicassoAdapter.addAll(mMovies);
         }
 
+        // set progress indicator
+        mSpinner = (ProgressBar) v.findViewById(R.id.progress_spinner);
+        mSpinner.setVisibility(View.GONE);
+
         // set empty view in case movies list is empty, no internet etc.
         View emptyView = v.findViewById(R.id.empty_layout);
         gridView.setEmptyView(emptyView);
@@ -101,6 +110,25 @@ public class PosterFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "i'm in onResume()");
+    }
+
+    // helper methods
+    private void fetchMovies() {
+
+        // get preferences or use default value if they are not set
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortOrder = prefs.getString(getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_most_popular));
+
+        // fetch movies using preferred sort order
+        new FetchMoviesTask().execute(sortOrder);
+    }
+
+    // ------------------- config changes -------------------
 
     /**
      * We store list of movies into savedState and use them
@@ -114,17 +142,6 @@ public class PosterFragment extends Fragment {
         List<Movie> movies = mPicassoAdapter.getMovies();
         savedState.putParcelableArrayList(MOVIES, (ArrayList<? extends Parcelable>) movies);
 
-    }
-
-    // helper methods
-    private void fetchMovies() {
-
-        // get preferences or use default value if they are not set
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortOrder = prefs.getString(getString(R.string.pref_sort_key),
-                getString(R.string.pref_sort_most_popular));
-        // fetch movies using preferred sort order
-        new FetchMoviesTask().execute(sortOrder);
     }
 
     // ------------------- menu methods -------------------
@@ -168,8 +185,17 @@ public class PosterFragment extends Fragment {
     public class FetchMoviesTask extends AsyncTask<String, Void, List<Movie>> {
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (mSpinner != null) {
+                mSpinner.setVisibility(View.VISIBLE);
+//                Log.d(TAG, "set visibility for spinner");
+            }
+        }
+
+        @Override
         protected List<Movie> doInBackground(String... params) {
-            Log.d(TAG, "I'm going to fetch movies");
+            Log.d(TAG, "I'm doing my doInBackground");
             return NetworkUtils.getMoviesFromNetwork(params[0]);
         }
 
@@ -178,6 +204,11 @@ public class PosterFragment extends Fragment {
             if (result != null) {
                 mPicassoAdapter.clear();
                 mPicassoAdapter.addAll(result);
+                if (mSpinner != null) {
+                    mSpinner.setVisibility(View.GONE);
+//                    Log.d(TAG, "remove visibility for spinner");
+                }
+
             }
 
             // if no result use empty view
