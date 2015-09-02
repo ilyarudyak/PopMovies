@@ -363,7 +363,7 @@ public class PosterFragment extends Fragment {
                 if (FavPrefUtils.isFavsEmpty(getActivity())) {
                     message = R.string.empty_favorites;
                 }
-                
+
                 tv.setText(message);
             }
         }
