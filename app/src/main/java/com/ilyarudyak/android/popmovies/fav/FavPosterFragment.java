@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 
 import com.ilyarudyak.android.popmovies.R;
 import com.ilyarudyak.android.popmovies.db.MovieContract;
@@ -50,6 +51,10 @@ public class FavPosterFragment extends Fragment
                 startActivity(buildDetailIntent(id));
             }
         });
+
+        // remove progress indicator
+        ProgressBar spinner = (ProgressBar) rootView.findViewById(R.id.progress_spinner);
+        spinner.setVisibility(View.GONE);
 
         return rootView;
     }

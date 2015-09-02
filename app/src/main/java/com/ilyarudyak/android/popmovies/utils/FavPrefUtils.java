@@ -21,6 +21,9 @@ public class FavPrefUtils {
         return c.getSharedPreferences(PREFS_NAME, 0)
                 .getStringSet(FAVORITIES, new HashSet<String>());
     }
+    public static boolean isFavsEmpty(Context c) {
+        return getFavorities(c).isEmpty();
+    }
 
     public static void putFavorities(Context c, Integer movieId) {
 

@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.ilyarudyak.android.popmovies.data.Movie;
 import com.ilyarudyak.android.popmovies.data.PicassoAdapter;
 import com.ilyarudyak.android.popmovies.fav.FavPosterActivity;
+import com.ilyarudyak.android.popmovies.utils.FavPrefUtils;
 import com.ilyarudyak.android.popmovies.utils.NetworkUtils;
 
 import java.util.ArrayList;
@@ -46,10 +47,9 @@ public class PosterFragment extends Fragment {
     // in onPostExecute() method of our fetch task
     private PicassoAdapter mPicassoAdapter;
     private List<Movie> mMovies;
-
     private Callback mCallback;
-
     private ProgressBar mSpinner;
+    private String mSortOrder;
 
     public PosterFragment() {
     }
@@ -62,6 +62,9 @@ public class PosterFragment extends Fragment {
 
         // now this fragment can handle menu events
         setHasOptionsMenu(true);
+
+        // set preferred sort order
+        setPrefs();
 
         // we fetch movies only if no saved bundle
         if (savedInstanceState != null) {
@@ -114,18 +117,35 @@ public class PosterFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "i'm in onResume()");
+
+        // fetch movies if prefs changed
+        if (isPrefsChanged()) {
+            fetchMovies();
+        }
     }
 
     // helper methods
     private void fetchMovies() {
 
-        // get preferences or use default value if they are not set
+        // fetch movies using preferred sort order
+        new FetchMoviesTask().execute(mSortOrder);
+    }
+    private void setPrefs() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mSortOrder = prefs.getString(getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_most_popular));
+
+    }
+    private boolean isPrefsChanged() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortOrder = prefs.getString(getString(R.string.pref_sort_key),
                 getString(R.string.pref_sort_most_popular));
+        if (mSortOrder != null && !mSortOrder.equals(sortOrder)) {
+            mSortOrder = sortOrder;
+            return true;
+        }
 
-        // fetch movies using preferred sort order
-        new FetchMoviesTask().execute(sortOrder);
+        return false;
     }
 
     // ------------------- config changes -------------------
@@ -189,7 +209,6 @@ public class PosterFragment extends Fragment {
             super.onPreExecute();
             if (mSpinner != null) {
                 mSpinner.setVisibility(View.VISIBLE);
-//                Log.d(TAG, "set visibility for spinner");
             }
         }
 
@@ -206,9 +225,7 @@ public class PosterFragment extends Fragment {
                 mPicassoAdapter.addAll(result);
                 if (mSpinner != null) {
                     mSpinner.setVisibility(View.GONE);
-//                    Log.d(TAG, "remove visibility for spinner");
                 }
-
             }
 
             // if no result use empty view
@@ -223,6 +240,15 @@ public class PosterFragment extends Fragment {
      * We than update our Picasso adapter in a usual way.
      * */
     public class FetchFavoritieMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (mSpinner != null) {
+                mSpinner.setVisibility(View.VISIBLE);
+            }
+        }
+
         @Override
         protected List<Movie> doInBackground(Void... voids) {
             return NetworkUtils.getFavoriteMoviesFromNetwork(getActivity());
@@ -234,6 +260,11 @@ public class PosterFragment extends Fragment {
                 mPicassoAdapter.clear();
                 mPicassoAdapter.addAll(result);
             }
+            if (mSpinner != null) {
+                mSpinner.setVisibility(View.GONE);
+            }
+
+            setEmptyView();
         }
     }
 
@@ -323,10 +354,16 @@ public class PosterFragment extends Fragment {
                 tv = (TextView) l.findViewById(R.id.empty_movies_text_view);
             }
             if (tv != null) {
-                int message = R.string.empty_movies_text_view;
+                int message = R.string.empty_movies;
+
                 if (!NetworkUtils.isNetworkAvailable(getActivity()) ) {
                     message = R.string.empty_movies_list_no_network;
                 }
+
+                if (FavPrefUtils.isFavsEmpty(getActivity())) {
+                    message = R.string.empty_favorites;
+                }
+                
                 tv.setText(message);
             }
         }

@@ -7,9 +7,11 @@
     <string name="title_activity_fav_detail">Details</string>
 
     <!-- handle empty adapter, no internet etc.-->
-    <string name="empty_movies_text_view">No movies available. That\'s all we know.</string>
+    <string name="empty_movies">No movies available. That\'s all we know.</string>
     <string name="empty_movies_list_no_network">No internet connection.
         Please try again later.</string>
+    <string name="empty_favorites">No favorites are available. Please add some.</string>
+
 
     <!-- ================= action bar ================= -->
 
