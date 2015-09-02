@@ -10,7 +10,7 @@ import com.ilyarudyak.android.popmovies.data.Movie;
 public class MainActivity extends AppCompatActivity
     implements PosterFragment.Callback {
 
-    private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private final String TAG = MainActivity.class.getSimpleName();
 
     // true if we use tablet layout
     private boolean mTwoPane;
@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity
 
             if (savedInstanceState == null) {
                 getFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.detail_container, new DetailFragment(), null)
-                    .commit();
+                        .beginTransaction()
+                        .replace(R.id.detail_container, new DetailFragment(), null)
+                        .commit();
             }
         } else {
             mTwoPane = false;
@@ -55,13 +55,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onPosterSelected(Movie movie) {
 
-        Log.d(LOG_TAG, "we are inside callback method");
-        Log.d(LOG_TAG, "mTwoPane=" + mTwoPane);
+        Log.d(TAG, "we are inside callback method");
+        Log.d(TAG, "mTwoPane=" + mTwoPane);
         if (mTwoPane) {
             // create detail fragment with bundle
             DetailFragment df = new DetailFragment();
             Bundle args = Movie.buildDetailBundle(movie);
-            Log.d(LOG_TAG, "args created " + args);
+            Log.d(TAG, "args created " + args);
             df.setArguments(args);
             getFragmentManager()
                     .beginTransaction()

@@ -101,6 +101,7 @@ public class PosterFragment extends Fragment {
         return v;
     }
 
+
     /**
      * We store list of movies into savedState and use them
      * after configuration change. In this way we can eliminate
@@ -299,8 +300,6 @@ public class PosterFragment extends Fragment {
             }
         }
     }
-
-
 
 }
 
